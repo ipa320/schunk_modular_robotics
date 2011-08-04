@@ -1,7 +1,7 @@
 <package>
   <description brief="libm5api">
 
-     libm5api for interacting with powercubes
+     This package wraps the libm5api to use it as a ros dependency
 
   </description>
   <author>Florian Weisshardt</author>
