@@ -71,6 +71,7 @@ public:
   ;
   ~PowerCubeCtrlParams();
 
+  /// @brief Initializing
   int Init(std::string CanModule, std::string CanDevice, int Baudrate, std::vector<int> ModuleIDs)
   {
     SetCanModule(CanModule);
@@ -84,47 +85,51 @@ public:
     return 0;
   }
 
-  //DOF
+  /// @brief Sets the DOF value
   void SetDOF(int DOF)
   {
     m_DOF = DOF;
   }
+  /// @brief Gets the DOF value
   int GetDOF()
   {
     return m_DOF;
   }
 
-  //Can Module
+  /// @brief Sets the CAN Module
   void SetCanModule(std::string CanModule)
   {
     m_CanModule = CanModule;
   }
+  /// @brief Gets the CAN Module
   std::string GetCanModule()
   {
     return m_CanModule;
   }
 
-  //Can Device
+  /// @brief Sets the CAN Device
   void SetCanDevice(std::string CanDevice)
   {
     m_CanDevice = CanDevice;
   }
+  /// @brief Gets the CAN Device
   std::string GetCanDevice()
   {
     return m_CanDevice;
   }
 
-  //Baudrate
+  /// @brief Sets the Baudrate
   void SetBaudrate(int Baudrate)
   {
     m_Baudrate = Baudrate;
   }
+  /// @brief Gets the Baudrate
   int GetBaudrate()
   {
     return m_Baudrate;
   }
 
-  //ModuleIDs
+  /// @brief Gets the Module IDs
   std::vector<int> GetModuleIDs()
   {
     return m_ModulIDs;
@@ -136,6 +141,7 @@ public:
     else
       return -1;
   }
+  /// @brief Sets the Module IDs
   int SetModuleID(int no, int id)
   {
     if (no < GetDOF())
@@ -148,11 +154,12 @@ public:
 
   }
 
-  //JointNames
+  /// @brief Gets the joint names
   std::vector<std::string> GetJointNames()
   {
     return m_JointNames;
   }
+  /// @brief Sets the joint names
   int SetJointNames(std::vector<std::string> JointNames)
   {
     if ((int)JointNames.size() == GetDOF())
@@ -163,8 +170,13 @@ public:
     else
       return -1;
   }
+  // ToDo: Check the following
 
-  //Angular Constraints
+  ////////////////////////////////////////
+  // Functions for angular constraints: //
+  ////////////////////////////////////////
+
+  /// @brief Sets the upper angular limits (rad) for the joints
   int SetUpperLimits(std::vector<double> UpperLimits)
   {
     if ((int)UpperLimits.size() == GetDOF())
@@ -175,6 +187,7 @@ public:
     }
     return -1;
   }
+  /// @brief Sets the lower angular limits (rad) for the joints
   int SetLowerLimits(std::vector<double> LowerLimits)
   {
     if ((int)LowerLimits.size() == GetDOF())
@@ -184,6 +197,7 @@ public:
     }
     return -1;
   }
+  /// @brief Sets the offset angulars (rad) for the joints
   int SetOffsets(std::vector<double> AngleOffsets)
   {
     if ((int)AngleOffsets.size() == GetDOF())
@@ -193,6 +207,7 @@ public:
     }
     return -1;
   }
+  /// @brief Sets the max. angular velocities (rad/s) for the joints
   int SetMaxVel(std::vector<double> MaxVel)
   {
     if ((int)MaxVel.size() == GetDOF())
@@ -202,6 +217,7 @@ public:
     }
     return -1;
   }
+  /// @brief Sets the max. angular accelerations (rad/s^2) for the joints
   int SetMaxAcc(std::vector<double> MaxAcc)
   {
     if ((int)MaxAcc.size() == GetDOF())
@@ -212,22 +228,27 @@ public:
     return -1;
   }
 
+  /// @brief Gets the upper angular limits (rad) for the joints
   std::vector<double> GetUpperLimits()
   {
     return m_UpperLimits;
   }
+  /// @brief Gets the lower angular limits (rad) for the joints
   std::vector<double> GetLowerLimits()
   {
     return m_LowerLimits;
   }
+  /// @brief Gets the offset angulars (rad) for the joints
   std::vector<double> GetOffsets()
   {
     return m_Offsets;
   }
+  /// @brief Gets the max. angular accelerations (rad/s^2) for the joints
   std::vector<double> GetMaxAcc()
   {
     return m_MaxAcc;
   }
+  /// @brief Gets the max. angular velocities (rad/s) for the joints
   std::vector<double> GetMaxVel()
   {
     return m_MaxVel;

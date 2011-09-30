@@ -60,12 +60,16 @@
 #ifndef __POWER_CUBE_CTRL_H_
 #define __POWER_CUBE_CTRL_H_
 
+//##################
+//#### includes ####
+
+// standard includes
 #include <iostream>
 #include <sstream>
 #include <string>
-
 #include <pthread.h> 
 
+// own includes
 #include <libm5api/m5apiw32.h>
 #include <cob_powercube_chain/moveCommand.h>
 #include <cob_powercube_chain/PowerCubeCtrlParams.h>

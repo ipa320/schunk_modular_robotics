@@ -59,9 +59,10 @@
 
 //##################
 //#### includes ####
+//##################
 
 // standard includes
-//--
+// --
 
 // ROS includes
 #include <ros/ros.h>
@@ -94,30 +95,31 @@ public:
   /// create a handle for this node, initialize node
   ros::NodeHandle n_;
 
-  // declaration of topics to publish
+  /// declaration of topics to publish
   ros::Publisher topicPub_JointState_;
   ros::Publisher topicPub_ControllerState_;
 
-  // declaration of topics to subscribe, callback is called for new messages arriving
+  /// declaration of topics to subscribe, callback is called for new messages arriving
   ros::Subscriber topicSub_CommandPos_;
   ros::Subscriber topicSub_CommandVel_;
 
-  // declaration of service servers
+  /// declaration of service servers
   ros::ServiceServer srvServer_Init_;
   ros::ServiceServer srvServer_Stop_;
   ros::ServiceServer srvServer_Recover_;
 
-  /// Handle for powercube_chain
+  /// handle for powercube_chain
   PowerCubeCtrl* pc_ctrl_;
 
-  /// Handle for powercube_chain parameters
+  /// handle for powercube_chain parameters
   PowerCubeCtrlParams* pc_params_;
 
   // member variables
   bool initialized_;
   bool stopped_;
   ros::Time last_publish_time_;
-
+  
+  ///Constructor
   PowerCubeChainNode()
   {
     pc_params_ = new PowerCubeCtrlParams();
@@ -140,7 +142,8 @@ public:
     stopped_ = true;
     last_publish_time_ = ros::Time::now();
   }
-
+  
+  ///Destructor
   ~PowerCubeChainNode()
   {
     bool closed = pc_ctrl_->Close();
@@ -201,6 +204,8 @@ public:
       ROS_ERROR("Parameter modul_ids not set, shutting down node...");
       n_.shutdown();
     }
+    
+    // resize and assign of values to the ModulIDs
     ModulIDs.resize(ModulIDsXmlRpc.size());
     for (int i = 0; i < ModulIDsXmlRpc.size(); i++)
     {
@@ -222,6 +227,8 @@ public:
       ROS_ERROR("Parameter joint_names not set, shutting down node...");
       n_.shutdown();
     }
+    
+    // resize and assign of values to the JointNames
     JointNames.resize(JointNamesXmlRpc.size());
     for (int i = 0; i < JointNamesXmlRpc.size(); i++)
     {
@@ -247,6 +254,8 @@ public:
       ROS_ERROR("Parameter max_accelerations not set, shutting down node...");
       n_.shutdown();
     }
+    
+    // resize and assign of values to the MaxAccelerations
     MaxAccelerations.resize(MaxAccelerationsXmlRpc.size());
     for (int i = 0; i < MaxAccelerationsXmlRpc.size(); i++)
     {
@@ -268,7 +277,7 @@ public:
     }
     else
     {
-      Horizon = 0.025; //Hz
+      Horizon = 0.05; //Hz //in sec? 
       ROS_WARN("Parameter horizon not available, setting to default value: %f sec", Horizon);
     }
     pc_ctrl_->setHorizon(Horizon);
@@ -537,7 +546,7 @@ public:
       ROS_DEBUG("publish state");
 
       if(update)
-	pc_ctrl_->updateStates();
+		pc_ctrl_->updateStates();
 
       sensor_msgs::JointState joint_state_msg;
       joint_state_msg.header.stamp = ros::Time::now();
@@ -584,7 +593,7 @@ int main(int argc, char** argv)
   }
   else
   {
-    frequency = 100; //Hz
+    frequency = 100 ; //Hz
     ROS_WARN("Parameter frequency not available, setting to default value: %f Hz", frequency);
   }
 

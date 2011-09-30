@@ -58,9 +58,16 @@
  ****************************************************************/
 
 #include <cob_powercube_chain/PowerCubeCtrl.h>
+#include <ros/ros.h>
+
+
+// Modified
+ros::Time last_time_pub_;
+int countr = 0;
+
 
 #define PCTRL_CHECK_INITIALIZED() \
-if ( isInitialized()==false )													\
+if ( isInitialized()==false )											\
 {																		\
     m_ErrorMessage.assign("Manipulator not initialized.");              \
 	return false;														\
@@ -75,7 +82,7 @@ PowerCubeCtrl::PowerCubeCtrl(PowerCubeCtrlParams * params)
 
   m_params = params;
 
-  m_horizon = 0.025; // sec
+  m_horizon = 0.01; // sec
 
     }
 
@@ -106,6 +113,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
   std::vector<double> LowerLimits = m_params->GetLowerLimits();
   std::vector<double> UpperLimits = m_params->GetUpperLimits();
 
+  std::cout << " D  O  F  :" << DOF << std::endl;
   m_status.resize(DOF);
   m_dios.resize(DOF);
   m_positions.resize(DOF);
@@ -431,28 +439,47 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
     }
     return false;
   }
-
-  //std::cout <<"vels = ";
-  for (unsigned int i = 0; i < DOF; i++)
+  //#############################################
+  //############  D  E  B  U  G  ################
+  //#############################################
+  
+  //Init
+  float delta_t;
+  
+  //Berechne delta_t
+  delta_t = ros::Time::now().toSec() - last_time_pub_.toSec(); 
+  
+  //Display Timegap with time before and after update
+  std::cout << "\n-------\nTimegap\n-------\n time now = " << ros::Time::now() << "\n last time = " << last_time_pub_ << "\n difference = " << delta_t << std::endl;
+				
+  last_time_pub_ = ros::Time::now(); 
+	
+  for (unsigned int i = 0; i < DOF; i++) //vorher i < DOF
   {
+ 
     float pos;
     float cmd_pos;
     unsigned short cmd_time; // time in milliseconds
+    
+    // ToDo: Hier getHorizon() Funktion benutzen um die aktuelle Frequenz auszulesen die in arm_sdh.yaml gespeichert ist. Daraus mit 1/getHorizon() den ersten Wert ermitteln.
+	if (countr == 0)
+	{
+		cmd_time = 17; 
+		if (i == DOF-1)
+			countr = countr + 1;
+	}
 
-    // calculate horizon
-    cmd_time = getHorizon() * 1000; // time in milliseconds
-    cmd_pos = cmd_time/1000 * velocities[i];
-	//std::cout << "horizon = " << getHorizon() << " pos = " << cmd_pos << " time = " << cmd_time << " vel = " << cmd_pos/cmd_time << std::endl;
-    //std::cout << velocities[i] << " ";
-    pthread_mutex_lock(&m_mutex);
-    //std::cout << "------------------------------> PCube_moveVelExtended()" << std::endl;
-    PCube_moveVelExtended(m_DeviceHandle, m_params->GetModuleID(i), velocities[i], &m_status[i], &m_dios[i], &pos);
-    //PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), 0.1, 1000, &m_status[i], &m_dios[i], &pos);
-    //PCube_moveStep(m_DeviceHandle, m_params->GetModuleID(i), 1000, 0.001);
+	else
+	{
+		cmd_time = delta_t * 1000;
+	}
+
+    cmd_pos = (cmd_time/1000.0) * velocities[i];
+	pthread_mutex_lock(&m_mutex);
+    PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), m_positions[i] + cmd_pos, cmd_time, &m_status[i], &m_dios[i], &pos);
     pthread_mutex_unlock(&m_mutex);
-    m_positions[i] = (double)pos;
+	m_positions[i] = (double)pos;
   }
-  //std::cout << std::endl;
 
   pthread_mutex_lock(&m_mutex);
   //std::cout << "------------------------------> PCube_startMotionAll()" << std::endl;
@@ -460,6 +487,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
   pthread_mutex_unlock(&m_mutex);
 
   return true;
+  
 }
 
 /// @brief Stops the manipulator immediately
@@ -694,6 +722,7 @@ bool PowerCubeCtrl::updateStates()
     m_status[i] = state;
     m_dios[i] = dio;
     m_positions[i] = position;
+    
     // @todo calculate vel and acc
     //m_velocities = ???;
     //m_accelerations = ???
