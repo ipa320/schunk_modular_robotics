@@ -4,10 +4,10 @@
        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
        xmlns:xacro="http://ros.org/wiki/xacro">
 
-	<include filename="$(find cob_description)/ros/urdf/sdh_v0/sdh.gazebo.xacro" />
-	<include filename="$(find cob_description)/ros/urdf/sdh_v0/sdh.transmission.xacro" />
+	<include filename="$(find schunk_description)/ros/urdf/sdh_v0/sdh.gazebo.xacro" />
+	<include filename="$(find schunk_description)/ros/urdf/sdh_v0/sdh.transmission.xacro" />
 
-	<xacro:macro name="cob_sdh_v0" params="parent name *origin">
+	<xacro:macro name="schunk_sdh_v0" params="parent name *origin">
 
 		<!-- joint between arm_7_link and sdh_palm_link -->
 		<joint name="${name}_palm_joint" type="fixed" >
@@ -26,7 +26,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/palm.stl" />
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/palm.stl" />
 				</geometry>
 				<material name="Grey" />
 			</visual>
@@ -34,7 +34,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/palm.stlb"/>
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/palm.stlb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -78,7 +78,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/knuckle.stl" />
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/knuckle.stl" />
 				</geometry>
 				<material name="Black" />
 			</visual>
@@ -86,7 +86,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-				<mesh filename="package://cob_description/ros/meshes/sdh_v0/knuckle.stlb"/>
+				<mesh filename="package://schunk_description/ros/meshes/sdh_v0/knuckle.stlb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -111,7 +111,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/finger.stl" />
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/finger.stl" />
 				</geometry>
 			<material name="Red" />
 			</visual>
@@ -119,7 +119,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/finger.stlb"/>
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/finger.stlb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -145,7 +145,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/finger_tip.stl" />
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/finger_tip.stl" />
 				</geometry>
 				<material name="Blue" />
 			</visual>
@@ -153,7 +153,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/finger_tip.stlb"/>
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/finger_tip.stlb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -180,7 +180,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/knuckle.stl" />
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/knuckle.stl" />
 				</geometry>
 				<material name="Black" />
 			</visual>
@@ -188,7 +188,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/knuckle.stlb"/>
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/knuckle.stlb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -213,7 +213,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/finger.stl" />
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/finger.stl" />
 				</geometry>
 				<material name="Red" />
 			</visual>
@@ -221,7 +221,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/finger.stlb"/>
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/finger.stlb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -246,7 +246,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/finger_tip.stl" />
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/finger_tip.stl" />
 				</geometry>
 				<material name="Blue" />
 			</visual>
@@ -254,7 +254,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/finger_tip.stlb"/>
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/finger_tip.stlb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -277,7 +277,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/knuckle.stl" />
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/knuckle.stl" />
 				</geometry>
 				<material name="Black" />
 			</visual>
@@ -285,7 +285,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/knuckle.stlb"/>
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/knuckle.stlb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -310,7 +310,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/finger.stl" />
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/finger.stl" />
 				</geometry>
 				<material name="Red" />
 			</visual>
@@ -318,7 +318,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/finger.stlb"/>
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/finger.stlb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -343,7 +343,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/finger_tip.stl" />
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/finger_tip.stl" />
 				</geometry>
 				<material name="Blue" />
 			</visual>
@@ -351,14 +351,14 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://cob_description/ros/meshes/sdh_v0/finger_tip.stlb"/>
+					<mesh filename="package://schunk_description/ros/meshes/sdh_v0/finger_tip.stlb"/>
 				</geometry>
 			</collision>
 		</link>
 	
 		<!-- extensions -->
-		<xacro:cob_sdh_gazebo_v0 name="${name}" />
-		<xacro:cob_sdh_transmission_v0 name="${name}" />
+		<xacro:schunk_sdh_gazebo_v0 name="${name}" />
+		<xacro:schunk_sdh_transmission_v0 name="${name}" />
 
 	</xacro:macro>
 

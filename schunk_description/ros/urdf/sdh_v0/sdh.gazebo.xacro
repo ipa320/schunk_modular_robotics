@@ -4,7 +4,7 @@
        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
        xmlns:xacro="http://ros.org/wiki/xacro">
 
-	<xacro:macro name="cob_sdh_gazebo_v0" params="name">
+	<xacro:macro name="schunk_sdh_gazebo_v0" params="name">
 
 		<gazebo reference="${name}_palm_link">
 			<material>Gazebo/Grey</material>

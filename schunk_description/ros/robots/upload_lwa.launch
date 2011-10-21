@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-	<!-- Send arm urdf to param server -->
+	<!-- send lwa urdf to param server -->
 	<param name="robot_description" command="$(find xacro)/xacro.py '$(find schunk_description)/ros/robots/lwa.urdf.xacro'" />
 
 </launch>
-
-

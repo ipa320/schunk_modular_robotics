@@ -38,10 +38,10 @@ rosbuild_find_ros_package(convex_decomposition)
 # iterate through all the stl files to:
 #  1. convert to *.iv files
 #  2. generate convex decomposed .stl
-file(GLOB cob_stl_files ${CMAKE_CURRENT_SOURCE_DIR}/ros/meshes/*/*.stl)
-set(cob_gen_files "")
+file(GLOB schunk_stl_files ${CMAKE_CURRENT_SOURCE_DIR}/ros/meshes/*/*.stl)
+set(schunk_gen_files "")
 
-foreach(it ${cob_stl_files})
+foreach(it ${schunk_stl_files})
   get_filename_component(basepath ${it} PATH)
   get_filename_component(basename ${it} NAME_WE)
 
@@ -74,7 +74,7 @@ foreach(it ${cob_stl_files})
       ARGS ${it} ${basepath}/convex/${basename}.obj
       DEPENDS ${it} ${basepath}/convex)
 
-    set(cob_gen_files ${cob_gen_files} ${basepath}/convex/${basename}.obj)
+    set(schunk_gen_files ${schunk_gen_files} ${basepath}/convex/${basename}.obj)
 
     #convex decompose object files
     add_custom_command(
@@ -83,7 +83,7 @@ foreach(it ${cob_stl_files})
       ARGS ${basepath}/convex/${basename}.obj -v12 -p10
       DEPENDS ${basepath}/convex/${basename}.obj ${basepath}/convex)
 
-    set(cob_gen_files ${cob_gen_files} ${basepath}/convex/${basename}_convex.obj)
+    set(schunk_gen_files ${schunk_gen_files} ${basepath}/convex/${basename}_convex.obj)
 
     #convert obj files back to stlb, put in directory named convex
     add_custom_command(
@@ -92,7 +92,7 @@ foreach(it ${cob_stl_files})
       ARGS ${basepath}/convex/${basename}_convex.obj ${basepath}/convex/${basename}_convex.stlb
       DEPENDS ${it} ${basepath}/convex ${basepath}/convex/${basename}_convex.obj)
 
-    set(cob_gen_files ${cob_gen_files} ${basepath}/convex/${basename}_convex.stlb)
+    set(schunk_gen_files ${schunk_gen_files} ${basepath}/convex/${basename}_convex.stlb)
 
     #convert obj files back to stla, put in directory named convex
     add_custom_command(
@@ -101,7 +101,7 @@ foreach(it ${cob_stl_files})
       ARGS ${basepath}/convex/${basename}_convex.obj ${basepath}/convex/${basename}_convex.stla
       DEPENDS ${it} ${basepath}/convex ${basepath}/convex/${basename}_convex.obj)
 
-    set(cob_gen_files ${cob_gen_files} ${basepath}/convex/${basename}_convex.stla)
+    set(schunk_gen_files ${schunk_gen_files} ${basepath}/convex/${basename}_convex.stla)
 
     #convert stl files to stlb, put in directory named stlb
     add_custom_command(
@@ -110,7 +110,7 @@ foreach(it ${cob_stl_files})
       ARGS ${basepath}/${basename}.stl ${basepath}/${basename}.stlb
       DEPENDS ${it} ${basepath}/${basename}.stl)
 
-    set(cob_gen_files ${cob_gen_files} ${basepath}/${basename}.stlb)
+    set(schunk_gen_files ${schunk_gen_files} ${basepath}/${basename}.stlb)
 
     #create iv files
     add_custom_command(
@@ -124,13 +124,13 @@ foreach(it ${cob_stl_files})
       ARGS ${basepath}/convex/${basename}_convex.obj ${basepath}/convex/${basename}_convex.iv
       DEPENDS ${it} ${basepath}/convex ${basepath}/convex/${basename}_convex.obj)
      
-    set(cob_gen_files ${cob_gen_files} ${basepath}/iv/${basename}.iv ${basepath}/convex/${basename}_convex.iv)
+    set(schunk_gen_files ${schunk_gen_files} ${basepath}/iv/${basename}.iv ${basepath}/convex/${basename}_convex.iv)
 
   ENDIF ( ${basename} MATCHES "_convex" )
 
 endforeach(it)
 
-add_custom_target(media_files ALL DEPENDS ${cob_gen_files})
+add_custom_target(media_files ALL DEPENDS ${schunk_gen_files})
 
 #TODO; stop bin and lib from being generated
 

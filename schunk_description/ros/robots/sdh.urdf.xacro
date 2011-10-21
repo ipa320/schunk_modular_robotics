@@ -3,24 +3,12 @@
        xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
        xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
-       name="cob" >
+       name="sdh" >
   
-  <!-- The following included files set up definitions of parts of the robot body -->
-  <!-- misc common stuff? -->
-  <include filename="$(find cob_description)/ros/urdf/common.xacro" />
-  
-  <include filename="$(find cob_description)/ros/calibration/$(env ROBOT).urdf.xacro" />
+  <!-- schunk sdh -->
+  <include filename="$(find schunk_description)/ros/urdf/sdh_v0/sdh.urdf.xacro" />
 
-  <!-- cob sdh-->
-  <include filename="$(find cob_description)/ros/urdf/sdh_v0/sdh.urdf.xacro" />
-
-  <!-- generic simulator_gazebo plugins for starting mechanism control, ros time, ros battery -->
-  <include filename="$(find cob_description)/ros/gazebo/gazebo.urdf.xacro" />
-  
-  <!-- materials for visualization -->
-  <include filename="$(find cob_description)/ros/urdf/materials.urdf.xacro" />
-
-  <!-- foot for sdh-->
+  <!-- foot for sdh -->
 	<link name="base_link">
 		<inertial>
 		   <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -45,8 +33,8 @@
 	</link>
 
   <!-- sdh -->
-  <xacro:cob_sdh_v0 name="sdh" parent="base_link">
+  <xacro:schunk_sdh_v0 name="sdh" parent="base_link">
     <origin xyz="0 0 0.5" rpy="0 0 0" />
-  </xacro:cob_sdh_v0>
+  </xacro:schunk_sdh_v0>
 
 </robot>

@@ -3,27 +3,15 @@
        xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
        xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
-       name="arm_sdh" >
+       name="lwa_sdh" >
   
-  <!-- The following included files set up definitions of parts of the robot body -->
-  <!-- misc common stuff? -->
-  <include filename="$(find cob_description)/ros/urdf/common.xacro" />
-  
-  <include filename="$(find schunk_description)/ros/calibration/lwa.urdf.xacro" />
-
-  <!-- cob arm-->
+  <!-- schunk lwa -->
   <include filename="$(find schunk_description)/ros/urdf/lwa_v0/lwa.urdf.xacro" />
 
-  <!-- cob sdh-->
+  <!-- schunk sdh -->
   <include filename="$(find schunk_description)/ros/urdf/sdh_v0/sdh.urdf.xacro" />
 
-  <!-- generic simulator_gazebo plugins for starting mechanism control, ros time, ros battery -->
-  <include filename="$(find cob_description)/ros/gazebo/gazebo.urdf.xacro" />
-  
-  <!-- materials for visualization -->
-  <include filename="$(find cob_description)/ros/urdf/materials.urdf.xacro" />
-
-  <!-- foot for arm-->
+  <!-- foot for lwa -->
 	<link name="dummy_link">
 		<inertial>
 		   <origin xyz="0 0 -10" rpy="0 0 0"/>
@@ -49,7 +37,7 @@
 		</collision>
 	</link>
 
-  <!-- arm -->
+  <!-- lwa -->
   <xacro:schunk_lwa_v0 name="lwa" parent="dummy_link">
     <origin xyz="0 0 0.5" rpy="3.1415926 0 0" />
   </xacro:schunk_lwa_v0>
