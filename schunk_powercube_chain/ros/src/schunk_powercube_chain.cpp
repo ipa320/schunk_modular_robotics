@@ -10,11 +10,11 @@
  *****************************************************************
  *
  * \note
- *   Project name: care-o-bot
+ *   Project name: schunk_modular_robotics
  * \note
- *   ROS stack name: cob_driver
+ *   ROS stack name: schunk_modular_robotics
  * \note
- *   ROS package name: cob_powercube_chain
+ *   ROS package name: schunk_powercube_chain
  *
  * \author
  *   Author: Florian Weisshardt, email:florian.weisshardt@ipa.fhg.de
@@ -80,8 +80,8 @@
 #include <cob_srvs/Trigger.h>
 
 // own includes
-#include <cob_powercube_chain/PowerCubeCtrl.h>
-#include <cob_powercube_chain/PowerCubeCtrlParams.h>
+#include <schunk_powercube_chain/PowerCubeCtrl.h>
+#include <schunk_powercube_chain/PowerCubeCtrlParams.h>
 
 /*!
  * \brief Implementation of ROS node for powercube_chain.

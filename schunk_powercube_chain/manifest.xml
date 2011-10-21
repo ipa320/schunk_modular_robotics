@@ -17,8 +17,6 @@
     <cpp cflags="-I${prefix}/common/include"/>
   </export>
 
-
-  
   <depend package="roscpp"/>
   <depend package="sensor_msgs"/>
   <depend package="urdf"/>
@@ -29,7 +27,6 @@
   <depend package="libntcan"/>
   <depend package="libpcan"/>
   <depend package="cob_srvs"/>
-  <depend package="cob_description"/>
   <depend package="brics_actuator"/>
   
 

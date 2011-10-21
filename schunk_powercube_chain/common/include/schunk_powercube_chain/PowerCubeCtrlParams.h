@@ -10,11 +10,11 @@
  *****************************************************************
  *
  * \note
- *   Project name: care-o-bot
+ *   Project name: schunk_modular_robotics
  * \note
- *   ROS stack name: cob_driver
+ *   ROS stack name: schunk_modular_robotics
  * \note
- *   ROS package name: cob_powercube_chain
+ *   ROS package name: schunk_powercube_chain
  *
  * \author
  *   Author: Florian Weisshardt, email:florian.weisshardt@ipa.fhg.de
