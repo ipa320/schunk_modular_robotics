@@ -62,7 +62,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/arm1.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa/lwa1.stl" />
 				</geometry>
 				<material name="Blue" />
 			</visual>
@@ -70,7 +70,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/arm1.stlb" />
+					<mesh filename="package://schunk_description/meshes/lwa/lwa1.stlb" />
 				</geometry>
 			</collision>
 		</link>
@@ -98,7 +98,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/arm2.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa/lwa2.stl" />
 				</geometry>
 				<material name="Red" />
 			</visual>
@@ -106,7 +106,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/arm2.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/lwa2.stlb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -134,7 +134,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/arm3.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa/lwa3.stl" />
 				</geometry>
 				<material name="Blue" />
 			</visual>
@@ -142,7 +142,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/arm3.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/lwa3.stlb"/>
 				</geometry>
 			</collision>
 		</link>	
@@ -170,7 +170,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/arm4.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa/lwa4.stl" />
 				</geometry>
 				<material name="Red" />
 			</visual>
@@ -178,7 +178,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/arm4.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/lwa4.stlb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -205,7 +205,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/arm5.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa/lwa5.stl" />
 				</geometry>
 				<material name="Blue" />
 			</visual>
@@ -213,7 +213,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/arm5.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/lwa5.stlb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -240,7 +240,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/arm6.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa/lwa6.stl" />
 				</geometry>
 				<material name="Red" />
 			</visual>
@@ -248,7 +248,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/arm6.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/lwa6.stlb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -275,7 +275,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/arm7.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa/lwa7.stl" />
 				</geometry>
 				<material name="Blue" />
 			</visual>
@@ -283,7 +283,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/arm7.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/lwa7.stlb"/>
 				</geometry>
 			</collision>
 		</link>
