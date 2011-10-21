@@ -134,3 +134,9 @@ add_custom_target(media_files ALL DEPENDS ${cob_gen_files})
 
 #TODO; stop bin and lib from being generated
 
+
+# rostest
+rosbuild_add_roslaunch_check(ros/robots/upload_lwa.launch)
+rosbuild_add_roslaunch_check(ros/robots/upload_sdh.launch)
+rosbuild_add_roslaunch_check(ros/robots/upload_lwa_sdh.launch)
+
