@@ -10,11 +10,11 @@
  *****************************************************************
  *
  * \note
- *   Project name: care-o-bot
+ *   Project name: schunk_modular_robotics
  * \note
- *   ROS stack name: cob_driver
+ *   ROS stack name: schunk_modular_robotics
  * \note
- *   ROS package name: cob_sdh
+ *   ROS package name: schunk_sdh
  *
  * \author
  *   Author: Florian Weisshardt, email:florian.weisshardt@ipa.fhg.de
@@ -73,8 +73,8 @@
 #include <sensor_msgs/JointState.h>
 #include <pr2_controllers_msgs/JointTrajectoryAction.h>
 #include <pr2_controllers_msgs/JointTrajectoryControllerState.h>
-#include <cob_sdh/TactileSensor.h>
-#include <cob_sdh/TactileMatrix.h>
+#include <schunk_sdh/TactileSensor.h>
+#include <schunk_sdh/TactileMatrix.h>
 
 // ROS service includes
 #include <cob_srvs/Trigger.h>
@@ -84,8 +84,8 @@
 #include <diagnostic_updater/diagnostic_updater.h>
 
 // external includes
-#include <cob_sdh/sdh.h>
-#include <cob_sdh/dsa.h>
+#include <schunk_sdh/sdh.h>
+#include <schunk_sdh/dsa.h>
 
 /*!
 * \brief Implementation of ROS node for sdh.
@@ -112,8 +112,6 @@ class SdhNode
 		// actionlib server
 		actionlib::SimpleActionServer<pr2_controllers_msgs::JointTrajectoryAction> as_;
 		std::string action_name_;
-		//cob_actions::JointCommandFeedback feedback_;
-		//cob_actions::JointCommandResult result_;
 
 		// service clients
 		//--
@@ -202,7 +200,7 @@ class SdhNode
 			// implementation of topics to publish
 			topicPub_JointState_ = nh_.advertise<sensor_msgs::JointState>("/joint_states", 1);
 			topicPub_ControllerState_ = nh_.advertise<pr2_controllers_msgs::JointTrajectoryControllerState>("state", 1);
-			topicPub_TactileSensor_ = nh_.advertise<cob_sdh::TactileSensor>("tactile_data", 1);
+			topicPub_TactileSensor_ = nh_.advertise<schunk_sdh::TactileSensor>("tactile_data", 1);
 
 			// pointer to sdh
 			sdh_ = new SDH::cSDH(false, false, 0); //(_use_radians=false, bool _use_fahrenheit=false, int _debug_level=0)
@@ -333,8 +331,8 @@ class SdhNode
 		* \param req Service request
 		* \param res Service response
 		*/
-		bool srvCallback_Init(	cob_srvs::Trigger::Request &req,
-								cob_srvs::Trigger::Response &res )
+		bool srvCallback_Init(cob_srvs::Trigger::Request &req,
+							cob_srvs::Trigger::Response &res )
 		{
 
 			if (isInitialized_ == false)
@@ -431,7 +429,7 @@ class SdhNode
 		* \param res Service response
 		*/
 		bool srvCallback_Stop(cob_srvs::Trigger::Request &req,
-				cob_srvs::Trigger::Response &res )
+							cob_srvs::Trigger::Response &res )
 		{
 			ROS_INFO("Stopping sdh");
 
@@ -459,7 +457,7 @@ class SdhNode
 	* \param res Service response
 	*/
 	bool srvCallback_Recover(cob_srvs::Trigger::Request &req,
-					cob_srvs::Trigger::Response &res )
+							cob_srvs::Trigger::Response &res )
 	{
 		ROS_WARN("Service recover not implemented yet");
 		res.success.data = true;
@@ -475,7 +473,7 @@ class SdhNode
 	* \param res Service response
 	*/
 	bool srvCallback_SetOperationMode(cob_srvs::SetOperationMode::Request &req,
-					cob_srvs::SetOperationMode::Response &res )
+									cob_srvs::SetOperationMode::Response &res )
 	{
 		ROS_INFO("Set operation mode to [%s]", req.operation_mode.data.c_str());
 		nh_.setParam("OperationMode", req.operation_mode.data.c_str());
@@ -685,13 +683,13 @@ class SdhNode
 				}
 			}
 
-			cob_sdh::TactileSensor msg;
+			schunk_sdh::TactileSensor msg;
 			msg.header.stamp = ros::Time::now();
 			int m, x, y;
 			msg.tactile_matrix.resize(dsa_->GetSensorInfo().nb_matrices);
 			for ( m = 0; m < dsa_->GetSensorInfo().nb_matrices; m++ )
 			{
-				cob_sdh::TactileMatrix &tm = msg.tactile_matrix[m];
+				schunk_sdh::TactileMatrix &tm = msg.tactile_matrix[m];
 				tm.matrix_id = m;
 				tm.cells_x = dsa_->GetMatrixInfo( m ).cells_x;
 				tm.cells_y = dsa_->GetMatrixInfo( m ).cells_y;
@@ -716,7 +714,7 @@ class SdhNode
 int main(int argc, char** argv)
 {
 	// initialize ROS, spezify name of node
-	ros::init(argc, argv, "cob_sdh");
+	ros::init(argc, argv, "schunk_sdh");
 
 	SdhNode sdh_node("joint_trajectory_action");
 	if (!sdh_node.init()) return 0;

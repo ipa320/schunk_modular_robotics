@@ -1,5 +1,5 @@
 <package>
-  <description brief="cob_sdh">
+  <description brief="schunk_sdh">
 
      This package provides an interface for operating the schunk dexterous hand (SDH), including the tactile sensors.
 
@@ -7,7 +7,7 @@
   <author>Florian Weisshardt</author>
   <license>LGPL</license>
   <review status="unreviewed" notes=""/>
-  <url>http://ros.org/wiki/cob_sdh</url>
+  <url>http://ros.org/wiki/schunk_sdh</url>
   
   <depend package="roscpp"/>
   <depend package="urdf"/>
