@@ -4,10 +4,10 @@
        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
        xmlns:xacro="http://ros.org/wiki/xacro">
 
-	<include filename="$(find schunk_description)/ros/urdf/arm_v1/arm.gazebo.xacro" />
-	<include filename="$(find schunk_description)/ros/urdf/arm_v1/arm.transmission.xacro" />
+	<include filename="$(find schunk_description)/urdf/lwa/lwa.gazebo.xacro" />
+	<include filename="$(find schunk_description)/urdf/lwa/lwa.transmission.xacro" />
 
-	<xacro:macro name="schunk_lwa_v1" params="parent name *origin">
+	<xacro:macro name="schunk_lwa" params="parent name *origin">
 
 		<!-- joint between base_link and arm_0_link -->
 		<joint name="${name}_0_joint" type="fixed" >
@@ -41,7 +41,7 @@
 
 		<!-- joint between arm_0_link and arm_1_link -->
 		<joint name="${name}_1_joint" type="revolute">
-			<origin xyz="0 0 -0.30" rpy="0 0 3.1415926"/>
+			<origin xyz="0 0 -0.250" rpy="0 0 3.1415926"/>
 			<parent link="${name}_0_link"/>
 			<child link="${name}_1_link"/>
 			<axis xyz="0 0 1"/>
@@ -62,7 +62,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/ros/meshes/arm_v0/arm1.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa/arm1.stl" />
 				</geometry>
 				<material name="Blue" />
 			</visual>
@@ -70,7 +70,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/ros/meshes/arm_v0/arm1.stlb" />
+					<mesh filename="package://schunk_description/meshes/lwa/arm1.stlb" />
 				</geometry>
 			</collision>
 		</link>
@@ -98,7 +98,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/ros/meshes/arm_v0/arm2.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa/arm2.stl" />
 				</geometry>
 				<material name="Red" />
 			</visual>
@@ -106,14 +106,14 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/ros/meshes/arm_v0/arm2.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/arm2.stlb"/>
 				</geometry>
 			</collision>
 		</link>
 
 		<!-- joint between arm_2_link and arm_3_link -->	
 		<joint name="${name}_3_joint" type="revolute">
-			<origin xyz="0 -0.328 0" rpy="-1.5708 0 0"/>
+			<origin xyz="0 -0.408 0" rpy="-1.5708 0 0"/>
 			<parent link="${name}_2_link"/>
 			<child link="${name}_3_link"/>
 			<axis xyz="0 0 1"/>
@@ -134,7 +134,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/ros/meshes/arm_v0/arm3.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa/arm3.stl" />
 				</geometry>
 				<material name="Blue" />
 			</visual>
@@ -142,7 +142,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/ros/meshes/arm_v0/arm3.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/arm3.stlb"/>
 				</geometry>
 			</collision>
 		</link>	
@@ -170,7 +170,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/ros/meshes/arm_v0/arm4.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa/arm4.stl" />
 				</geometry>
 				<material name="Red" />
 			</visual>
@@ -178,14 +178,14 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/ros/meshes/arm_v0/arm4.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/arm4.stlb"/>
 				</geometry>
 			</collision>
 		</link>
 
 		<!-- joint between arm_4_link and arm_5_link -->
 		<joint name="${name}_5_joint" type="revolute">
-			<origin xyz="0 -0.2765 0" rpy="-1.5708 0 0" />
+			<origin xyz="0 -0.3165 0" rpy="-1.5708 0 0" />
 			<parent link="${name}_4_link"/>
 			<child link="${name}_5_link"/>
 			<axis xyz="0 0 1" />
@@ -205,7 +205,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/ros/meshes/arm_v0/arm5.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa/arm5.stl" />
 				</geometry>
 				<material name="Blue" />
 			</visual>
@@ -213,7 +213,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/ros/meshes/arm_v0/arm5.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/arm5.stlb"/>
 				</geometry>
 			</collision>
 		</link>
@@ -240,7 +240,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/ros/meshes/arm_v0/arm6.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa/arm6.stl" />
 				</geometry>
 				<material name="Red" />
 			</visual>
@@ -248,14 +248,14 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/ros/meshes/arm_v0/arm6.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/arm6.stlb"/>
 				</geometry>
 			</collision>
 		</link>
 
 		<!-- joint between arm_6_link and arm_7_link -->
 		<joint name="${name}_7_joint" type="revolute">
-			<origin xyz="0 -0.237448 0" rpy="-1.5708 0 0" />
+			<origin xyz="0 -0.1927 0" rpy="-1.5708 0 0" />
 			<parent link="${name}_6_link"/>
 			<child link="${name}_7_link"/>
 			<axis xyz="0 0 1" />
@@ -275,7 +275,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/ros/meshes/arm_v0/arm7.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa/arm7.stl" />
 				</geometry>
 				<material name="Blue" />
 			</visual>
@@ -283,14 +283,14 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/ros/meshes/arm_v0/arm7.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/arm7.stlb"/>
 				</geometry>
 			</collision>
 		</link>
 
 		<!-- extensions -->
-		<xacro:schunk_lwa_gazebo_v1 name="${name}" />
-		<xacro:schunk_lwa_transmission_v1 name="${name}" />
+		<xacro:schunk_lwa_gazebo name="${name}" />
+		<xacro:schunk_lwa_transmission name="${name}" />
 
 	</xacro:macro>
 

@@ -38,7 +38,7 @@ rosbuild_find_ros_package(convex_decomposition)
 # iterate through all the stl files to:
 #  1. convert to *.iv files
 #  2. generate convex decomposed .stl
-file(GLOB schunk_stl_files ${CMAKE_CURRENT_SOURCE_DIR}/ros/meshes/*/*.stl)
+file(GLOB schunk_stl_files ${CMAKE_CURRENT_SOURCE_DIR}/meshes/*/*.stl)
 set(schunk_gen_files "")
 
 foreach(it ${schunk_stl_files})
@@ -133,10 +133,3 @@ endforeach(it)
 add_custom_target(media_files ALL DEPENDS ${schunk_gen_files})
 
 #TODO; stop bin and lib from being generated
-
-
-# rostest
-rosbuild_add_roslaunch_check(ros/robots/upload_lwa.launch)
-rosbuild_add_roslaunch_check(ros/robots/upload_sdh.launch)
-rosbuild_add_roslaunch_check(ros/robots/upload_lwa_sdh.launch)
-

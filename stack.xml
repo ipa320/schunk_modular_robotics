@@ -10,7 +10,7 @@
   <depend stack="common_msgs" /> <!-- trajectory_msgs, sensor_msgs -->
   <depend stack="diagnostics" /> <!-- diagnostic_updater -->
   <depend stack="pr2_controllers" /> <!-- pr2_controllers_msgs -->
-  <depend stack="robot_model" /> <!-- urdf -->
+  <depend stack="robot_model" /> <!-- convex_decomposition, ivcon, urdf -->
   <depend stack="ros" />
   <depend stack="ros_comm" /> <!-- rostest, roscpp -->
 
