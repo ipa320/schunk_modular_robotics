@@ -125,6 +125,8 @@ public:
     pc_params_ = new PowerCubeCtrlParams();
     pc_ctrl_ = new PowerCubeCtrl(pc_params_);
 
+	n_ = ros::NodeHandle ("~");
+
     // implementation of topics to publish
     topicPub_JointState_ = n_.advertise<sensor_msgs::JointState> ("/joint_states", 1);
     topicPub_ControllerState_ = n_.advertise<pr2_controllers_msgs::JointTrajectoryControllerState> ("state", 1);
