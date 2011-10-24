@@ -155,6 +155,9 @@ class SdhNode
 			action_name_(name)
 		{
 			pi_ = 3.1415926;
+			
+			nh_ = ros::NodeHandle ("~");
+			
 			// diagnostics
 			updater_.setHardwareID("none"); // TODO: how to get serial number from driver?
 			updater_.add("initialization", this, &SdhNode::diag_init);
@@ -233,7 +236,8 @@ class SdhNode
 			}
 			else
 			{
-				ROS_ERROR("Parameter JointNames not set");
+				ROS_ERROR("Parameter JointNames not set, shutting down node...");
+				nh_.shutdown();
 				return false;
 			}
 			DOF_ = JointNames_param.size();
