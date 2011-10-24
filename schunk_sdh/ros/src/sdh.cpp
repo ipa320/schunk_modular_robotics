@@ -139,7 +139,7 @@ class SdhNode
 		
 		trajectory_msgs::JointTrajectory traj_;
 		
-		std::vector<std::string> JointNames_;
+		std::vector<std::string> joint_names_;
 		std::vector<int> axes_;
 		std::vector<double> targetAngles_; // in degrees
 		bool hasNewGoal_;
@@ -227,26 +227,26 @@ class SdhNode
 			nh_.param("id_read", id_read_, 43);
 			nh_.param("id_write", id_write_, 42);
 
-			// get JointNames from parameter server
-			ROS_INFO("getting JointNames from parameter server");
-			XmlRpc::XmlRpcValue JointNames_param;
-			if (nh_.hasParam("JointNames"))
+			// get joint_names from parameter server
+			ROS_INFO("getting joint_names from parameter server");
+			XmlRpc::XmlRpcValue joint_names_param;
+			if (nh_.hasParam("joint_names"))
 			{
-				nh_.getParam("JointNames", JointNames_param);
+				nh_.getParam("joint_names", joint_names_param);
 			}
 			else
 			{
-				ROS_ERROR("Parameter JointNames not set, shutting down node...");
+				ROS_ERROR("Parameter joint_names not set, shutting down node...");
 				nh_.shutdown();
 				return false;
 			}
-			DOF_ = JointNames_param.size();
-			JointNames_.resize(DOF_);
+			DOF_ = joint_names_param.size();
+			joint_names_.resize(DOF_);
 			for (int i = 0; i<DOF_; i++ )
 			{
-				JointNames_[i] = (std::string)JointNames_param[i];
+				joint_names_[i] = (std::string)joint_names_param[i];
 			}
-			std::cout << "JointNames = " << JointNames_param << std::endl;
+			std::cout << "joint_names = " << joint_names_param << std::endl;
 			
 			// define axes to send to sdh
 			axes_.resize(DOF_);
@@ -579,7 +579,7 @@ class SdhNode
 			msg.position.resize(DOF_);
 			msg.velocity.resize(DOF_);
 			// set joint names and map them to angles
-			msg.name = JointNames_;
+			msg.name = joint_names_;
 			//['sdh_knuckle_joint', 'sdh_thumb_2_joint', 'sdh_thumb_3_joint', 'sdh_finger_12_joint', 'sdh_finger_13_joint', 'sdh_finger_22_joint', 'sdh_finger_23_joint']
 			// pos
 			msg.position[0] = actualAngles[0]*pi_/180.0; // sdh_knuckle_joint
@@ -624,7 +624,7 @@ class SdhNode
 			controllermsg.error.positions.resize(DOF_);
 			controllermsg.error.velocities.resize(DOF_);
 			// set joint names and map them to angles
-			controllermsg.joint_names = JointNames_;
+			controllermsg.joint_names = joint_names_;
 			//['sdh_knuckle_joint', 'sdh_thumb_2_joint', 'sdh_thumb_3_joint', 'sdh_finger_12_joint', 'sdh_finger_13_joint', 'sdh_finger_22_joint', 'sdh_finger_23_joint']
 			// desired pos
 			if (targetAngles_.size() != 0)
