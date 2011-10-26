@@ -34,9 +34,7 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/common/include)
 
 # add project executable
 rosbuild_add_executable(${PROJECT_NAME} common/src/PowerCubeCtrl.cpp common/src/TimeStamp.cpp common/src/moveCommand.cpp ros/src/schunk_powercube_chain.cpp)
-#rosbuild_add_executable(solo_test ros/src/test.cpp)
-#rosbuild_add_executable(${PROJECT_NAME}_sim ros/src/cob_powercube_chain.cpp common/src/simulatedArm.cpp common/src/simulatedMotor.cpp common/src/TimeStamp.cpp common/src/moveCommand.cpp)
-#rosbuild_add_executable(${PROJECT_NAME}_test ros/src/cob_powercube_chain_test.cpp)
+
 rosbuild_add_compile_flags(${PROJECT_NAME} -D__LINUX__ -DUSE_ESD)
 #rosbuild_add_compile_flags(solo_test -D__LINUX__ -DUSE_ESD)
 #rosbuild_add_compile_flags(${PROJECT_NAME}_sim -D__LINUX__ -DUSE_ESD -DSIMU)

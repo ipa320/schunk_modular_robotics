@@ -57,10 +57,14 @@
  *
  ****************************************************************/
 
-#include <schunk_powercube_chain/moveCommand.h>
+// standard includes
 #include <math.h>
 #include <stddef.h>
 
+// own includes
+#include <schunk_powercube_chain/moveCommand.h>
+
+//ToDo : ? Funktion
 RampCommand::RampCommand(double x0, double v0, double xtarget, double amax, double vmax)
 	: moveCommand(),
 		m_x0(x0),
@@ -71,10 +75,10 @@ RampCommand::RampCommand(double x0, double v0, double xtarget, double amax, doub
 {
 	m_umkehr = false;
 	m_nachumkehr = NULL;
-	// Nur Beträge sollen verwendet werden, Richtung wird unten anhand von Delta gesetzt.
+	/// Just absolute values should be used. The direction will be set later on by using Delta
 	m_vmax = fabs(m_vmax);
 	m_amax = fabs(m_amax);
-	// Set up the movement phases:
+	/// Set up the movement phases:
 	double delta = m_xtarget - m_x0;
 	if (delta < 0)
 	{
@@ -82,11 +86,13 @@ RampCommand::RampCommand(double x0, double v0, double xtarget, double amax, doub
 		m_amax = -m_amax;
 	}
 		
-	if (m_v0 * m_vmax >= 0) // Momentangeschw. gleiches Vorzeichen wie Sollgeschw. (keine Umkehr nötig)
+	/// Current velocity should have same sign as desired velocity. (No reversion possible.)
+	if (m_v0 * m_vmax >= 0)
 	{
-		if (fabs(m_vmax) >= fabs(m_v0)) // Momentangeschw. ist vom Betrag kleiner als Sollgeschw.
+		/// Absolute value of current velocity is less than value of desired velocity.
+		if (fabs(m_vmax) >= fabs(m_v0))
 		{
-			// Kritische deltas bestimmen:
+			/// Calculate critical deltas:
 			double delta1 = (m_vmax*m_vmax - 0.5 * m_v0*m_v0) / m_amax;
 			double delta2 = 0.5 * m_v0*m_v0 / m_amax;
 			
@@ -117,7 +123,8 @@ RampCommand::RampCommand(double x0, double v0, double xtarget, double amax, doub
 				m_T3 = - m_v2 / m_amax;
 				m_a3 = m_amax;
 			}
-			else // delta = 0
+			/// delta = 0
+			else
 			{
 				m_T1 = 0;
 				m_T2 = 0;
@@ -126,11 +133,13 @@ RampCommand::RampCommand(double x0, double v0, double xtarget, double amax, doub
 				m_v2 = 0;
 				m_a3 = 0;
 			}
-		} else // Momentangeschw. ist vom Betrag größer als Sollgeschw.
+		/// Absolute value of current velocity is greater than value of desired velocity.
+		} else
 		{
-			// Kritische Größen bestimmen:
+			/// Calculate critical values:
 			double delta1 = 0.5 * m_v0*m_v0 / m_amax;
-			double vstern = m_v0 * 0.707106781; // v0 / wurzel(2)
+			/// v0 / root(2)
+			double vstern = m_v0 * 0.707106781;
 			
 			if (fabs(delta) >= fabs(delta1))
 			{
@@ -150,8 +159,9 @@ RampCommand::RampCommand(double x0, double v0, double xtarget, double amax, doub
 				m_a1 = -m_amax;
 				m_T3 = - m_v2 / m_amax;
 				m_a3 = m_amax;
-			}					
-			else // (fabs(m_vmax) < fabs(vstern))
+			}
+			/// (fabs(m_vmax) < fabs(vstern))
+			else
 			{
 				m_T1 = (m_v0 + m_vmax) / m_amax;
 				m_a1 = -m_amax;
@@ -161,31 +171,27 @@ RampCommand::RampCommand(double x0, double v0, double xtarget, double amax, doub
 				m_a3 = m_amax;
 			}
 		}
-	} // if (m_v0 * m_vmax >= 0)
-	else // Momentangeschw. anderes Vorzeichen als Sollgeschw. -> Umkehr nötig
+	}
+	/// if (m_v0 * m_vmax >= 0)
+	/// If sign of current velocity different to sign of desired velocity -> reversion needed
+	else
 	{
-		//std::cout << "Konstruktor\n";
-		// Bis 0 fahren, danach neues RampCommand mit v0 = 0.
+		/// Go on till 0. By reaching 0 calling new RampCommand with v0 = 0
 		m_a1 = m_amax;
 		m_T1 = -m_v0 / m_amax;
 		m_umkehr = true;
 		// RampCommand::RampCommand(double x0, double v0, double xtarget, double amax, double vmax)
 		m_nachumkehr = new RampCommand( m_x0 + 0.5*m_v0*m_T1, 0.0, m_xtarget, m_amax, m_vmax);
-		//std::cout << "Zweites RampenKommando erzeugt\n";
-		//std::cout << "Parameter: " << m_x0 + 0.5*m_v0*m_T1 << ", " <<  0.0 << ", " <<  m_xtarget << ", ";
-		//std::cout << m_amax << ", " << m_vmax << "\n";
 		m_T2 = 0;
 		m_T3 = 0;
 		m_v2 = 0;
 		m_a3 = 0;
 	}
-	// Das wars Konstruktor fertig, Bewegungsablauf definiert.
+	///Done. Contructor finished, motion defined.
 }
 
 RampCommand::RampCommand(const RampCommand& rc)
 {
-	// debug:
-	//std::cout << "RampCommand: Copy Constructor called.\n";
 	m_x0 = rc.m_x0;
 	m_v0 = rc.m_v0;
 	m_xtarget = rc.m_xtarget;
@@ -200,9 +206,9 @@ RampCommand::RampCommand(const RampCommand& rc)
 	m_a3 = rc.m_a3;
 	
 	m_umkehr = rc.m_umkehr;
-	// Rekursionsgefahr! In dieser Implementierung wird sichergestellt, dass das m_nachumkehr RampCommand kein 
-	// weiteres m_nachumkehr besitzt ( (*m_nachumkehr).m_nachumkehr=NULL ). Bitte bei evtl. Änderungen Sicherstellen, 
-	// dass auch weiterhin keine unendliche Rekursion auftritt!
+	/// Attention of recursion! In this implementation we make sure that m_nachumkehr RampCommand has
+	/// no antoher m_nachumkehr ( (*m_nachumkehr).m_nachumkehr=NULL ). After possible changes please make sure
+	/// there is not any longer infinite recursion.
 	if (rc.m_umkehr)
 		m_nachumkehr = new RampCommand(*rc.m_nachumkehr);
 	else
@@ -211,9 +217,6 @@ RampCommand::RampCommand(const RampCommand& rc)
 
 RampCommand& RampCommand::operator=(const RampCommand& rc)
 {
-	// debug:
-	//std::cout << "RampCommand: operator= called.\n";
-	
 	if (m_nachumkehr)
 		delete m_nachumkehr;
 	
@@ -231,9 +234,9 @@ RampCommand& RampCommand::operator=(const RampCommand& rc)
 	m_a3 = rc.m_a3;
 	
 	m_umkehr = rc.m_umkehr;
-	// Rekursionsgefahr! In dieser Implementierung wird sichergestellt, dass das m_nachumkehr RampCommand kein 
-	// weiteres m_nachumkehr besitzt ( (*m_nachumkehr).m_nachumkehr=NULL ). Bitte bei evtl. Änderungen Sicherstellen, 
-	// dass auch weiterhin keine unendliche Rekursion auftritt!
+	/// Attention of recursion! In this implementation we make sure that m_nachumkehr RampCommand has
+	/// no antoher m_nachumkehr ( (*m_nachumkehr).m_nachumkehr=NULL ). After possible changes please make sure
+	/// there is not any longer infinite recursion.
 	if (rc.m_umkehr)
 		m_nachumkehr = new RampCommand(*rc.m_nachumkehr);
 	else
@@ -242,8 +245,9 @@ RampCommand& RampCommand::operator=(const RampCommand& rc)
 	return *this;
 }
 
-		
-/// @brief returns the planned position for TimeElapsed (seconds)
+/*!
+ * \brief Returns the planned position for TimeElapsed (seconds)
+ */
 double RampCommand::getPos(double TimeElapsed)
 {
 	if (m_umkehr)
@@ -271,12 +275,15 @@ double RampCommand::getPos(double TimeElapsed)
 					m_v2*(TimeElapsed-m_T1-m_T2) + 0.5*m_a3*(TimeElapsed-m_T1-m_T2)*(TimeElapsed-m_T1-m_T2);
 			// x = x2 + v2t + a/2*t^2
 		}
-		else // Bewegung Vorbei, Zielposition erreicht:
+		/// Motion done. Targetposition reached.
+		else
 			return m_xtarget;
 	}
 }
 
-/// @brief returns the planned velocity for TimeElapsed
+/*!
+ * \brief returns the planned velocity for TimeElapsed
+ */
 double RampCommand::getVel(double TimeElapsed)
 {
 	if (m_umkehr)
@@ -301,12 +308,15 @@ double RampCommand::getVel(double TimeElapsed)
 		{
 			return m_v2 + m_a3 * (TimeElapsed - m_T1 - m_T2);
 		}
-		else // Bewegung Vorbei, Motor steht still:
+		/// Motion done. Motor inactive.
+		else
 			return 0.0;
 	}
 }
 
-/// @brief returns the planned total time for the movement in seconds
+/*!
+ * \brief Returns the planned total time for the movement in seconds
+ */
 double RampCommand::getTotalTime()
 {
 	//std::cout << "getTotalTime()\n";
@@ -316,24 +326,26 @@ double RampCommand::getTotalTime()
 		return m_T1 + m_T2 + m_T3;
 }
 
-/// @brief Calculate the necessary a and v of a rampmove, so that the move will take the desired time
-///  If possible, the deceleration phase should take the time T3, so that it can be made equal for all joints
-void RampCommand::calculateAV(double x0, double v0, double xtarget, double time, double T3, double amax, double vmax, double& acc, double& vel)
+/*!
+ * \brief Calculate the necessary a and v of a rampmove, so that the move will take the desired time
+ *
+ * If possible, the deceleration phase should take the time T3, so that it can be made equal for all joints
+ */
+void RampCommand::calculateAV(double x0, double v0, double xtarget, double time, double T3, double amax,
+							  double vmax, double& acc, double& vel)
 {
 	//std::ostream& out(debug);
 	
-	//out << "RampCommand::calculateAV(" << x0 << ", " << v0 << ", " << xtarget << ", " << time << ", " << T3 << ", " << amax << ", acc, vel)\n";
 	double TG = time;
 	
 	if (TG <= 0)
 	{
-		//out << "Error in RampCommand::CalculateAV! total time is not greater than zero!\n";
 		acc = 0;
 		vel = 0;
 	} else
 	{
 		double delta = xtarget - x0;
-		//Vorzeichen nicht trauen, anhand von delta richtig setzen:
+		/// Do not trust sign, set correct sign by have a look on delta
 		amax = fabs(amax);
 		amax = (delta>=0)?amax:-amax;
 		
@@ -350,61 +362,60 @@ void RampCommand::calculateAV(double x0, double v0, double xtarget, double time,
 		
 		if (T3 > 0)
 		{
-			////////////////////////////////////////////////////////////////////////////////////
-			//				Noch Fehlerhaft! Wurzelterme < 0 etc, richtig machen!			  //
-			////////////////////////////////////////////////////////////////////////////////////
+			/// ToDo: Noch Fehlerhaft! Wurzelterme < 0 etc, richtig machen!
 			if (fabs(delta) >= d1)
 			{
-				/* out << "  Fall 1\n"; */
+				/* out << "  Case 1\n"; */
 				/* 	     ----------		*/
 				/*      /          \	*/
 				/*                  \	*/
 				
-				// v nach Rechnung Formel (I). a,b,c für Mitternachtsformel:
+				/// v by calculation formula (I). a,b,c for quadratic formula:
 				double a = (TG / T3 - 1.0);
 				double b = v0 - delta/T3;
 				double c = - 0.5 * v0 * v0;
 				//out << "  a=" << a << " | b=" << b << " | c=" << c << endl;
-				// Mitternachtsformel:
+				/// Quadratic formula:
 				if (delta >= 0)
 					vel = (-b + sqrt(b*b - 4.0*a*c)) / (2.0 * a);
 				else 
 					vel = (-b - sqrt(b*b - 4.0*a*c)) / (2.0 * a);
-						
-				// Jetzt a nach Formel (1):
+
+				/// Now calculate a with formula (1):
 				acc = vel / T3;
 			} 
 			else if (delta >= d2h || delta <= d2l)
-			// fabs(delta) > d2s verhindert, dass Wurzelterm negativ wird!
+			///	fabs(delta) > d2s verhindert, prevent root of negative values!
 			{
-				/* out << "  Fall 2\n";	*/
+				/* out << "  Case 2\n";	*/
 				/* 	    \				*/
 				/*       ----------		*/
 				/*                 \	*/
-				
-				// v nach Rechnung Formel (II). a,b,c für Mitternachtsformel:
+				/// v by calculation formula (II). a,b,c for quadratic formula:
 				double a = TG;
 				double b = - delta - T3*v0;
 				double c = 0.5 * v0 * v0 * T3;
 				//out << "  a=" << a << " | b=" << b << " | c=" << c << endl;
-				// Mitternachtsformel:
+				/// Quadratic formula:
 				if (delta >= 0)
 					vel = (-b + sqrt(b*b - 4.0*a*c)) / (2.0 * a);
 				else 
 					vel = (-b - sqrt(b*b - 4.0*a*c)) / (2.0 * a);
 						
-				// Jetzt a nach Formel (1):
+				/// Now calculate a with formula (1):
 				acc = vel / T3;
 			}
 			else if (fabs(delta) >= d3)
 			{
-				// Dieser Fall bei bestimmten (relativ biedrigen) Deltas
-				// in Kombination mit relativ hohen v0s auf, und für diesen
-				// Fall kann ich keine Formel finden, für die Abbremsphase = T3 !!!
-				// Ich finde es komisch, dass hier die Formel oben versagt (Wurzelterm < 0)
-				// und die untere falsche Ergebnisse liefert...
-				// Lösung, bei der Abbremsphase != T3: 
-				//out << "  Fall 3:\n";
+				/// ToDo: Check if needed
+
+				/// Dieser Fall bei bestimmten (relativ biedrigen) Deltas
+				/// in Kombination mit relativ hohen v0s auf, und für diesen
+				/// Fall kann ich keine Formel finden, für die Abbremsphase = T3 !!!
+				/// Ich finde es komisch, dass hier die Formel oben versagt (Wurzelterm < 0)
+				/// und die untere falsche Ergebnisse liefert...
+				/// Lösung, bei der Abbremsphase != T3:
+				/// out << "  Fall 3:\n";
 				
 				acc = amax;
 				
@@ -423,25 +434,33 @@ void RampCommand::calculateAV(double x0, double v0, double xtarget, double time,
 						}
 					else
 					{
-						// Dieser Spezialfall ist noch nicht gelöst, tritt bei eher größeren v0 auf
-						// "Falsche Lösung" (Joint kommt zu früh an):
+						/// ToDo
+						/// This special case is not solved yet. Occures with great values of v0
+						/// "Wrong Solution" (Joint arrives to soon):
+
+						/// Dieser Spezialfall ist noch nicht gelöst, tritt bei eher größeren v0 auf
+						/// "Falsche Lösung" (Joint kommt zu früh an):
 						vel = vmax;
 					}
 					
 			}
 			else
 			{
-				// Übersteuern, hier kann nicht gewährleistet werden, dass Abbremsphase
-				// Während T3 (Gleichungssystem wäre überbestimmt).
-				//out << "  Fall 4\n";
+				/// ToDo
+				/// Oversteer. It can't be ensure to have a slowing-down process while T3.
+				/// (System of equations would be overdetermined.)
+
+				/// Übersteuern, hier kann nicht gewährleistet werden, dass Abbremsphase
+				/// Während T3 (Gleichungssystem wäre überbestimmt).
+				///out << "  Fall 4\n";
 				if (4*delta*delta - 4*delta*TG*v0 + 2*TG*TG*v0*v0 >=0)
-					// Wurzelterm macht keine Probleme
+					/// Root does not make any problems.
 					if (delta*v0 > 0)
 						acc = ( -2.0*delta + TG*v0 + sqrt(4*delta*delta - 4*delta*TG*v0 + 2*TG*TG*v0*v0) ) / (TG*TG);
 					else
 						acc = ( -2.0*delta + TG*v0 - sqrt(4*delta*delta - 4*delta*TG*v0 + 2*TG*TG*v0*v0) ) / (TG*TG);
 				else
-					// Wurzelterm macht Probleme, provisorische Lösung:
+					/// Root reports some issues, temporary solution:
 					acc = amax;
 				
 				vel = vmax;
@@ -449,19 +468,19 @@ void RampCommand::calculateAV(double x0, double v0, double xtarget, double time,
 		} 
 		else if (T3 == 0)
 		{
-			//out << "  Fall 5\n";
-			// This is not "clean" yet ...
-			// provisorische, inkorrekte Lösung
+			/// out << "  Fall 5\n";
+			/// This is not "clean" yet ...
+			/// temporary, incorrect solution
 			acc = amax;
 			vel = vmax;
 		} else
 		{
-			//out << "  Error in RampCommand::CalculateAV! time T3 is negative!\n";
+			/// out << "  Error in RampCommand::CalculateAV! time T3 is negative!\n";
 			acc = 0;
 			vel = 0;
 		}
 	}
-	//out << "  acc: " << acc << ",\tvel: " << vel << "\n";
-	//out << "RampCommand::calculateAV ENDE\n";
-	//debug.flush();
+	/// out << "  acc: " << acc << ",\tvel: " << vel << "\n";
+	/// out << "RampCommand::calculateAV ENDE\n";
+	/// debug.flush();
 }

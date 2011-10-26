@@ -235,8 +235,7 @@ public:
 private:
 	unsigned int m_NrJoints;
 	Real* m_Joints;
-	
-};
+	};
 
 typedef Joint<double> Jointd;
 typedef Joint<float> Jointf;

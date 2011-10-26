@@ -60,9 +60,6 @@
 #ifndef __POWER_CUBE_CTRL_H_
 #define __POWER_CUBE_CTRL_H_
 
-//##################
-//#### includes ####
-
 // standard includes
 #include <iostream>
 #include <sstream>
@@ -76,126 +73,186 @@
 
 class PowerCubeCtrl
 {
+
 public:
 
-  PowerCubeCtrl(PowerCubeCtrlParams * params);
-  ~PowerCubeCtrl();
+	/// Constructor
+	PowerCubeCtrl(PowerCubeCtrlParams * params);
 
-  typedef enum
-  {
-    PC_CTRL_OK = 0, PC_CTRL_NOT_HOMED = -1, PC_CTRL_ERR = -2, PC_CTRL_POW_VOLT_ERR = -3
-  } PC_CTRL_STATUS;
+	/// Destructor
+	~PowerCubeCtrl();
 
-  /////////////////////////////////////////////
-  // Functions for initialization and close: //
-  /////////////////////////////////////////////
-  bool Init(PowerCubeCtrlParams * params);
+	typedef enum
+	{
+		PC_CTRL_OK = 0, PC_CTRL_NOT_HOMED = -1, PC_CTRL_ERR = -2, PC_CTRL_POW_VOLT_ERR = -3
+	} PC_CTRL_STATUS;
 
-  bool isInitialized() const
-  {
-    return m_Initialized;
-  }
+	/////////////////////////////////////////////
+	// Functions for initialization and close: //
+	/////////////////////////////////////////////
 
-  std::string getErrorMessage() const
-  {
-    return m_ErrorMessage;
-  }
+	/*!
+	 * \brief Initializing
+	 */
+	bool Init(PowerCubeCtrlParams * params);
 
-  bool Close();
+	/*!
+	 * \brief Checking if is initialized
+	 */
+	bool isInitialized() const
+	{
+		return m_Initialized;
+	}
 
-  ////////////////////////////
-  // Functions for control: //
-  ////////////////////////////
+	/*!
+	 * \brief Get error message
+	 */
+	std::string getErrorMessage() const
+	{
+		return m_ErrorMessage;
+	}
 
-  /// @brief Send position goals to powercubes, the final angles will be reached simultaneously
-  bool MoveJointSpaceSync(const std::vector<double>& angles);
+	/*!
+	 * \brief Close
+	 */
+	bool Close();
 
-  /// @brief Moves all cubes by the given velocities
-  bool MoveVel(const std::vector<double>& velocities);
+	////////////////////////////
+	// Functions for control: //
+	////////////////////////////
 
-  /// @brief Stops the Manipulator immediately
-  bool Stop();
+	/*!
+	 * \brief Send position goals to powercubes, the final angles will be reached simultaneously
+	 */
+	bool MoveJointSpaceSync(const std::vector<double>& angles);
 
-  /// @brief Recovery after emergency stop or power supply failure
-  bool Recover();
+	/*!
+	 * \brief Moves all cubes by the given velocities
+	 */
+	bool MoveVel(const std::vector<double>& velocities);
 
-  //////////////////////////////////
-  // functions to set parameters: //
-  //////////////////////////////////
+	/*!
+	 * \brief Stops the Manipulator immediately
+	 */
+	bool Stop();
 
-  /// @brief Sets the maximum angular velocity (rad/s) for the Joints, use with care!
-  /// A Value of 0.5 is already pretty fast, you probably don't want anything more than one...
-  bool setMaxVelocity(double velocity);
-  bool setMaxVelocity(const std::vector<double>& velocities);
+	/*!
+	 * \brief Recovery after emergency stop or power supply failure
+	 */
+	bool Recover();
 
-  /// @brief Sets the maximum angular acceleration (rad/s^2) for the Joints, use with care!
-  /// A Value of 0.5 is already pretty fast, you probably don't want anything more than one...
-  bool setMaxAcceleration(double acceleration);
-  bool setMaxAcceleration(const std::vector<double>& accelerations);
+	//////////////////////////////////
+	// functions to set parameters: //
+	//////////////////////////////////
 
-  /// @brief Sets the horizon (sec).
-  /// The horizon is the maximum step size which will be commanded to the powercube chain. In case
-  /// of a failure this is the time the powercube chain will continue to move until it is stopped.
-  bool setHorizon(double horizon);
+	/*!
+	 * \brief Sets the maximum angular velocity (rad/s) for the Joints, use with care!
+	 *
+	 * A Value of 0.5 is already pretty fast, you probably don't want anything more than one...
+	 */
+	bool setMaxVelocity(double velocity);
+	bool setMaxVelocity(const std::vector<double>& velocities);
 
-  /// @brief Gets the horizon (sec).
-  /// The horizon is the maximum step size which will be commanded to the powercube chain. In case
-  /// of a failure this is the time the powercube chain will continue to move until it is stopped.
-  double getHorizon();
+	/*!
+	 * \brief Sets the maximum angular velocity (rad/s) for the Joints, use with care!
+	 *
+	 * A Value of 0.5 is already pretty fast, you probably don't want anything more than one...
+	 */
+	bool setMaxAcceleration(double acceleration);
+	bool setMaxAcceleration(const std::vector<double>& accelerations);
 
-  /// @brief Configure powercubes to start all movements synchronously
-  /// Tells the Modules not to start moving until PCube_startMotionAll is called
-  bool setSyncMotion();
+	/*!
+	 * \brief Sets the horizon (sec).
+	 *
+	 * The horizon is the maximum step size which will be commanded to the powercube chain. In case
+	 * of a failure this is the time the powercube chain will continue to move until it is stopped.
+	 */
+	bool setHorizon(double horizon);
 
-  /// @brief Configure powercubes to start all movements asynchronously
-  /// Tells the Modules to start immediately
-  bool setASyncMotion();
+	/*!
+	 * \brief Gets the horizon (sec).
+	 *
+	 * The horizon is the maximum step size which will be commanded to the powercube chain. In case
+	 * of a failure this is the time the powercube chain will continue to move until it is stopped.
+	 */
+	double getHorizon();
 
-  /////////////////////////////////////////////////
-  // Functions for getting state and monitoring: //
-  /////////////////////////////////////////////////
+	/*!
+	 * \brief Configure powercubes to start all movements synchronously
+	 *
+	 * Tells the Modules not to start moving until PCube_startMotionAll is called.
+	 */
+	bool setSyncMotion();
 
-  /// @brief Returns the state of all modules
-  bool updateStates();
+	/*!
+	 * \brief Configure powercubes to start all movements asynchronously
+	 *
+	 * Tells the Modules to start immediately
+	 */
+	bool setASyncMotion();
 
-  /// @brief Gets the status of the modules
-  bool getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& errorMessages);
+	/////////////////////////////////////////////////
+	// Functions for getting state and monitoring: //
+	/////////////////////////////////////////////////
 
-  /// @brief Returns true if any of the Joints are still moving
-  /// Should also return true if Joints are accelerating or decelerating
-  bool statusMoving();
+	/*!
+	 * \brief Returns the state of all modules
+	 */
+	bool updateStates();
 
-  /// @brief gets the current positions
-  std::vector<double> getPositions();
+	/*!
+	 * \brief Gets the status of the modules
+	 */
+	bool getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& errorMessages);
 
-  /// @brief gets the current velcities
-  std::vector<double> getVelocities();
+	/*!
+	 * \brief Returns true if any of the Joints are still moving
+	 *
+	 * Should also return true if Joints are accelerating or decelerating
+	 */
+	bool statusMoving();
 
-  /// @brief gets the current accelerations
-  std::vector<double> getAccelerations();
+	/*!
+	 * \brief Gets the current positions
+	 */
+	std::vector<double> getPositions();
 
-  /// @brief Waits until all Modules are homed.
-  bool doHoming();
+	/*!
+	 * \brief Gets the current velcities
+	 */
+	std::vector<double> getVelocities();
+
+	/*!
+	 * \brief Gets the current accelerations
+	 */
+	std::vector<double> getAccelerations();
+
+	/*!
+	 * \brief Waits until all Modules are homed.
+	 */
+	bool doHoming();
 
 protected:
-  pthread_mutex_t m_mutex;
+	pthread_mutex_t m_mutex;
 
-  int m_DeviceHandle;
-  bool m_Initialized;
-  bool m_CANDeviceOpened;
+	int m_DeviceHandle;
+	bool m_Initialized;
+	bool m_CANDeviceOpened;
 
-  PowerCubeCtrlParams* m_params;
-  PC_CTRL_STATUS m_pc_status;
+	PowerCubeCtrlParams* m_params;
+	PC_CTRL_STATUS m_pc_status;
 
-  std::vector<unsigned long> m_status;
-  std::vector<unsigned char> m_dios;
-  std::vector<double> m_positions;
-  std::vector<double> m_velocities;
-  std::vector<double> m_accelerations;
+	std::vector<unsigned long> m_status;
+	std::vector<unsigned char> m_dios;
+	std::vector<double> m_positions;
+	std::vector<double> m_velocities;
+	std::vector<double> m_accelerations;
 
-  double m_horizon;
+	double m_horizon;
 
-  std::string m_ErrorMessage;
+	ros::Time m_last_time_pub;
+
+	std::string m_ErrorMessage;
 
 };
 
