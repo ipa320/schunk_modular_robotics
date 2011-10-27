@@ -122,6 +122,8 @@ public:
   ///Constructor
   PowerCubeChainNode()
   {
+  	n_ = ros::NodeHandle("~");
+  	
     pc_params_ = new PowerCubeCtrlParams();
     pc_ctrl_ = new PowerCubeCtrl(pc_params_);
 
