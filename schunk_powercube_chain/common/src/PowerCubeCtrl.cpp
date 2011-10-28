@@ -482,7 +482,15 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 		float cmd_pos;
 		unsigned short cmd_time; // time in milliseconds
     
-		cmd_time = delta_t * 1000; //msec
+    	// limit step time to 20msec
+    	if (delta_t >= 0.020)
+    	{
+    		cmd_time = 0.020*1000; //msec
+    	}
+    	else
+    	{
+			cmd_time = delta_t * 1000; //msec
+		}
 		
 		cmd_pos = (cmd_time/1000.0) * velocities[i];
 		pthread_mutex_lock(&m_mutex);
