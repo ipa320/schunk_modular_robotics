@@ -720,7 +720,7 @@ int main(int argc, char** argv)
 	// initialize ROS, spezify name of node
 	ros::init(argc, argv, "schunk_sdh");
 
-	SdhNode sdh_node("joint_trajectory_action");
+	SdhNode sdh_node(ros::this_node::getName() + "/joint_trajectory_action");
 	if (!sdh_node.init()) return 0;
 	
 	ROS_INFO("...sdh node running...");
