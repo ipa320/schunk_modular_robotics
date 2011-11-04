@@ -435,7 +435,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 	/// getting limits
 	std::vector<double> lowerLimits = m_params->GetLowerLimits();
 	std::vector<double> upperLimits = m_params->GetUpperLimits();
-
+	std::vector<double> maxVels = m_params->GetMaxVel();
 	/// check dimensions
 	if (velocities.size() != DOF)
 	{
@@ -445,11 +445,21 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 
 	for (unsigned int i = 0; i < DOF; i++)
 	{
-		/// check limits
-		if (velocities[i] < lowerLimits[i] || velocities[i] > upperLimits[i])
+	  /// check velocity limit
+	  if(velocities[i] > maxVels[i])
+	    {
+		std::ostringstream errorMsg;
+		errorMsg << "Skipping command: Velocity " << velocities[i] << " exceeds limit " << maxVels[i] << "for axis " << i;
+		m_ErrorMessage = errorMsg.str();
+		return false;
+	
+	    }
+	  /// check position limits
+	  double targetpos = m_positions[i] + (0.02 * velocities[i]);
+	  if (targetpos < lowerLimits[i] || targetpos > upperLimits[i])
 		{
 			std::ostringstream errorMsg;
-			errorMsg << "Skipping command: Velocity " << velocities[i] << " exceeds limit " << lowerLimits[i] << " - " << upperLimits[i] << "for axis " << i;
+			errorMsg << "Skipping command: Target position " << targetpos << " exceeds limit " << lowerLimits[i] << " - " << upperLimits[i] << "for axis " << i;
 			m_ErrorMessage = errorMsg.str();
 			return false;
 		}
