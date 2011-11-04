@@ -78,6 +78,7 @@
 
 // ROS service includes
 #include <cob_srvs/Trigger.h>
+#include <cob_srvs/SetOperationMode.h>
 
 // own includes
 #include <schunk_powercube_chain/PowerCubeCtrl.h>
@@ -98,6 +99,7 @@ public:
   /// declaration of topics to publish
   ros::Publisher topicPub_JointState_;
   ros::Publisher topicPub_ControllerState_;
+  ros::Publisher topicPub_OperationMode_;
 
   /// declaration of topics to subscribe, callback is called for new messages arriving
   ros::Subscriber topicSub_CommandPos_;
@@ -105,6 +107,7 @@ public:
 
   /// declaration of service servers
   ros::ServiceServer srvServer_Init_;
+  ros::ServiceServer srvServer_SetOperationMode_;
   ros::ServiceServer srvServer_Stop_;
   ros::ServiceServer srvServer_Recover_;
 
@@ -130,6 +133,7 @@ public:
     /// implementation of topics to publish
     topicPub_JointState_ = n_.advertise<sensor_msgs::JointState> ("/joint_states", 1);
     topicPub_ControllerState_ = n_.advertise<pr2_controllers_msgs::JointTrajectoryControllerState> ("state", 1);
+    topicPub_OperationMode_ = n_.advertise<std_msgs::String> ("current_operationmode", 1);
 
     /// implementation of topics to subscribe
     topicSub_CommandPos_ = n_.subscribe("command_pos", 1, &PowerCubeChainNode::topicCallback_CommandPos, this);
@@ -139,6 +143,7 @@ public:
     srvServer_Init_ = n_.advertiseService("init", &PowerCubeChainNode::srvCallback_Init, this);
     srvServer_Stop_ = n_.advertiseService("stop", &PowerCubeChainNode::srvCallback_Stop, this);
     srvServer_Recover_ = n_.advertiseService("recover", &PowerCubeChainNode::srvCallback_Recover, this);
+    srvServer_SetOperationMode_ = n_.advertiseService("set_operation_mode", &PowerCubeChainNode::srvCallback_SetOperationMode, this);
 
     initialized_ = false;
     stopped_ = true;
@@ -552,6 +557,27 @@ public:
 	  return true;
   }
 
+   /*!
+   * \brief Executes the service callback for SetOperationMode.
+   *
+   * Sets the driver to different operation modes. Currently only operation_mode=velocity is supported.
+   * \param req Service request
+   * \param res Service response
+   */
+  bool srvCallback_SetOperationMode(cob_srvs::SetOperationMode::Request &req, cob_srvs::SetOperationMode::Response &res)
+  {
+	if(req.operation_mode.data != "velocity")
+	{
+		ROS_WARN("Powercube chain currently only supports velocity commands");
+		res.success.data = false;
+	}
+	else
+	{
+		res.success.data = true;
+	}
+	return true;
+  }
+
   /*!
    * \brief Publishes the state of the powercube_chain as ros messages.
    *
@@ -580,9 +606,13 @@ public:
 		  controller_state_msg.actual.velocities = pc_ctrl_->getVelocities();
 		  controller_state_msg.actual.accelerations = pc_ctrl_->getAccelerations();
 
+		  std_msgs::String opmode_msg;
+		  opmode_msg.data = "velocity";
+
 		  /// publishing joint and controller states on topic
 		  topicPub_JointState_.publish(joint_state_msg);
 		  topicPub_ControllerState_.publish(controller_state_msg);
+		  topicPub_OperationMode_.publish(opmode_msg);
 
 		  last_publish_time_ = ros::Time::now();
 	  }
