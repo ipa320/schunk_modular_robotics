@@ -123,7 +123,7 @@ public:
   bool initialized_;
   bool stopped_;
   bool error_;
-  std::string error_string_;
+  std::string error_msg_;
   ros::Time last_publish_time_;
   
   ///Constructor
@@ -446,6 +446,8 @@ public:
 		  /// command velocities to powercubes
 		  if (!pc_ctrl_->MoveVel(cmd_vel))
 		  {
+        error_ = true;
+        error_msg_ = pc_ctrl_->getErrorMessage();
 			  ROS_ERROR("Skipping command: %s",pc_ctrl_->getErrorMessage().c_str());
 			  return;
 		  }
@@ -483,6 +485,8 @@ public:
 
 		  else
 		  {
+        error_ = true;
+        error_msg_ = pc_ctrl_->getErrorMessage();
 			  res.success.data = false;
 			  res.error_message.data = pc_ctrl_->getErrorMessage();
 			  ROS_ERROR("...initializing powercubes not successful. error: %s", res.error_message.data.c_str());
@@ -541,6 +545,8 @@ public:
 		  /// stopping all arm movements
 		  if (pc_ctrl_->Recover())
 		  {
+        error_ = false;
+        error_msg_ = "";
 			  res.success.data = true;
 			  ROS_INFO("...recovering powercubes successful.");
 		  }
@@ -548,6 +554,8 @@ public:
 		  else
 		  {
 			  res.success.data = false;
+        error_ = true;
+        error_msg_ = pc_ctrl_->getErrorMessage();
 			  res.error_message.data = pc_ctrl_->getErrorMessage();
 			  ROS_ERROR("...recovering powercubes not successful. error: %s", res.error_message.data.c_str());
 		  }
@@ -630,8 +638,8 @@ public:
     if(error_)
     {
       diagnostics.status[0].level = 2;
-      diagnostics.status[0].name = "schunk_powercube_chain";
-      diagnostics.status[0].message = "one or more drives are in Error mode";
+      diagnostics.status[0].name = n_.getNamespace();;
+      diagnostics.status[0].message = error_msg_;
     }
     else
     {
