@@ -72,9 +72,10 @@
 #include <sensor_msgs/JointState.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <pr2_controllers_msgs/JointTrajectoryControllerState.h>
-#include <diagnostic_updater/diagnostic_updater.h>
+#include <diagnostic_msgs/DiagnosticArray.h>
 #include <brics_actuator/JointPositions.h>
 #include <brics_actuator/JointVelocities.h>
+
 
 // ROS service includes
 #include <cob_srvs/Trigger.h>
@@ -100,6 +101,7 @@ public:
   ros::Publisher topicPub_JointState_;
   ros::Publisher topicPub_ControllerState_;
   ros::Publisher topicPub_OperationMode_;
+  ros::Publisher topicPub_Diagnostic_;
 
   /// declaration of topics to subscribe, callback is called for new messages arriving
   ros::Subscriber topicSub_CommandPos_;
@@ -120,6 +122,8 @@ public:
   /// member variables
   bool initialized_;
   bool stopped_;
+  bool error_;
+  std::string error_string_;
   ros::Time last_publish_time_;
   
   ///Constructor
@@ -134,6 +138,7 @@ public:
     topicPub_JointState_ = n_.advertise<sensor_msgs::JointState> ("/joint_states", 1);
     topicPub_ControllerState_ = n_.advertise<pr2_controllers_msgs::JointTrajectoryControllerState> ("state", 1);
     topicPub_OperationMode_ = n_.advertise<std_msgs::String> ("current_operationmode", 1);
+    topicPub_Diagnostic_ = n_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
 
     /// implementation of topics to subscribe
     topicSub_CommandPos_ = n_.subscribe("command_pos", 1, &PowerCubeChainNode::topicCallback_CommandPos, this);
@@ -147,6 +152,7 @@ public:
 
     initialized_ = false;
     stopped_ = true;
+    error_ = false;
     last_publish_time_ = ros::Time::now();
   }
   
@@ -615,7 +621,36 @@ public:
 		  topicPub_OperationMode_.publish(opmode_msg);
 
 		  last_publish_time_ = ros::Time::now();
+
 	  }
+    // publishing diagnotic messages
+    diagnostic_msgs::DiagnosticArray diagnostics;
+    diagnostics.status.resize(1);
+    // set data to diagnostics
+    if(error_)
+    {
+      diagnostics.status[0].level = 2;
+      diagnostics.status[0].name = "schunk_powercube_chain";
+      diagnostics.status[0].message = "one or more drives are in Error mode";
+    }
+    else
+    {
+      if (initialized_)
+      {
+        diagnostics.status[0].level = 0;
+        diagnostics.status[0].name = n_.getNamespace(); //"schunk_powercube_chain";
+        diagnostics.status[0].message = "powercubechain initialized and running";
+      }
+      else
+      {
+        diagnostics.status[0].level = 1;
+        diagnostics.status[0].name = n_.getNamespace(); //"schunk_powercube_chain";
+        diagnostics.status[0].message = "powercubechain not initialized";
+      }
+    }
+    // publish diagnostic message
+    topicPub_Diagnostic_.publish(diagnostics);
+
   }
 
 }; //PowerCubeChainNode
