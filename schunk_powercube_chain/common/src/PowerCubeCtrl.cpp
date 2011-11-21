@@ -509,10 +509,10 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 		int ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), m_positions[i] + cmd_pos, 100*cmd_time, &m_status[i], &m_dios[i], &pos);
 		pthread_mutex_unlock(&m_mutex);
 		
-		if (ret != 0)
-		{
-			m_pc_status = PC_CTRL_ERR;
-		}
+		//if (ret != 0)
+		//{
+		//	m_pc_status = PC_CTRL_ERR;
+		//}
 		m_positions[i] = (double)pos;
 	}
 
@@ -774,10 +774,10 @@ bool PowerCubeCtrl::updateStates()
 		ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
 		pthread_mutex_unlock(&m_mutex);
 		
-		if (ret != 0)
-		{
-			m_pc_status = PC_CTRL_ERR;
-		}
+		//if (ret != 0)
+		//{
+		//	m_pc_status = PC_CTRL_ERR;
+		//}
 
 		m_status[i] = state;
 		m_dios[i] = dio;
