@@ -239,8 +239,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 		m_ErrorMessage.assign("");
 		for (int i = 0; i < DOF; i++)
 		{
-			m_ErrorMessage.append(errorMessages[i]);
-			m_ErrorMessage.append("\n");
+			m_ErrorMessage.append(errorMessages[i]);			
 		}
 		return false;
 	}
@@ -337,7 +336,6 @@ bool PowerCubeCtrl::MoveJointSpaceSync(const std::vector<double>& target)
 		for (unsigned int i = 0; i < DOF; i++)
 		{
 			m_ErrorMessage.append(errorMessages[i]);
-			m_ErrorMessage.append("\n");
 		}
 		return false;
 	}
@@ -474,7 +472,6 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 		for (unsigned int i = 0; i < DOF; i++)
 		{
 			m_ErrorMessage.append(errorMessages[i]);
-			m_ErrorMessage.append("\n");
 		}
 		return false;
 	}
@@ -580,7 +577,6 @@ bool PowerCubeCtrl::Recover()
 		for (int i = 0; i < m_params->GetDOF(); i++)
 		{
 			m_ErrorMessage.append(errorMessages[i]);
-			m_ErrorMessage.append("\n");
 		}
 		return false;
 	}
