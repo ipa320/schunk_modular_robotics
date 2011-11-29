@@ -446,10 +446,10 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 	  /// check velocity limit
 	  if(velocities[i] > maxVels[i])
 	    {
+	      //velocities[i] = maxVels[i];
 		std::ostringstream errorMsg;
-		errorMsg << "Skipping command: Velocity " << velocities[i] << " exceeds limit " << maxVels[i] << "for axis " << i;
+		errorMsg << "Velocity " << velocities[i] << " exceeds limit " << maxVels[i] << "for axis " << i << " moving with " << maxVels[i] << " instead";
 		m_ErrorMessage = errorMsg.str();
-		return false;
 	
 	    }
 	  /// check position limits
@@ -492,6 +492,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
     	// limit step time to 20msec
     	if (delta_t >= 0.020)
     	{
+	  //std::cout << "\n-------\nTimegap\n-------\n time now = " << ros::Time::now() << "\n last time = " << m_last_time_pub << "\n difference = " << delta_t << std::endl; 
     		cmd_time = 0.020*1000; //msec
     	}
     	else
@@ -506,10 +507,11 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 		int ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), m_positions[i] + cmd_pos, 100*cmd_time, &m_status[i], &m_dios[i], &pos);
 		pthread_mutex_unlock(&m_mutex);
 		
-		//if (ret != 0)
-		//{
+		if (ret != 0)
+		{
+		  pos = m_positions[i];
 		//	m_pc_status = PC_CTRL_ERR;
-		//}
+		}
 		m_positions[i] = (double)pos;
 	}
 

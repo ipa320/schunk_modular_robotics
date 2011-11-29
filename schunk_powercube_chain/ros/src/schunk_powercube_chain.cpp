@@ -457,7 +457,7 @@ public:
 
 	  else
 	  {
-		  ROS_ERROR("Skipping command: powercubes not initialized");
+		  ROS_WARN("Skipping command: powercubes not initialized");
 	  }
 	  publishState(false);
   }
