@@ -81,7 +81,7 @@
 #include <cob_srvs/SetOperationMode.h>
 
 // ROS diagnostic msgs
-#include <diagnostic_updater/diagnostic_updater.h>
+#include <diagnostic_msgs/DiagnosticArray.h>
 
 // external includes
 #include <schunk_sdh/sdh.h>
@@ -102,6 +102,7 @@ class SdhNode
 		ros::Publisher topicPub_JointState_;
 		ros::Publisher topicPub_ControllerState_;
 		ros::Publisher topicPub_TactileSensor_;
+		ros::Publisher topicPub_Diagnostics_;
 
 		// service servers
 		ros::ServiceServer srvServer_Init_;
@@ -115,9 +116,6 @@ class SdhNode
 
 		// service clients
 		//--
-
-		//diagnostics
-		diagnostic_updater::Updater updater_;
 
 		// other variables
 		SDH::cSDH *sdh_;
@@ -134,6 +132,7 @@ class SdhNode
 
 		bool isInitialized_;
 		bool isDSAInitialized_;
+		bool isError_;
 		int DOF_;
 		double pi_;
 		
@@ -157,10 +156,9 @@ class SdhNode
 			pi_ = 3.1415926;
 			
 			nh_ = ros::NodeHandle ("~");
-			
+			isError_ = false;
 			// diagnostics
-			updater_.setHardwareID("none"); // TODO: how to get serial number from driver?
-			updater_.add("initialization", this, &SdhNode::diag_init);
+			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
 
 		}
 
@@ -176,19 +174,6 @@ class SdhNode
 			delete sdh_;
 		}
 
-		void diag_init(diagnostic_updater::DiagnosticStatusWrapper &stat)
-		  {
-		    if (not isInitialized_ && not isDSAInitialized_)
-		      stat.summary(diagnostic_msgs::DiagnosticStatus::ERROR, "SDH and DSA not initialized.");
-		    else if (not isInitialized_ && isDSAInitialized_)
-		      stat.summary(diagnostic_msgs::DiagnosticStatus::ERROR, "SDH not initialized.");
-		    else if(isInitialized_ && not isDSAInitialized_)
-		      stat.summary(diagnostic_msgs::DiagnosticStatus::WARN, "DSA not initialized.");
-		    else
-		      stat.summary(diagnostic_msgs::DiagnosticStatus::OK, "SDH and DSA initialized.");
-		    stat.add("SDH initialized", isInitialized_);
-		    stat.add("DSA initialized", isDSAInitialized_);
-		  }
 
 		/*!
 		* \brief Initializes node to get parameters, subscribe and publish to topics.
@@ -493,7 +478,6 @@ class SdhNode
 	void updateSdh()
 	{
 		ROS_DEBUG("updateJointState");
-		updater_.update();
 		if (isInitialized_ == true)
 		{
 			if (hasNewGoal_ == true)
@@ -659,6 +643,37 @@ class SdhNode
 		{
 			ROS_DEBUG("sdh not initialized");
 		}
+		// publishing diagnotic messages
+	    diagnostic_msgs::DiagnosticArray diagnostics;
+	    diagnostics.status.resize(1);
+	    // set data to diagnostics
+	    if(isError_)
+	    {
+	      diagnostics.status[0].level = 2;
+	      diagnostics.status[0].name = "schunk_powercube_chain";
+	      diagnostics.status[0].message = "one or more drives are in Error mode";
+	    }
+	    else
+	    {
+	      if (isInitialized_)
+	      {
+	        diagnostics.status[0].level = 0;
+	        diagnostics.status[0].name = nh_.getNamespace(); //"schunk_powercube_chain";
+	        if(isDSAInitialized_)
+	        	diagnostics.status[0].message = "sdh with tactile sensing initialized and running";
+	        else
+	        	diagnostics.status[0].message = "sdh initialized and running, tactile sensors not connected";	
+	      }
+	      else
+	      {
+	        diagnostics.status[0].level = 1;
+	        diagnostics.status[0].name = nh_.getNamespace(); //"schunk_powercube_chain";
+	        diagnostics.status[0].message = "sdh not initialized";
+	      }
+	    }
+	    // publish diagnostic message
+	    topicPub_Diagnostics_.publish(diagnostics);
+
 	}
 
 	/*!

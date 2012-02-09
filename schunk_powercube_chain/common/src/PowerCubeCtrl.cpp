@@ -239,8 +239,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 		m_ErrorMessage.assign("");
 		for (int i = 0; i < DOF; i++)
 		{
-			m_ErrorMessage.append(errorMessages[i]);
-			m_ErrorMessage.append("\n");
+			m_ErrorMessage.append(errorMessages[i]);			
 		}
 		return false;
 	}
@@ -337,7 +336,6 @@ bool PowerCubeCtrl::MoveJointSpaceSync(const std::vector<double>& target)
 		for (unsigned int i = 0; i < DOF; i++)
 		{
 			m_ErrorMessage.append(errorMessages[i]);
-			m_ErrorMessage.append("\n");
 		}
 		return false;
 	}
@@ -448,10 +446,10 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 	  /// check velocity limit
 	  if(velocities[i] > maxVels[i])
 	    {
+	      //velocities[i] = maxVels[i];
 		std::ostringstream errorMsg;
-		errorMsg << "Skipping command: Velocity " << velocities[i] << " exceeds limit " << maxVels[i] << "for axis " << i;
+		errorMsg << "Velocity " << velocities[i] << " exceeds limit " << maxVels[i] << "for axis " << i << " moving with " << maxVels[i] << " instead";
 		m_ErrorMessage = errorMsg.str();
-		return false;
 	
 	    }
 	  /// check position limits
@@ -474,7 +472,6 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 		for (unsigned int i = 0; i < DOF; i++)
 		{
 			m_ErrorMessage.append(errorMessages[i]);
-			m_ErrorMessage.append("\n");
 		}
 		return false;
 	}
@@ -495,6 +492,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
     	// limit step time to 20msec
     	if (delta_t >= 0.020)
     	{
+	  //std::cout << "\n-------\nTimegap\n-------\n time now = " << ros::Time::now() << "\n last time = " << m_last_time_pub << "\n difference = " << delta_t << std::endl; 
     		cmd_time = 0.020*1000; //msec
     	}
     	else
@@ -511,7 +509,8 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 		
 		if (ret != 0)
 		{
-			m_pc_status = PC_CTRL_ERR;
+		  pos = m_positions[i];
+		//	m_pc_status = PC_CTRL_ERR;
 		}
 		m_positions[i] = (double)pos;
 	}
@@ -580,7 +579,6 @@ bool PowerCubeCtrl::Recover()
 		for (int i = 0; i < m_params->GetDOF(); i++)
 		{
 			m_ErrorMessage.append(errorMessages[i]);
-			m_ErrorMessage.append("\n");
 		}
 		return false;
 	}
@@ -774,10 +772,10 @@ bool PowerCubeCtrl::updateStates()
 		ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
 		pthread_mutex_unlock(&m_mutex);
 		
-		if (ret != 0)
-		{
-			m_pc_status = PC_CTRL_ERR;
-		}
+		//if (ret != 0)
+		//{
+		//	m_pc_status = PC_CTRL_ERR;
+		//}
 
 		m_status[i] = state;
 		m_dios[i] = dio;
