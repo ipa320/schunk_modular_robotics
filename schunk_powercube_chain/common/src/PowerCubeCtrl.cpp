@@ -125,6 +125,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 	m_status.resize(DOF);
 	m_dios.resize(DOF);
 	m_positions.resize(DOF);
+	m_velocities.resize(DOF);
 
 	std::cout << "=========================================================================== " << std::endl;
 	std::cout << "PowerCubeCtrl:Init: Trying to initialize with the following parameters: " << std::endl;
@@ -513,6 +514,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 		//	m_pc_status = PC_CTRL_ERR;
 		}
 		m_positions[i] = (double)pos;
+		m_velocities[i] = (double)velocities[i];
 	}
 
 	pthread_mutex_lock(&m_mutex);
