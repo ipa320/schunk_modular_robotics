@@ -67,7 +67,7 @@
 #include <pthread.h> 
 
 // own includes
-#include <libm5api/m5apiw32.h>
+#include <schunk_libm5api/m5apiw32.h>
 #include <schunk_powercube_chain/moveCommand.h>
 #include <schunk_powercube_chain/PowerCubeCtrlParams.h>
 
