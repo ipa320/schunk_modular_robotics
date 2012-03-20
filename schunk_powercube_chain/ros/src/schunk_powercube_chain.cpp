@@ -545,19 +545,18 @@ public:
 		  /// stopping all arm movements
 		  if (pc_ctrl_->Recover())
 		  {
-        error_ = false;
-        error_msg_ = "";
-			  res.success.data = true;
-			  ROS_INFO("...recovering powercubes successful.");
+        		error_ = false;
+        		error_msg_ = "";
+			res.success.data = true;
+			ROS_INFO("...recovering powercubes successful.");
 		  }
-
 		  else
 		  {
-			  res.success.data = false;
-        error_ = true;
-        error_msg_ = pc_ctrl_->getErrorMessage();
-			  res.error_message.data = pc_ctrl_->getErrorMessage();
-			  ROS_ERROR("...recovering powercubes not successful. error: %s", res.error_message.data.c_str());
+			res.success.data = false;
+        		error_ = true;
+        		error_msg_ = pc_ctrl_->getErrorMessage();
+			res.error_message.data = pc_ctrl_->getErrorMessage();
+			ROS_ERROR("...recovering powercubes not successful. error: %s", res.error_message.data.c_str());
 		  }
 	  }
 
@@ -628,7 +627,7 @@ public:
 		  topicPub_ControllerState_.publish(controller_state_msg);
 		  topicPub_OperationMode_.publish(opmode_msg);
 
-		  last_publish_time_ = ros::Time::now();
+		  last_publish_time_ = joint_state_msg.header.stamp;
 
 	  }
     // publishing diagnotic messages
@@ -711,8 +710,11 @@ int main(int argc, char** argv)
 	{
 		if ((ros::Time::now() - pc_node.last_publish_time_) >= min_publish_duration)
 		{
+			std::cout << (ros::Time::now() - pc_node.last_publish_time_) << std::endl;
+			ROS_INFO("GETSTATE because min_duration");
 			pc_node.publishState();
 		}
+		//pc_node.publishState();
 
 		/// sleep and waiting for messages, callbacks
 		ros::spinOnce();
