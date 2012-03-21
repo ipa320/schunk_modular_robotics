@@ -5,7 +5,7 @@
   of Schunk powercubes. The powercube chain is configured 
   through parameters. Most users will not directly interact 
   with this package but with the corresponding launch files 
-  in other packages, e.g. cob_tray, cob_torso, ... 
+  in other packages, e.g. schunk_bringup, cob_bringup, ... 
 
   </description>
   <author>Florian Weisshardt</author>
