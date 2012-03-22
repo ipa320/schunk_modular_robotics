@@ -1,0 +1,19 @@
+<package>
+  <description brief="schunk_libm5api">
+
+     This package wraps the libm5api to use it as a ros dependency.
+
+  </description>
+  <author>Florian Weisshardt</author>
+  <license>LGPL</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/schunk_libm5api</url>
+
+  <depend package="libpcan"/>
+  <depend package="libntcan"/>
+
+  <export>
+    <cpp cflags="-I${prefix}/include -I${prefix}/include/schunk_libm5api" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lm5api"/>
+  </export>
+
+</package>

@@ -125,6 +125,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 	m_status.resize(DOF);
 	m_dios.resize(DOF);
 	m_positions.resize(DOF);
+	m_velocities.resize(DOF);
 
 	std::cout << "=========================================================================== " << std::endl;
 	std::cout << "PowerCubeCtrl:Init: Trying to initialize with the following parameters: " << std::endl;
@@ -480,40 +481,57 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
   	delta_t = ros::Time::now().toSec() - m_last_time_pub.toSec();
 	m_last_time_pub = ros::Time::now();  
 
-	/// Display Timegap with time before and after update
-	//std::cout << "\n-------\nTimegap\n-------\n time now = " << ros::Time::now() << "\n last time = " << m_last_time_pub << "\n difference = " << delta_t << std::endl;
-	
+	std::vector<double> pos_temp;
+	pos_temp.resize(DOF);
+
 	for (unsigned int i = 0; i < DOF; i++)
 	{
 		float pos;
 		float cmd_pos;
-		unsigned short cmd_time; // time in milliseconds
-    
-    	// limit step time to 20msec
-    	if (delta_t >= 0.020)
-    	{
-	  //std::cout << "\n-------\nTimegap\n-------\n time now = " << ros::Time::now() << "\n last time = " << m_last_time_pub << "\n difference = " << delta_t << std::endl; 
-    		cmd_time = 0.020*1000; //msec
-    	}
-    	else
-    	{
-			cmd_time = delta_t * 1000; //msec
-		}
-		
-		cmd_pos = (cmd_time/1000.0) * velocities[i];
+		double  cmd_time; // time in milliseconds
+ 
+	    	// limit step time to 20msec
+	    	if (delta_t >= 0.050)
+		{
+		  cmd_time = 0.050; //sec
+	    	}
+		else
+		  cmd_time = delta_t; //sec
+		cmd_pos = cmd_time * velocities[i];
 		pthread_mutex_lock(&m_mutex);
 		//std::cout << "Modul_id = " << m_params->GetModuleID(i) <<", step= "<< m_positions[i] + cmd_pos << ", time = " << cmd_time << std::endl;
 		//int ret = PCube_moveVelExtended(m_DeviceHandle, m_params->GetModuleID(i), velocities[i], &m_status[i], &m_dios[i], &pos);
-		int ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), m_positions[i] + cmd_pos, 100*cmd_time, &m_status[i], &m_dios[i], &pos);
+		int ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), m_positions[i] + cmd_pos, (cmd_time+m_horizon), &m_status[i], &m_dios[i], &pos);
 		pthread_mutex_unlock(&m_mutex);
 		
 		if (ret != 0)
 		{
 		  pos = m_positions[i];
+		  std::cout << ret << std::endl;
 		//	m_pc_status = PC_CTRL_ERR;
 		}
-		m_positions[i] = (double)pos;
+		
+		// !!! Position in pos is position before moveStep movement, to get the expected position after the movement (required as input to the next moveStep command) we add the delta position (cmd_pos) !!!
+		m_positions[i] = (double)pos + cmd_pos;
+		pos_temp[i] = (double)pos;
+		
 	}
+	// Calculation of velocities based on vel = 1/(6*dt) * (-pos(t-3) - 3*pos(t-2) + 3*pos(t-1) + pos(t))
+	if(m_cached_pos.size() < 4)
+	  {
+	    m_cached_pos.push_back(pos_temp);
+	    for(unsigned int i = 0; i < DOF; i++)
+	      m_velocities[i] = 0.0;
+	  }
+	else
+	  {
+	    m_cached_pos.push_back(pos_temp);
+	    m_cached_pos.pop_front();
+	    for(unsigned int i = 0; i < DOF; i++)
+	      {
+		m_velocities[i] = 1/(6*delta_t) * (-m_cached_pos[0][i]-(3*m_cached_pos[1][i])+(3*m_cached_pos[2][i])+m_cached_pos[3][i]);
+	      }
+	  }
 
 	pthread_mutex_lock(&m_mutex);
 	PCube_startMotionAll(m_DeviceHandle);
@@ -558,6 +576,10 @@ bool PowerCubeCtrl::Recover()
 	pthread_mutex_lock(&m_mutex);
 	PCube_resetAll(m_DeviceHandle);
 	pthread_mutex_unlock(&m_mutex);
+	
+	usleep(500000);
+
+	updateStates(); 
 
 	getStatus(status, errorMessages);
 	if (status == PC_CTRL_NOT_HOMED)
@@ -567,12 +589,16 @@ bool PowerCubeCtrl::Recover()
 			return false;
 		}
 	}
+	
+	usleep(500000);
 
 	// modules should be recovered now
 	m_pc_status = PC_CTRL_OK;	
 	
-	/// check if modules are really back to normal state
+	updateStates(); 
+	// check if modules are really back to normal state
 	getStatus(status, errorMessages);
+
 	if ((status != PC_CTRL_OK))
 	{
 		m_ErrorMessage.assign("");
@@ -763,24 +789,34 @@ bool PowerCubeCtrl::updateStates()
 	unsigned int DOF = m_params->GetDOF();
 
 	unsigned long state;
+	
+	unsigned long state_s; // for debug
+
 	unsigned char dio;
 	float position;
 	int ret = 0;
 	for (unsigned int i = 0; i < DOF; i++)
-	{
+	{	
+		state_s = m_status[i]; 
 		pthread_mutex_lock(&m_mutex);
 		ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
 		pthread_mutex_unlock(&m_mutex);
 		
-		//if (ret != 0)
-		//{
-		//	m_pc_status = PC_CTRL_ERR;
-		//}
-
-		m_status[i] = state;
-		m_dios[i] = dio;
-		m_positions[i] = position;
-
+		if (ret != 0)
+		{
+			//m_pc_status = PC_CTRL_ERR;
+			std::cout << "State: Error com" << std::endl; 			
+		}
+		else
+		{	if( state_s != state)
+			{
+				std::cout << "State: " << state << "Joint: " << i << std::endl; 
+			}
+		 	m_status[i] = state;
+			m_dios[i] = dio;
+			m_positions[i] = position;
+		}	
+		
     /// ToDo: calculate vel and acc
     ///m_velocities = ???;
     ///m_accelerations = ???

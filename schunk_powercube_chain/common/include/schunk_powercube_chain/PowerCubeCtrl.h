@@ -64,10 +64,11 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <deque>
 #include <pthread.h> 
 
 // own includes
-#include <libm5api/m5apiw32.h>
+#include <schunk_libm5api/m5apiw32.h>
 #include <schunk_powercube_chain/moveCommand.h>
 #include <schunk_powercube_chain/PowerCubeCtrlParams.h>
 
@@ -245,6 +246,7 @@ protected:
 	std::vector<unsigned long> m_status;
 	std::vector<unsigned char> m_dios;
 	std::vector<double> m_positions;
+	std::deque< std::vector<double> > m_cached_pos;
 	std::vector<double> m_velocities;
 	std::vector<double> m_accelerations;
 
