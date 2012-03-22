@@ -683,13 +683,13 @@ int main(int argc, char** argv)
 	{
 		pc_node.n_.getParam("frequency", frequency);
 		//frequency of driver has to be much higher then controller frequency
-		frequency *= 10;
+		frequency *= 1;
 	}
 
 	else
 	{
 		//frequency of driver has to be much higher then controller frequency
-		frequency = 100 * 10 ; //Hz
+		frequency = 100 * 1 ; //Hz
 		ROS_WARN("Parameter frequency not available, setting to default value: %f Hz", frequency);
 	}
 
@@ -707,7 +707,7 @@ int main(int argc, char** argv)
 		return 0;
 	}
 
-	if((1.0/min_publish_duration.toSec()) < frequency)
+	if((1.0/min_publish_duration.toSec()) > frequency)
 	{
 		ROS_ERROR("min_publish_duration has to be longer then delta_t of controller frequency!");
 		return 0;
