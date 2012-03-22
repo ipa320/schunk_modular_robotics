@@ -495,9 +495,9 @@ public:
 
 	  else
 	  {
-		  res.success.data = false;
+		  res.success.data = true;
 		  res.error_message.data = "powercubes already initialized";
-		  ROS_ERROR("...initializing powercubes not successful. error: %s",res.error_message.data.c_str());
+		  ROS_WARN("...initializing powercubes not successful. error: %s",res.error_message.data.c_str());
 	  }
 
 	  return true;
@@ -545,19 +545,18 @@ public:
 		  /// stopping all arm movements
 		  if (pc_ctrl_->Recover())
 		  {
-        error_ = false;
-        error_msg_ = "";
-			  res.success.data = true;
-			  ROS_INFO("...recovering powercubes successful.");
+        		error_ = false;
+        		error_msg_ = "";
+			res.success.data = true;
+			ROS_INFO("...recovering powercubes successful.");
 		  }
-
 		  else
 		  {
-			  res.success.data = false;
-        error_ = true;
-        error_msg_ = pc_ctrl_->getErrorMessage();
-			  res.error_message.data = pc_ctrl_->getErrorMessage();
-			  ROS_ERROR("...recovering powercubes not successful. error: %s", res.error_message.data.c_str());
+			res.success.data = false;
+        		error_ = true;
+        		error_msg_ = pc_ctrl_->getErrorMessage();
+			res.error_message.data = pc_ctrl_->getErrorMessage();
+			ROS_ERROR("...recovering powercubes not successful. error: %s", res.error_message.data.c_str());
 		  }
 	  }
 
@@ -628,7 +627,7 @@ public:
 		  topicPub_ControllerState_.publish(controller_state_msg);
 		  topicPub_OperationMode_.publish(opmode_msg);
 
-		  last_publish_time_ = ros::Time::now();
+		  last_publish_time_ = joint_state_msg.header.stamp;
 
 	  }
     // publishing diagnotic messages
@@ -683,11 +682,14 @@ int main(int argc, char** argv)
 	if (pc_node.n_.hasParam("frequency"))
 	{
 		pc_node.n_.getParam("frequency", frequency);
+		//frequency of driver has to be much higher then controller frequency
+		frequency *= 1;
 	}
 
 	else
 	{
-		frequency = 100 ; //Hz
+		//frequency of driver has to be much higher then controller frequency
+		frequency = 100 * 1 ; //Hz
 		ROS_WARN("Parameter frequency not available, setting to default value: %f Hz", frequency);
 	}
 
@@ -701,8 +703,14 @@ int main(int argc, char** argv)
 
 	else
 	{
-		min_publish_duration.fromSec(1 / frequency);
-		ROS_WARN("Parameter min_publish_time not available, setting to default value: %f sec", min_publish_duration.toSec());
+		ROS_ERROR("Parameter min_publish_time not available");
+		return 0;
+	}
+
+	if((1.0/min_publish_duration.toSec()) > frequency)
+	{
+		ROS_ERROR("min_publish_duration has to be longer then delta_t of controller frequency!");
+		return 0;
 	}
 
 	/// main loop
