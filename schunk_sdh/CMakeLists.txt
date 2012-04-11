@@ -10,6 +10,7 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 #set(ROS_BUILD_TYPE RelWithDebInfo)
 
 rosbuild_init()
+rosbuild_add_boost_directories()
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/ros/bin)
@@ -42,6 +43,8 @@ rosbuild_add_compile_flags(${PROJECT_NAME} -DOSNAME_LINUX)
 #rosbuild_add_compile_flags(${PROJECT_NAME}_driver -DOSNAME_LINUX)
 
 rosbuild_add_compile_flags(${PROJECT_NAME} -DWITH_ESD_CAN)
+
+rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_compile_flags(${PROJECT_NAME} -DWITH_PEAK_CAN)
 #rosbuild_add_compile_flags(${PROJECT_NAME}_driver -DWITH_PEAK_CAN)
 
