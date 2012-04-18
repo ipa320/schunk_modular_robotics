@@ -201,7 +201,7 @@ int CESDDevice::setMessageId(unsigned long uiMessageId)
 int CESDDevice::clearReadQueue()
 {
 	int iRetVal = 0;
-	long iNumberOfMessages = 1;
+	int32_t iNumberOfMessages = 1;
 	static CMSG clESDProtocolMessage;
 	m_iErrorState = 0;
 	do
@@ -363,7 +363,7 @@ int CESDDevice::reinit(unsigned char ucBaudRateId)
 int CESDDevice::readDevice(CProtocolMessage& rclProtocolMessage)
 {
 	int iRetVal = 0;
-	long iNumberOfMessages = 1;
+	int32_t iNumberOfMessages = 1;
 	CMSG clESDProtocolMessage;
 	m_iErrorState = 0;
 
@@ -417,7 +417,7 @@ int CESDDevice::readDevice(CProtocolMessage& rclProtocolMessage)
 int CESDDevice::writeDevice(CProtocolMessage& rclProtocolMessage)
 {
 	int iRetVal = 0;
-	long iNumberOfMessages = 1;
+	int32_t iNumberOfMessages = 1;
 	CMSG clESDProtocolMessage;
 	m_iErrorState = 0;
 
@@ -735,7 +735,7 @@ int CESDDevice::waitForStartMotionAll()
 {
 	int iRetVal = 0;
 	bool bRecieved = false;
-	long iNumberOfMessages = 1;
+	int32_t iNumberOfMessages = 1;
 	CMSG clESDProtocolMessage;
 	m_iErrorState = 0;
 
