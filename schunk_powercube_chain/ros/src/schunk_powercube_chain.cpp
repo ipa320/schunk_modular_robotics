@@ -260,6 +260,47 @@ public:
     	n_.shutdown();
     }
     pc_params_->SetJointNames(JointNames);
+	
+	/// Get Module types
+	// TODO: Check if modultypes are correct
+    XmlRpc::XmlRpcValue ModuleTypesXmlRpc;
+    std::vector<std::string> ModuleTypes;
+    if (n_.hasParam("module_types"))
+    {
+    	n_.getParam("module_types", ModuleTypesXmlRpc);
+    }
+
+    else
+    {
+    	ROS_ERROR("Parameter module_types not set, shutting down node...");
+    	n_.shutdown();
+    }
+    
+    /// Resize and assign of values to the JointNames
+    ModuleTypes.resize(ModuleTypesXmlRpc.size());
+    for (int i = 0; i < ModuleTypesXmlRpc.size(); i++)
+    {
+    	ModuleTypes[i] = (std::string)ModuleTypesXmlRpc[i];
+    }
+
+    /// Check dimension with with DOF
+    if ((int)ModuleTypes.size() != pc_params_->GetDOF())
+    {
+    	ROS_ERROR("Wrong dimensions of parameter module_types, shutting down node...");
+    	n_.shutdown();
+    }
+
+	/// Check if ModuleTypes are valid 
+	for (int i = 0; i < pc_params_->GetDOF(); i++)
+	{
+		if ( (ModuleTypes.at(i) != "PRL") && (ModuleTypes.at(i) != "PW") && (ModuleTypes.at(i) != "other") )
+		{			
+			ROS_ERROR("Unsupported module_type of module '%s'. module_type must be configured as 'PRL', 'PW' or 'other' in .yaml, shutting down node...",JointNames.at(i).c_str());
+    		n_.shutdown();
+		}
+	}	
+	
+    pc_params_->SetModuleTypes(ModuleTypes);
 
     /// Get max accelerations
     XmlRpc::XmlRpcValue MaxAccelerationsXmlRpc;
@@ -485,11 +526,11 @@ public:
 
 		  else
 		  {
-        error_ = true;
-        error_msg_ = pc_ctrl_->getErrorMessage();
+        	  error_ = true;
+         	  error_msg_ = pc_ctrl_->getErrorMessage();
 			  res.success.data = false;
 			  res.error_message.data = pc_ctrl_->getErrorMessage();
-			  ROS_ERROR("...initializing powercubes not successful. error: %s", res.error_message.data.c_str());
+			  ROS_INFO("...initializing powercubes not successful. error: %s", res.error_message.data.c_str());
 		  }
 	  }
 
@@ -559,7 +600,6 @@ public:
 			ROS_ERROR("...recovering powercubes not successful. error: %s", res.error_message.data.c_str());
 		  }
 	  }
-
 	  else
 	  {
 		  res.success.data = false;
@@ -710,12 +750,11 @@ int main(int argc, char** argv)
 	{
 		if ((ros::Time::now() - pc_node.last_publish_time_) >= min_publish_duration)
 		{
-			std::cout << (ros::Time::now() - pc_node.last_publish_time_) << std::endl;
-			ROS_INFO("GETSTATE because min_duration");
+			//std::cout << (ros::Time::now() - pc_node.last_publish_time_) << std::endl;
+			
 			pc_node.publishState();
 		}
-		//pc_node.publishState();
-
+		
 		/// sleep and waiting for messages, callbacks
 		ros::spinOnce();
 		loop_rate.sleep();

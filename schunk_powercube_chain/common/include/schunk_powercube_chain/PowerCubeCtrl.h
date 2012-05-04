@@ -230,6 +230,8 @@ public:
 
 	/*!
 	 * \brief Waits until all Modules are homed.
+	 *
+	 * Homes only Schunk PW-Modules or Module musst have ModuleType "other" specified in .yaml
 	 */
 	bool doHoming();
 
