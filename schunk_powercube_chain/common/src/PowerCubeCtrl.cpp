@@ -233,7 +233,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			std::ostringstream errorMsg;
 			errorMsg << "Could not find Module with ID " << ModulIDs[i] << ", m5api error code: " << ret;
 			m_ErrorMessage = errorMsg.str();	
-			//return false;
+			return false;
 		}
 		/// otherwise success
 		std::cout << "Found module " << ModulIDs[i] << " Serial: " << serNo << std::endl;
@@ -249,6 +249,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 
  	// update status variables
 	updateStates();
+
 
 	// grep updated status 
 	getStatus(status, errorMessages);
@@ -447,11 +448,14 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 	PCTRL_CHECK_INITIALIZED();
 
 	unsigned int DOF = m_params->GetDOF();
+	std::vector<std::string> ModuleTypes = m_params->GetModuleTypes();
 
 	/// getting limits
 	std::vector<double> lowerLimits = m_params->GetLowerLimits();
 	std::vector<double> upperLimits = m_params->GetUpperLimits();
 	std::vector<double> maxVels = m_params->GetMaxVel();
+
+
 	/// check dimensions
 	if (velocities.size() != DOF)
 	{
@@ -506,21 +510,34 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 		float pos;
 		float cmd_pos;
 		double  cmd_time; // time in milliseconds
- 
-	    	// limit step time to 20msec
-	    	if (delta_t >= 0.050)
+ 		int ret; 
+
+	    // limit step time to 20msec
+	    if (delta_t >= 0.050)
 		{
 		  cmd_time = 0.050; //sec
-	    	}
+	    }
 		else
+		{
 		  cmd_time = delta_t; //sec
+		}
 		cmd_pos = cmd_time * velocities[i];
-		pthread_mutex_lock(&m_mutex);
-		//std::cout << "Modul_id = " << m_params->GetModuleID(i) <<", step= "<< m_positions[i] + cmd_pos << ", time = " << cmd_time << std::endl;
-		//int ret = PCube_moveVelExtended(m_DeviceHandle, m_params->GetModuleID(i), velocities[i], &m_status[i], &m_dios[i], &pos);
-		int ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), m_positions[i] + cmd_pos, (cmd_time+m_horizon), &m_status[i], &m_dios[i], &pos);
-		pthread_mutex_unlock(&m_mutex);
 
+		// check module type sending command (PRL-Modules can be driven with moveStepExtended(), PW-Modules can only be driven with less safe moveVelExtended())
+		if (ModuleTypes.at(i) == "PW")
+		{
+			pthread_mutex_lock(&m_mutex);
+			ret = PCube_moveVelExtended(m_DeviceHandle, m_params->GetModuleID(i), velocities[i], &m_status[i], &m_dios[i], &pos);
+			pthread_mutex_unlock(&m_mutex);
+		}
+		else	/// Types: PRL, other
+		{
+			ROS_DEBUG("Modul_id = %i, ModuleType: %s, step=%f, time=%f", m_params->GetModuleID(i), ModuleTypes[i].c_str(), m_positions[i] + cmd_pos, cmd_time);
+			ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), m_positions[i] + cmd_pos, (cmd_time+m_horizon), &m_status[i], &m_dios[i], &pos);
+			pthread_mutex_unlock(&m_mutex);
+		}
+
+		/// error handling
 		if (ret != 0)
 		{
 			ROS_INFO("Com Error"); 		  
@@ -802,7 +819,7 @@ bool PowerCubeCtrl::setASyncMotion()
  * \brief Returns the current states
  */
 bool PowerCubeCtrl::updateStates()
-{
+{	
 	PCTRL_CHECK_INITIALIZED();
 
 	unsigned int DOF = m_params->GetDOF();
@@ -824,7 +841,7 @@ bool PowerCubeCtrl::updateStates()
 		if (ret != 0)
 		{
 			//m_pc_status = PC_CTRL_ERR;
-			//std::cout << "State: Error com with Module: " << i << " Time: " << ros::Time::now() << std::endl; 			
+			std::cout << "State: Error com with Module: " << i << " Time: " << ros::Time::now() << std::endl; 			
 		}
 		else
 		{	
@@ -832,7 +849,9 @@ bool PowerCubeCtrl::updateStates()
 			{
 				std::cout << "State: " << state << " Joint: " << i << std::endl; 
 			}
-		 	m_status[i] = state;
+			ROS_DEBUG("Module %i, State: %li, Time: %f",i, state, ros::Time::now().toSec());
+
+		 	m_status[i] = state; 		
 			m_dios[i] = dio;
 			m_positions[i] = position;
 		}	
@@ -869,16 +888,6 @@ bool PowerCubeCtrl::getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& 
 			errorMessages[i] = errorMsg.str();
 			status = PC_CTRL_POW_VOLT_ERR;
 		}
-		// check if module is homed (necessary for Schunk PW-Modules, but not possible with PRL-Modules)
-		// TODO: Can this be used to avoid referece problems with PRL-Modules? (TIF)
-		else if ((!(ModuleTypes.at(i) == "PRL")) && ((m_status[i] & STATEID_MOD_HOME) == 0))
-		{
-		  errorMsg << "Warning: Module " << ModuleIDs[i];
-		  errorMsg << " is not referenced!";
-		  errorMessages[i] = errorMsg.str();
-		  status = PC_CTRL_NOT_HOMED;
-		}
-
 		else if (m_status[i] & STATEID_MOD_ERROR)
 		{
 			errorMsg << "Error in  Module " << ModuleIDs[i];
@@ -965,7 +974,7 @@ bool PowerCubeCtrl::doHoming()
 	int ret = 0;
 	for (unsigned int i = 0; i < DOF; i++)
 	{	
-		// check if homing for module is permitted (PRL-Modules need not to be homed by ROS)
+		// check module type before homing (PRL-Modules need not to be homed by ROS)
 		if ( (ModuleTypes.at(i) == "PW") || (ModuleTypes.at(i) == "other") )
 		{	// homing timer
 			homing_time = 0.0;
@@ -974,11 +983,11 @@ bool PowerCubeCtrl::doHoming()
 			ret = PCube_homeModule(m_DeviceHandle, ModuleIDs[i]);
 			pthread_mutex_unlock(&m_mutex);
 
-			std::cout << " homing started at " << ros::Time::now() << std::endl; 
+			ROS_INFO("Homing started at: %f", ros::Time::now().toSec()); 
 
 			if (ret != 0)
-			{	// TODO: sure that ret must be 0 ???  
-				std::cout << "Error while sending homing command to Module: " << i << "I try to reset the module." << std::endl; 
+			{	 
+				ROS_INFO("Error while sending homing command to Module: %i. I try to reset the module.", i); 
 
 				// reset module with the hope that homing works afterwards
 				pthread_mutex_lock(&m_mutex);
@@ -1012,24 +1021,23 @@ bool PowerCubeCtrl::doHoming()
 	for (unsigned int i = 0; i < DOF; i++)
 	{	
 		
-		// check if homing for module is permitted (PRL-Modules need not to be homed by ROS)
-		//if ( (ModuleTypes.at(i) == "PW") || (ModuleTypes.at(i) == "other") )
-		//{
-			unsigned long int help;
-			do
-			{
-				pthread_mutex_lock(&m_mutex);
-				PCube_getModuleState(m_DeviceHandle, ModuleIDs[i], &help);
-				pthread_mutex_unlock(&m_mutex);
-				std::cout << "homing active Module:" << ModuleIDs.at(i) << ": " << help << std::endl;
-				/// convert sec to usec
-				usleep(intervall * 1000000);
-				homing_time += intervall; 
-				if (homing_time >= max_homing_time) {Stop(); break;} 
-			} while ((help & STATEID_MOD_HOME) == 0);
-			m_status[i] = help;
-			std::cout << "State of Module " << ModuleIDs.at(i) << ": " << help << std::endl;
-		//} 
+		
+		unsigned long int help; 
+		do
+		{
+			pthread_mutex_lock(&m_mutex);
+			PCube_getModuleState(m_DeviceHandle, ModuleIDs[i], &help);
+			pthread_mutex_unlock(&m_mutex);
+			ROS_DEBUG("Homing active for Module: %i State: %li", ModuleIDs.at(i), help);
+
+			/// timeout watchdog for homing
+			usleep(intervall * 1000000);	// convert sec to usec
+			homing_time += intervall; 
+			if (homing_time >= max_homing_time) {Stop(); break;} 
+
+		} while ((help & STATEID_MOD_HOME) == 0);
+		m_status[i] = help;
+		ROS_DEBUG("State of Module %i : %li", ModuleIDs.at(i), help);
 	}
 
 	for (unsigned int i = 0; i < DOF; i++)
@@ -1042,7 +1050,7 @@ bool PowerCubeCtrl::doHoming()
 				return false;
 			}
 		
-		std::cout << "Homing for Modul " << ModuleIDs.at(i) << " done." << std::endl; 
+		ROS_INFO("Homing for Modul %i done.", ModuleIDs.at(i)); 
 	}
 
 	// modules successfully homed
