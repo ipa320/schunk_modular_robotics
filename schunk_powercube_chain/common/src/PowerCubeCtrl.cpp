@@ -224,7 +224,9 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 	for (int i = 0; i < DOF; i++)
 	{
 		unsigned long serNo;
-
+		unsigned short verNo;
+		
+		/// retrieve serial number
 		pthread_mutex_lock(&m_mutex);
 		ret = PCube_getModuleSerialNo(m_DeviceHandle, ModulIDs[i], &serNo);
 		pthread_mutex_unlock(&m_mutex);
@@ -235,8 +237,21 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			m_ErrorMessage = errorMsg.str();	
 			return false;
 		}
+		
+		/// retrieve version number 		
+		pthread_mutex_lock(&m_mutex);
+		ret = PCube_getModuleVersion(m_DeviceHandle, ModulIDs[i], &verNo);
+		pthread_mutex_unlock(&m_mutex);
+		if (ret != 0)
+		{
+			std::ostringstream errorMsg;
+			errorMsg << "Could not find Module with ID " << ModulIDs[i] << ", m5api error code: " << ret;
+			m_ErrorMessage = errorMsg.str();	
+			return false;
+		}
 		/// otherwise success
-		std::cout << "Found module " << ModulIDs[i] << " Serial: " << serNo << std::endl;
+		std::cout << "Found module " << ModulIDs[i] << " Serial: " << serNo << " Version: " << std::hex << verNo << std::endl;
+
 	}
 
 	// modules should be initialized now
