@@ -70,7 +70,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/lwa1.stlb" />
+					<mesh filename="package://schunk_description/meshes/lwa/lwa1.stl" />
 				</geometry>
 			</collision>
 		</link>
@@ -106,7 +106,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/lwa2.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/lwa2.stl"/>
 				</geometry>
 			</collision>
 		</link>
@@ -142,7 +142,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/lwa3.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/lwa3.stl"/>
 				</geometry>
 			</collision>
 		</link>	
@@ -178,7 +178,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/lwa4.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/lwa4.stl"/>
 				</geometry>
 			</collision>
 		</link>
@@ -213,7 +213,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/lwa5.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/lwa5.stl"/>
 				</geometry>
 			</collision>
 		</link>
@@ -248,7 +248,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/lwa6.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/lwa6.stl"/>
 				</geometry>
 			</collision>
 		</link>
@@ -283,7 +283,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/lwa/lwa7.stlb"/>
+					<mesh filename="package://schunk_description/meshes/lwa/lwa7.stl"/>
 				</geometry>
 			</collision>
 		</link>
