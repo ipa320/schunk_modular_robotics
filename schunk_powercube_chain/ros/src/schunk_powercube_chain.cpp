@@ -487,8 +487,8 @@ public:
 		  /// command velocities to powercubes
 		  if (!pc_ctrl_->MoveVel(cmd_vel))
 		  {
-        error_ = true;
-        error_msg_ = pc_ctrl_->getErrorMessage();
+        	  error_ = true;
+              error_msg_ = pc_ctrl_->getErrorMessage();
 			  ROS_ERROR("Skipping command: %s",pc_ctrl_->getErrorMessage().c_str());
 			  return;
 		  }

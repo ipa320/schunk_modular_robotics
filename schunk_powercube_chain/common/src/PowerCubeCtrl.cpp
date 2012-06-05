@@ -250,7 +250,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			return false;
 		}
 		/// otherwise success
-		std::cout << "Found module " << ModulIDs[i] << " Serial: " << serNo << " Version: " << std::hex << verNo << std::endl;
+		std::cout << "Found module " << std::dec << ModulIDs[i] << " Serial: " << serNo << " Version: " << std::hex << verNo << std::endl;
 
 	}
 
@@ -265,29 +265,16 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
  	// update status variables
 	updateStates();
 
-
 	// grep updated status 
 	getStatus(status, errorMessages);
-	
-	if ((status != PC_CTRL_OK) && (status != PC_CTRL_NOT_HOMED))
+		
+	// homing dependant on moduletype and if already homed
+	bool successful = false;
+	successful = doHoming();
+	if (!successful)
 	{
-		m_ErrorMessage.assign("");
-		for (int i = 0; i < DOF; i++)
-		{
-			m_ErrorMessage.append(errorMessages[i]);			
-		}
+		std::cout << "PowerCubeCtrl:Init: homing not successful, aborting ...\n";
 		return false;
-	}
-	else if (status == PC_CTRL_NOT_HOMED)
-	{
-		std::cout << "PowerCubeCtrl:Init: Homing is executed ...\n";
-		bool successful = false;
-		successful = doHoming();
-		if (!successful)
-		{
-			std::cout << "PowerCubeCtrl:Init: homing not successful, aborting ...\n";
-			return false;
-		}
 	}
 
 	/// Set angle offsets to hardware
@@ -455,9 +442,6 @@ bool PowerCubeCtrl::MoveJointSpaceSync(const std::vector<double>& target)
  * Calculating positions and times by desired value of the cob_trajectory_controller
  * \param velocities Vector
  */
-
-/// ToDo: moveStep still really unstable
-
 bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 {
 	PCTRL_CHECK_INITIALIZED();
@@ -614,22 +598,48 @@ bool PowerCubeCtrl::Stop()
  * \brief Recovers the manipulator after an emergency stop
  */
 bool PowerCubeCtrl::Recover()
-{
+{	
+	unsigned int DOF = m_params->GetDOF();
 	std::vector<std::string> errorMessages;
 	PC_CTRL_STATUS status;
-
-	pthread_mutex_lock(&m_mutex);
-	PCube_haltAll(m_DeviceHandle);
-	pthread_mutex_unlock(&m_mutex);
-
-	usleep(500000);
-
-	pthread_mutex_lock(&m_mutex);
-	PCube_resetAll(m_DeviceHandle);
-	pthread_mutex_unlock(&m_mutex);
 	
-	usleep(500000);
+	unsigned long state = PC_CTRL_ERR;
+	unsigned char dio;
+	float position;
+	int ret = 0;
+	
+	// check for each module if reset is necessary
+	for (unsigned int i = 0; i < DOF; i++)
+	{	
+		pthread_mutex_lock(&m_mutex);
+		ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
+		pthread_mutex_unlock(&m_mutex);
+		if (ret != 0)
+		{
+			m_pc_status = PC_CTRL_ERR;
+			std::cout << "State: Error com with Module: " << i << " Time: " << ros::Time::now() << std::endl; 	
+			return false; 		
+		}
+		
+		// if module is in error state --> reset
+		if (state & STATEID_MOD_ERROR)
+		{	
+			pthread_mutex_lock(&m_mutex);
+			ret = PCube_resetModule(m_DeviceHandle, m_params->GetModuleID(i));
+			pthread_mutex_unlock(&m_mutex);
+			if (ret != 0)
+			{
+				m_pc_status = PC_CTRL_ERR;
+				std::cout << "State: Error com with Module: " << i << " Time: " << ros::Time::now() << std::endl; 	
+				return false; 		
+			}
+		}
+	}
+	
+	// time for reboot
+	usleep(500000); 
 
+	// check is everything is ok now
 	updateStates(); 
 
 	getStatus(status, errorMessages);
@@ -904,14 +914,16 @@ bool PowerCubeCtrl::getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& 
 			status = PC_CTRL_POW_VOLT_ERR;
 		}
 		else if (m_status[i] & STATEID_MOD_ERROR)
-		{
+		{	
+			Stop(); // stop all motion 
 			errorMsg << "Error in  Module " << ModuleIDs[i];
 			errorMsg << " : Status code: " << std::hex << m_status[i];
 			errorMessages[i] = errorMsg.str();
 			status = PC_CTRL_ERR;
 		}
 		else if (m_pc_status & PC_CTRL_ERR)
-		{
+		{	
+			Stop(); // stop all motion
 			errorMsg << "PowerCubeCtrl is in global error state";
 			errorMessages[i] = errorMsg.str();
 			status =  PC_CTRL_ERR;
@@ -973,6 +985,8 @@ std::vector<double> PowerCubeCtrl::getAccelerations()
 
 /*!
  * \brief Does homing for all Modules
+ * 
+ * PRL-Modules are ignored. PW-Modules are checked if they are homed. If not,homeing is executed.  
  */
 bool PowerCubeCtrl::doHoming()
 {
@@ -985,49 +999,67 @@ bool PowerCubeCtrl::doHoming()
 	double homing_time = 999.0;	// set to 0 if any module is homed
 	double intervall = 0.1;
 	
-	/// start homing
+	unsigned long state = PC_CTRL_ERR;
+	unsigned char dio;
+	float position;
 	int ret = 0;
+	
+	/// start homing
 	for (unsigned int i = 0; i < DOF; i++)
 	{	
 		// check module type before homing (PRL-Modules need not to be homed by ROS)
 		if ( (ModuleTypes.at(i) == "PW") || (ModuleTypes.at(i) == "other") )
-		{	// homing timer
-			homing_time = 0.0;
-
+		{	
 			pthread_mutex_lock(&m_mutex);
-			ret = PCube_homeModule(m_DeviceHandle, ModuleIDs[i]);
+			ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
 			pthread_mutex_unlock(&m_mutex);
-
-			ROS_INFO("Homing started at: %f", ros::Time::now().toSec()); 
-
 			if (ret != 0)
-			{	 
-				ROS_INFO("Error while sending homing command to Module: %i. I try to reset the module.", i); 
-
-				// reset module with the hope that homing works afterwards
-				pthread_mutex_lock(&m_mutex);
-				ret = PCube_resetModule(m_DeviceHandle, ModuleIDs[i]);
-				pthread_mutex_unlock(&m_mutex);
-				if (ret != 0)
-				{	
-					std::ostringstream errorMsg;
-					errorMsg << "Can't reset module after homing error" << ModuleIDs[i] << ", m5api error code: " << ret;
-					m_ErrorMessage = errorMsg.str();
-				}
-
-				// little break for reboot
-				usleep(200000); 
+			{	
+				ROS_INFO("Error on communication with Module: %i.", i); 
+				m_pc_status = PC_CTRL_ERR;
+ 				return false;
+			}
+			
+			// only do homing when necessary 
+			if (!(state & STATEID_MOD_HOME))
+			{
+				// homing timer
+				homing_time = 0.0;
 
 				pthread_mutex_lock(&m_mutex);
 				ret = PCube_homeModule(m_DeviceHandle, ModuleIDs[i]);
 				pthread_mutex_unlock(&m_mutex);
+
+				ROS_INFO("Homing started at: %f", ros::Time::now().toSec()); 
+
 				if (ret != 0)
-				{	
-					std::ostringstream errorMsg;
-					errorMsg << "Can't start homing for module " << ModuleIDs[i] << ", tried reset with no success, m5api error code: " << ret;
-					m_ErrorMessage = errorMsg.str();
-					std::cout << "Error on sending homing command to module " << ModuleIDs.at(i) << "!" << std::endl;		
-					return false;				
+				{	 
+					ROS_INFO("Error while sending homing command to Module: %i. I try to reset the module.", i); 
+
+					// reset module with the hope that homing works afterwards
+					pthread_mutex_lock(&m_mutex);
+					ret = PCube_resetModule(m_DeviceHandle, ModuleIDs[i]);
+					pthread_mutex_unlock(&m_mutex);
+					if (ret != 0)
+					{	
+						std::ostringstream errorMsg;
+						errorMsg << "Can't reset module after homing error" << ModuleIDs[i] << ", m5api error code: " << ret;
+						m_ErrorMessage = errorMsg.str();
+					}
+
+					// little break for reboot
+					usleep(200000); 
+
+					pthread_mutex_lock(&m_mutex);
+					ret = PCube_homeModule(m_DeviceHandle, ModuleIDs[i]);
+					pthread_mutex_unlock(&m_mutex);
+					if (ret != 0)
+					{	
+						std::ostringstream errorMsg;
+						errorMsg << "Can't start homing for module " << ModuleIDs[i] << ", tried reset with no success, m5api error code: " << ret;
+						m_ErrorMessage = errorMsg.str();
+						return false;				
+					}
 				}
 			}	
 		}
