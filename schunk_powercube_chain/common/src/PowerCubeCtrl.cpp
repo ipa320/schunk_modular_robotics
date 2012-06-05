@@ -543,8 +543,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 			pos = m_positions[i];
 		  //std::cout << "MoveVelExt retuned: " << ret << std::endl;
 		  //	m_pc_status = PC_CTRL_ERR;
-		}else
-		{ROS_INFO("worked");}
+		}
 		
 		// !!! Position in pos is position before moveStep movement, to get the expected position after the movement (required as input to the next moveStep command) we add the delta position (cmd_pos) !!!
 		m_positions[i] = (double)pos + cmd_pos;
@@ -915,7 +914,11 @@ bool PowerCubeCtrl::getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& 
 		}
 		else if (m_status[i] & STATEID_MOD_ERROR)
 		{	
-			Stop(); // stop all motion 
+			// STOP the motion for each module
+			pthread_mutex_lock(&m_mutex);
+			PCube_haltModule(m_DeviceHandle, m_params->GetModuleID(i));
+			pthread_mutex_unlock(&m_mutex);
+		 
 			errorMsg << "Error in  Module " << ModuleIDs[i];
 			errorMsg << " : Status code: " << std::hex << m_status[i];
 			errorMessages[i] = errorMsg.str();
