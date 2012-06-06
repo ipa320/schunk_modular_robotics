@@ -254,6 +254,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 		}	
 		
 		/// find out module_type
+		// the typ -if PW or PRL- can be distinguished by the typ of encoder. 
 		pthread_mutex_lock(&m_mutex);
 		ret = PCube_getDefSetup(m_DeviceHandle, ModulIDs[i], &defConfig);
 		pthread_mutex_unlock(&m_mutex);
