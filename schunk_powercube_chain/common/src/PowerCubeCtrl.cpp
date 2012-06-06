@@ -145,11 +145,12 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 	}
 	std::cout << std::endl;
 
-	std::cout << "ModuleTypes: ";
+/*	std::cout << "ModuleTypes: ";
 	for (int i = 0; i < DOF; i++)
 	{
 		std::cout << ModuleTypes.at(i) << " ";
 	}
+*/
 	std::cout << std::endl << "maxVel: ";
 	for (int i = 0; i < DOF; i++)
 	{
@@ -225,6 +226,8 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 	{
 		unsigned long serNo;
 		unsigned short verNo;
+		unsigned long defConfig;
+		std::vector<std::string> Module_Types; 
 		
 		/// retrieve serial number
 		pthread_mutex_lock(&m_mutex);
@@ -248,11 +251,41 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			errorMsg << "Could not find Module with ID " << ModulIDs[i] << ", m5api error code: " << ret;
 			m_ErrorMessage = errorMsg.str();	
 			return false;
+		}	
+		
+		/// find out module_type
+		pthread_mutex_lock(&m_mutex);
+		ret = PCube_getDefSetup(m_DeviceHandle, ModulIDs[i], &defConfig);
+		pthread_mutex_unlock(&m_mutex);
+		if (ret != 0)
+		{
+			std::ostringstream errorMsg;
+			errorMsg << "Error on communication with module " << ModulIDs[i] << ", m5api error code: " << ret;
+			m_ErrorMessage = errorMsg.str();	
+			return false;
+		}	
+ 		if (defConfig & CONFIG_ABSOLUTE_FEEDBACK)
+		{
+			Module_Types[i] = "PRL"; 
 		}
+ 		else if (defConfig & CONFIG_ENCODER_FEEDBACK)
+		{
+			Module_Types[i] = "PW"; 
+		}else 
+		{
+			std::ostringstream errorMsg;
+			errorMsg << "Could not find out module type of module " << ModulIDs[i] << " Default setupconfig: " << defConfig << " (see Schunk m5api manual)";
+			m_ErrorMessage = errorMsg.str();	
+			return false;
+		}
+	
 		/// otherwise success
 		std::cout << "Found module " << std::dec << ModulIDs[i] << " Serial: " << serNo << " Version: " << std::hex << verNo << std::endl;
 
 	}
+	
+	/// write ModuleTypes to parameter
+	m_params->SetModuleTypes(ModuleTypes); 
 
 	// modules should be initialized now
 	m_pc_status = PC_CTRL_OK;
@@ -267,7 +300,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 
 	// grep updated status 
 	getStatus(status, errorMessages);
-		
+	
 	// homing dependant on moduletype and if already homed
 	bool successful = false;
 	successful = doHoming();
