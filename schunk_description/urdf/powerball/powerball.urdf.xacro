@@ -34,7 +34,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball0.stlb" />
+					<mesh filename="package://schunk_description/meshes/powerball/powerball0.stl" />
 				</geometry>
 			</collision>
 		</link>
@@ -69,7 +69,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball1.stlb" />
+					<mesh filename="package://schunk_description/meshes/powerball/powerball1.stl" />
 				</geometry>
 			</collision>
 		</link>
@@ -104,7 +104,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball2.stlb"/>
+					<mesh filename="package://schunk_description/meshes/powerball/powerball2.stl"/>
 				</geometry>
 			</collision>
 		</link>
@@ -139,7 +139,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball3.stlb"/>
+					<mesh filename="package://schunk_description/meshes/powerball/powerball3.stl"/>
 				</geometry>
 			</collision>
 		</link>	
@@ -174,7 +174,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball4.stlb"/>
+					<mesh filename="package://schunk_description/meshes/powerball/powerball4.stl"/>
 				</geometry>
 			</collision>
 		</link>
@@ -209,7 +209,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball5.stlb"/>
+					<mesh filename="package://schunk_description/meshes/powerball/powerball5.stl"/>
 				</geometry>
 			</collision>
 		</link>
@@ -244,7 +244,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball6.stlb"/>
+					<mesh filename="package://schunk_description/meshes/powerball/powerball6.stl"/>
 				</geometry>
 			</collision>
 		</link>
