@@ -495,9 +495,9 @@ public:
 
 	  else
 	  {
-		  res.success.data = false;
+		  res.success.data = true;
 		  res.error_message.data = "powercubes already initialized";
-		  ROS_ERROR("...initializing powercubes not successful. error: %s",res.error_message.data.c_str());
+		  ROS_WARN("...initializing powercubes not successful. error: %s",res.error_message.data.c_str());
 	  }
 
 	  return true;
@@ -681,11 +681,14 @@ int main(int argc, char** argv)
 	if (pc_node.n_.hasParam("frequency"))
 	{
 		pc_node.n_.getParam("frequency", frequency);
+		//frequency of driver has to be much higher then controller frequency
+		frequency *= 1;
 	}
 
 	else
 	{
-		frequency = 100 ; //Hz
+		//frequency of driver has to be much higher then controller frequency
+		frequency = 100 * 1 ; //Hz
 		ROS_WARN("Parameter frequency not available, setting to default value: %f Hz", frequency);
 	}
 
@@ -699,8 +702,14 @@ int main(int argc, char** argv)
 
 	else
 	{
-		min_publish_duration.fromSec(1 / frequency);
-		ROS_WARN("Parameter min_publish_time not available, setting to default value: %f sec", min_publish_duration.toSec());
+		ROS_ERROR("Parameter min_publish_time not available");
+		return 0;
+	}
+
+	if((1.0/min_publish_duration.toSec()) > frequency)
+	{
+		ROS_ERROR("min_publish_duration has to be longer then delta_t of controller frequency!");
+		return 0;
 	}
 
 	/// main loop
@@ -709,11 +718,9 @@ int main(int argc, char** argv)
 	{
 		if ((ros::Time::now() - pc_node.last_publish_time_) >= min_publish_duration)
 		{
-			//std::cout << (ros::Time::now() - pc_node.last_publish_time_) << std::endl;
-			
 			pc_node.publishState();
 		}
-		
+
 		/// sleep and waiting for messages, callbacks
 		ros::spinOnce();
 		loop_rate.sleep();

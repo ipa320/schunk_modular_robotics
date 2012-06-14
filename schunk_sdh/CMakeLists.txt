@@ -10,6 +10,7 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 #set(ROS_BUILD_TYPE RelWithDebInfo)
 
 rosbuild_init()
+rosbuild_add_boost_directories()
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/ros/bin)
@@ -42,6 +43,8 @@ rosbuild_add_compile_flags(${PROJECT_NAME} -DOSNAME_LINUX)
 #rosbuild_add_compile_flags(${PROJECT_NAME}_driver -DOSNAME_LINUX)
 
 rosbuild_add_compile_flags(${PROJECT_NAME} -DWITH_ESD_CAN)
+
+rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_compile_flags(${PROJECT_NAME} -DWITH_PEAK_CAN)
 #rosbuild_add_compile_flags(${PROJECT_NAME}_driver -DWITH_PEAK_CAN)
 
@@ -50,9 +53,3 @@ target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/common/lib/libSDHLib
 #target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)
 #target_link_libraries(${PROJECT_NAME}_driver ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)
 #${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so pcan)
-
-# rostest
-#rosbuild_add_roslaunch_check(ros/launch/sdh.launch ROBOT=cob3-1)
-#rosbuild_add_roslaunch_check(ros/launch/sdh.launch ROBOT=cob3-2)
-#rosbuild_add_roslaunch_check(ros/launch/sdh.launch ROBOT=cob3-3)
-#rosbuild_add_roslaunch_check(ros/launch/sdh.launch ROBOT=cob3-4)
