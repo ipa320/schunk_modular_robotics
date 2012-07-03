@@ -268,10 +268,12 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
  		if (defConfig & CONFIG_ABSOLUTE_FEEDBACK)
 		{
 			Module_Types[i] = "PRL"; 
+			std::cout << "Module " << i << " is from type: PRL" << std::endl;
 		}
  		else if (defConfig & CONFIG_ENCODER_FEEDBACK)
 		{
 			Module_Types[i] = "PW"; 
+			std::cout << "Module " << i << " is from type: PRL" << std::endl;
 		}else 
 		{
 			std::ostringstream errorMsg;
