@@ -145,12 +145,12 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 	}
 	std::cout << std::endl;
 
-/*	std::cout << "ModuleTypes: ";
+	std::cout << "ModuleTypes: ";
 	for (int i = 0; i < DOF; i++)
 	{
 		std::cout << ModuleTypes.at(i) << " ";
 	}
-*/
+
 	std::cout << std::endl << "maxVel: ";
 	for (int i = 0; i < DOF; i++)
 	{
@@ -252,12 +252,14 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			m_ErrorMessage = errorMsg.str();	
 			return false;
 		}	
-		
+/*		
 		/// find out module_type
 		// the typ -if PW or PRL- can be distinguished by the typ of encoder. 
 		pthread_mutex_lock(&m_mutex);
 		ret = PCube_getDefSetup(m_DeviceHandle, ModulIDs[i], &defConfig);
 		pthread_mutex_unlock(&m_mutex);
+		
+		std::cout << "module type check: " << std::hex << defConfig << std::endl; 
 		if (ret != 0)
 		{
 			std::ostringstream errorMsg;
@@ -265,12 +267,12 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			m_ErrorMessage = errorMsg.str();	
 			return false;
 		}	
- 		if (defConfig & CONFIG_ABSOLUTE_FEEDBACK)
+ 		if ((defConfig && CONFIG_ABSOLUTE_FEEDBACK)==CONFIG_ABSOLUTE_FEEDBACK)
 		{
 			Module_Types[i] = "PRL"; 
 			std::cout << "Module " << i << " is from type: PRL" << std::endl;
 		}
- 		else if (defConfig & CONFIG_ENCODER_FEEDBACK)
+ 		else if ((defConfig && CONFIG_ENCODER_FEEDBACK)==CONFIG_ENCODER_FEEDBACK)
 		{
 			Module_Types[i] = "PW"; 
 			std::cout << "Module " << i << " is from type: PRL" << std::endl;
@@ -281,7 +283,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			m_ErrorMessage = errorMsg.str();	
 			return false;
 		}
-	
+*/	
 		/// otherwise success
 		std::cout << "Found module " << std::dec << ModulIDs[i] << " Serial: " << serNo << " Version: " << std::hex << verNo << std::endl;
 
@@ -1054,7 +1056,7 @@ bool PowerCubeCtrl::doHoming()
 			pthread_mutex_unlock(&m_mutex);
 			if (ret != 0)
 			{	
-				ROS_INFO("Error on communication with Module: %i.", i); 
+				ROS_INFO("Error on communication with Module: %i.", m_params->GetModuleID(i)); 
 				m_pc_status = PC_CTRL_ERR;
  				return false;
 			}
@@ -1099,9 +1101,16 @@ bool PowerCubeCtrl::doHoming()
 						m_ErrorMessage = errorMsg.str();
 						return false;				
 					}
+
 				}
-			}	
-		}
+			}else
+			{
+				ROS_INFO("Homing for Module: %i not necessary", m_params->GetModuleID(i));
+			} 
+		}else
+		{
+			ROS_INFO("Homing for PRL-Module %i not necessary", m_params->GetModuleID(i));
+		} 
 	}
 
 	for (unsigned int i = 0; i < DOF; i++)
