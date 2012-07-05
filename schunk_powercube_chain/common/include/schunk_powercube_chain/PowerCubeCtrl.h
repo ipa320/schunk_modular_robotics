@@ -205,6 +205,11 @@ public:
 	 * \brief Gets the status of the modules
 	 */
 	bool getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& errorMessages);
+	
+	/*!
+	 * \brief Gets the firmware version of the modules
+	 */
+	std::vector<unsigned long> getVersion();
 
 	/*!
 	 * \brief Returns true if any of the Joints are still moving
@@ -246,6 +251,7 @@ protected:
 	PC_CTRL_STATUS m_pc_status;
 
 	std::vector<unsigned long> m_status;
+	std::vector<unsigned long> m_version;
 	std::vector<unsigned char> m_dios;
 	std::vector<double> m_positions;
 	std::deque< std::vector<double> > m_cached_pos;

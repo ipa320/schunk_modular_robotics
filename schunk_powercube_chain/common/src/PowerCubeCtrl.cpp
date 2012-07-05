@@ -70,6 +70,8 @@ if ( isInitialized()==false )											\
 	return false;														\
 }
 
+#define Ready4MoveStep 4638
+
 /*
  * \brief Constructor
  */
@@ -128,6 +130,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 	/// Output of current settings in the terminal
 	std::cout << " D  O  F  :" << DOF << std::endl;
 	m_status.resize(DOF);
+	m_version.resize(DOF); 
 	m_dios.resize(DOF);
 	m_positions.resize(DOF);
 	m_velocities.resize(DOF);
@@ -251,7 +254,11 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			errorMsg << "Could not find Module with ID " << ModulIDs[i] << ", m5api error code: " << ret;
 			m_ErrorMessage = errorMsg.str();	
 			return false;
-		}	
+		}else
+		{
+			m_version[i] = verNo; 
+		}
+
 /*		
 		/// find out module_type
 		// the typ -if PW or PRL- can be distinguished by the typ of encoder. 
@@ -492,7 +499,6 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 	std::vector<double> upperLimits = m_params->GetUpperLimits();
 	std::vector<double> maxVels = m_params->GetMaxVel();
 
-
 	/// check dimensions
 	if (velocities.size() != DOF)
 	{
@@ -561,14 +567,18 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 		cmd_pos = cmd_time * velocities[i];
 
 		// check module type sending command (PRL-Modules can be driven with moveStepExtended(), PW-Modules can only be driven with less safe moveVelExtended())
-		if (ModuleTypes.at(i) == "PW")
+		if ((ModuleTypes.at(i) == "PRL") && (m_version[i] >= Ready4MoveStep))
 		{
-			pthread_mutex_lock(&m_mutex);
+			std::cout << "MoveVelExtended called with velocity: " << velocities[i] << std::endl; 
+
+pthread_mutex_lock(&m_mutex);
 			ret = PCube_moveVelExtended(m_DeviceHandle, m_params->GetModuleID(i), velocities[i], &m_status[i], &m_dios[i], &pos);
 			pthread_mutex_unlock(&m_mutex);
 		}
 		else	/// Types: PRL, other
-		{
+		{		
+			std::cout << "MoveStepExtended called with velocity: " << velocities[i] << std::endl; 
+
 			ROS_DEBUG("Modul_id = %i, ModuleType: %s, step=%f, time=%f", m_params->GetModuleID(i), ModuleTypes[i].c_str(), m_positions[i] + cmd_pos, cmd_time);
 			ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), m_positions[i] + cmd_pos, (cmd_time+m_horizon), &m_status[i], &m_dios[i], &pos);
 			pthread_mutex_unlock(&m_mutex);
@@ -917,7 +927,16 @@ bool PowerCubeCtrl::updateStates()
 			m_dios[i] = dio;
 			m_positions[i] = position;
 		}	
-		
+	
+		// set diagnostics msg if ann error occurs
+/*		if ((state && 0x01))
+		{
+			std::ostringstream errorMsg;
+			TranslateError2Diagnosics 			
+			errorMsg << "Can't reset module after homing error" << ModuleIDs[i] << ", m5api error code: " << ret;
+			m_ErrorMessage = errorMsg.str();
+		}
+*/
     /// TODO: calculate vel and acc
     ///m_velocities = ???;
     ///m_accelerations = ???
@@ -983,6 +1002,13 @@ bool PowerCubeCtrl::getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& 
 	return true;
 }
 
+/*!
+ * \brief Gets the firmware version of the modules
+ */
+std::vector<unsigned long> PowerCubeCtrl::getVersion()
+{
+	return m_version; 
+}
 /*!
  * \brief Returns true if some cubes are still moving
  */
