@@ -119,7 +119,6 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 	std::string CanModule = m_params->GetCanModule();
 	std::string CanDevice = m_params->GetCanDevice();
 	std::vector<int> ModulIDs = m_params->GetModuleIDs();
-	std::vector<std::string> ModuleTypes = m_params->GetModuleTypes();
 	int CanBaudrate = m_params->GetBaudrate();
 	std::vector<double> MaxVel = m_params->GetMaxVel();
 	std::vector<double> MaxAcc = m_params->GetMaxAcc();
@@ -130,6 +129,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 	/// Output of current settings in the terminal
 	std::cout << " D  O  F  :" << DOF << std::endl;
 	m_status.resize(DOF);
+	m_ModuleTypes.resize(DOF);
 	m_version.resize(DOF); 
 	m_dios.resize(DOF);
 	m_positions.resize(DOF);
@@ -147,12 +147,6 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 		std::cout << ModulIDs[i] << " ";
 	}
 	std::cout << std::endl;
-
-	std::cout << "ModuleTypes: ";
-	for (int i = 0; i < DOF; i++)
-	{
-		std::cout << ModuleTypes.at(i) << " ";
-	}
 
 	std::cout << std::endl << "maxVel: ";
 	for (int i = 0; i < DOF; i++)
@@ -259,14 +253,15 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			m_version[i] = verNo; 
 		}
 
-/*		
+		
 		/// find out module_type
 		// the typ -if PW or PRL- can be distinguished by the typ of encoder. 
 		pthread_mutex_lock(&m_mutex);
 		ret = PCube_getDefSetup(m_DeviceHandle, ModulIDs[i], &defConfig);
 		pthread_mutex_unlock(&m_mutex);
 		
-		std::cout << "module type check: " << std::hex << defConfig << std::endl; 
+		ROS_DEBUG("module type check: %li (std::dec)",defConfig); 
+		
 		if (ret != 0)
 		{
 			std::ostringstream errorMsg;
@@ -274,31 +269,26 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			m_ErrorMessage = errorMsg.str();	
 			return false;
 		}	
- 		if ((defConfig && CONFIG_ABSOLUTE_FEEDBACK)==CONFIG_ABSOLUTE_FEEDBACK)
+		
+		// Firmware version 4634 of PRL modules replies ABSOULTE_FEEDBACK, firmware 4638 replies RESOLVER_FEEDBACK. 
+		// Both means the same: Module is PRL. PW modules have encoders (ENCODER_FEEDBACK, s.M5API), but this bit is not set is DefConfig word.
+		// For new firmware versions this needs to be evaluated. 
+ 		if (((defConfig & CONFIG_ABSOLUTE_FEEDBACK)==CONFIG_ABSOLUTE_FEEDBACK) || ((defConfig & CONFIG_RESOLVER_FEEDBACK)==CONFIG_RESOLVER_FEEDBACK))
 		{
-			Module_Types[i] = "PRL"; 
-			std::cout << "Module " << i << " is from type: PRL" << std::endl;
+			m_ModuleTypes[i] = "PRL"; 
+			ROS_DEBUG("Module %i is from type: PRL", i);
 		}
- 		else if ((defConfig && CONFIG_ENCODER_FEEDBACK)==CONFIG_ENCODER_FEEDBACK)
+ 		else
 		{
-			Module_Types[i] = "PW"; 
-			std::cout << "Module " << i << " is from type: PRL" << std::endl;
-		}else 
-		{
-			std::ostringstream errorMsg;
-			errorMsg << "Could not find out module type of module " << ModulIDs[i] << " Default setupconfig: " << defConfig << " (see Schunk m5api manual)";
-			m_ErrorMessage = errorMsg.str();	
-			return false;
+			m_ModuleTypes[i] = "PW"; 
+			ROS_DEBUG("Module %i is from type: PW", i);
 		}
-*/	
+
 		/// otherwise success
 		std::cout << "Found module " << std::dec << ModulIDs[i] << " Serial: " << serNo << " Version: " << std::hex << verNo << std::endl;
 
 	}
 	
-	/// write ModuleTypes to parameter
-	m_params->SetModuleTypes(ModuleTypes); 
-
 	// modules should be initialized now
 	m_pc_status = PC_CTRL_OK;
 	m_Initialized = true; 
@@ -492,7 +482,6 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 	PCTRL_CHECK_INITIALIZED();
 
 	unsigned int DOF = m_params->GetDOF();
-	std::vector<std::string> ModuleTypes = m_params->GetModuleTypes();
 
 	/// getting limits
 	std::vector<double> lowerLimits = m_params->GetLowerLimits();
@@ -567,19 +556,15 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 		cmd_pos = cmd_time * velocities[i];
 
 		// check module type sending command (PRL-Modules can be driven with moveStepExtended(), PW-Modules can only be driven with less safe moveVelExtended())
-		if ((ModuleTypes.at(i) == "PRL") && (m_version[i] >= Ready4MoveStep))
+		if ((m_ModuleTypes.at(i) == "PRL") && (m_version[i] >= Ready4MoveStep))
 		{
-			std::cout << "MoveVelExtended called with velocity: " << velocities[i] << std::endl; 
-
-pthread_mutex_lock(&m_mutex);
+			pthread_mutex_lock(&m_mutex);
 			ret = PCube_moveVelExtended(m_DeviceHandle, m_params->GetModuleID(i), velocities[i], &m_status[i], &m_dios[i], &pos);
 			pthread_mutex_unlock(&m_mutex);
 		}
 		else	/// Types: PRL, other
 		{		
-			std::cout << "MoveStepExtended called with velocity: " << velocities[i] << std::endl; 
-
-			ROS_DEBUG("Modul_id = %i, ModuleType: %s, step=%f, time=%f", m_params->GetModuleID(i), ModuleTypes[i].c_str(), m_positions[i] + cmd_pos, cmd_time);
+			ROS_DEBUG("Modul_id = %i, ModuleType: %s, step=%f, time=%f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), m_positions[i] + cmd_pos, cmd_time);
 			ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), m_positions[i] + cmd_pos, (cmd_time+m_horizon), &m_status[i], &m_dios[i], &pos);
 			pthread_mutex_unlock(&m_mutex);
 		}
@@ -951,7 +936,6 @@ bool PowerCubeCtrl::getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& 
 {
 	unsigned int DOF = m_params->GetDOF();
 	std::vector<int> ModuleIDs = m_params->GetModuleIDs();
-	std::vector<std::string> ModuleTypes = m_params->GetModuleTypes();
 	
 	errorMessages.clear();
 	errorMessages.resize(DOF);
@@ -1059,7 +1043,6 @@ bool PowerCubeCtrl::doHoming()
 {
 	unsigned int DOF = m_params->GetDOF();
 	std::vector<int> ModuleIDs = m_params->GetModuleIDs();
-	std::vector<std::string> ModuleTypes = m_params->GetModuleTypes();
 	
 	/// wait until all modules are homed
 	double max_homing_time = 15.0; // seconds   
@@ -1075,7 +1058,7 @@ bool PowerCubeCtrl::doHoming()
 	for (unsigned int i = 0; i < DOF; i++)
 	{	
 		// check module type before homing (PRL-Modules need not to be homed by ROS)
-		if ( (ModuleTypes.at(i) == "PW") || (ModuleTypes.at(i) == "other") )
+		if ( (m_ModuleTypes.at(i) == "PW") || (m_ModuleTypes.at(i) == "other") )
 		{	
 			pthread_mutex_lock(&m_mutex);
 			ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
