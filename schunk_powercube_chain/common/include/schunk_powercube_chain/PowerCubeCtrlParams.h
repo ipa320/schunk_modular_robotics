@@ -147,12 +147,6 @@ public:
 		return m_ModulIDs;
 	}
 	
-	/// Gets the ModuleTypes
-	std::vector<std::string> GetModuleTypes()
-	{
-		return m_ModuleTypes;
-	}
-
 	/// Gets the ModuleID
 	int GetModuleID(int no)
 	{
@@ -162,33 +156,12 @@ public:
 			return -1;
 	}
 	
-	/// Gets the ModuleType
-	std::string GetModuleType(int no)
-	{
-		if (no < GetDOF())
-			return m_ModuleTypes[no];
-		else
-			return "not defined";
-	}
-
 	/// Sets the Module IDs
 	int SetModuleID(int no, int id)
 	{
 		if (no < GetDOF())
 		{
 			m_ModulIDs[no] = id;
-			return 0;
-		}
-		else
-			return -1;
-	}
-
-	/// Sets the ModuleTypes
-	int SetModuleTypes(std::vector<std::string> types)
-	{
-		if ((int)types.size() == GetDOF())
-		{
-			m_ModuleTypes = types;
 			return 0;
 		}
 		else
@@ -306,7 +279,6 @@ public:
 private:
 	int m_DOF;
 	std::vector<int> m_ModulIDs;
-	std::vector<std::string> m_ModuleTypes;
 	std::vector<std::string> m_JointNames;
 	std::string m_CanModule;
 	std::string m_CanDevice;

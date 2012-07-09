@@ -259,6 +259,7 @@ protected:
 	PC_CTRL_STATUS m_pc_status;
 
 	std::vector<unsigned long> m_status;
+	std::vector<std::string> m_ModuleTypes;
 	std::vector<unsigned long> m_version;
 	std::vector<unsigned char> m_dios;
 	std::vector<double> m_positions;
