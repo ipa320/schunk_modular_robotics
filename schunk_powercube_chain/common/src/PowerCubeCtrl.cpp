@@ -566,19 +566,15 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 		}
 		cmd_pos = cmd_time * velocities[i];
 
-		// check module type sending command (PRL-Modules can be driven with moveStepExtended(), PW-Modules can only be driven with less safe moveVelExtended())
+		// check module type sending command (PRL-Modules with a firmware >= 4638 can be driven with moveStepExtended(), PW-Modules can only be driven with less safe moveVelExtended())
 		if ((ModuleTypes.at(i) == "PRL") && (m_version[i] >= Ready4MoveStep))
 		{
-			std::cout << "MoveVelExtended called with velocity: " << velocities[i] << std::endl; 
-
-pthread_mutex_lock(&m_mutex);
+			pthread_mutex_lock(&m_mutex);
 			ret = PCube_moveVelExtended(m_DeviceHandle, m_params->GetModuleID(i), velocities[i], &m_status[i], &m_dios[i], &pos);
 			pthread_mutex_unlock(&m_mutex);
 		}
 		else	/// Types: PRL, other
 		{		
-			std::cout << "MoveStepExtended called with velocity: " << velocities[i] << std::endl; 
-
 			ROS_DEBUG("Modul_id = %i, ModuleType: %s, step=%f, time=%f", m_params->GetModuleID(i), ModuleTypes[i].c_str(), m_positions[i] + cmd_pos, cmd_time);
 			ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), m_positions[i] + cmd_pos, (cmd_time+m_horizon), &m_status[i], &m_dios[i], &pos);
 			pthread_mutex_unlock(&m_mutex);
@@ -589,8 +585,7 @@ pthread_mutex_lock(&m_mutex);
 		{
 			ROS_INFO("Com Error"); 		  
 			pos = m_positions[i];
-		  //std::cout << "MoveVelExt retuned: " << ret << std::endl;
-		  //	m_pc_status = PC_CTRL_ERR;
+		  	m_pc_status = PC_CTRL_ERR;
 		}
 		
 		// !!! Position in pos is position before moveStep movement, to get the expected position after the movement (required as input to the next moveStep command) we add the delta position (cmd_pos) !!!
@@ -895,52 +890,51 @@ bool PowerCubeCtrl::updateStates()
 	PCTRL_CHECK_INITIALIZED();
 
 	unsigned int DOF = m_params->GetDOF();
-
-	unsigned long state = PC_CTRL_ERR;
+	unsigned long state;
+	PC_CTRL_STATUS pc_status = PC_CTRL_ERR; 
+	std::vector<std::string> ErrorMessages;
 	
-	unsigned long state_s = PC_CTRL_ERR; // for debug
+	std::ostringstream errorMsg;
 
 	unsigned char dio;
 	float position;
 	int ret = 0;
+
 	for (unsigned int i = 0; i < DOF; i++)
 	{	
-		state_s = m_status[i]; 
+		state = m_status[i]; 
 		pthread_mutex_lock(&m_mutex);
 		ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
 		pthread_mutex_unlock(&m_mutex);
 		
 		if (ret != 0)
 		{
-			//m_pc_status = PC_CTRL_ERR;
-			std::cout << "State: Error com with Module: " << i << " Time: " << ros::Time::now() << std::endl; 			
+			m_pc_status = PC_CTRL_ERR;
+			errorMsg << "State: Error com with Module [" <<  i << "]";
+			ErrorMessages[i] = errorMsg.str();			
 		}
 		else
 		{	
-			if( state_s != state)
-			{
-				std::cout << "State: " << state << " Joint: " << i << std::endl; 
-			}
 			ROS_DEBUG("Module %i, State: %li, Time: %f",i, state, ros::Time::now().toSec());
 
 		 	m_status[i] = state; 		
 			m_dios[i] = dio;
 			m_positions[i] = position;
 		}	
-	
-		// set diagnostics msg if ann error occurs
-/*		if ((state && 0x01))
-		{
-			std::ostringstream errorMsg;
-			TranslateError2Diagnosics 			
-			errorMsg << "Can't reset module after homing error" << ModuleIDs[i] << ", m5api error code: " << ret;
-			m_ErrorMessage = errorMsg.str();
-		}
-*/
-    /// TODO: calculate vel and acc
-    ///m_velocities = ???;
-    ///m_accelerations = ???
+		
+		/// TODO: calculate vel and acc
+		///m_velocities = ???;
+		///m_accelerations = ???
 	}
+	
+	// evaluate state for translation for diagnostics msgs
+	getStatus(pc_status, ErrorMessages);
+
+	for (unsigned int i=0; i<ErrorMessages.size(); i++)
+	{
+		m_ErrorMessage += ErrorMessages[i];
+	}
+
 	return true;
 }
 
@@ -1176,5 +1170,13 @@ bool PowerCubeCtrl::doHoming()
 
 	// modules successfully homed
 	m_pc_status = PC_CTRL_OK;
+	return true;
+}
+
+/*!
+ * \brief Setup errors for diagnostics
+ */
+bool m_TranslateError2Diagnosics(std::ostringstream* errorMsg)
+{
 	return true;
 }

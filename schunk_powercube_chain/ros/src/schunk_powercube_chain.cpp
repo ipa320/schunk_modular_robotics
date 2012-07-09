@@ -670,6 +670,10 @@ public:
 		  last_publish_time_ = joint_state_msg.header.stamp;
 
 	  }
+	
+	// check status of PowerCube chain 
+	if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK) { error_ = true; }  
+
     // publishing diagnotic messages
     diagnostic_msgs::DiagnosticArray diagnostics;
     diagnostics.status.resize(1);
@@ -678,7 +682,7 @@ public:
     {
       diagnostics.status[0].level = 2;
       diagnostics.status[0].name = n_.getNamespace();;
-      diagnostics.status[0].message = error_msg_;
+      diagnostics.status[0].message =  pc_ctrl_->getErrorMessage();
     }
     else
     {

@@ -112,6 +112,14 @@ public:
 	{
 		return m_ErrorMessage;
 	}
+	
+	/*!
+	 * \brief Get PC_Status message
+	 */
+	PC_CTRL_STATUS getPC_Status() const
+	{
+		return m_pc_status;
+	}
 
 	/*!
 	 * \brief Close
@@ -236,7 +244,7 @@ public:
 	/*!
 	 * \brief Waits until all Modules are homed.
 	 *
-	 * Homes only Schunk PW-Modules or Module musst have ModuleType "other" specified in .yaml
+	 * Homes only Schunk PW-Modules or PRL-Modules don't need to be homed.
 	 */
 	bool doHoming();
 
