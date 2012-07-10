@@ -480,17 +480,57 @@ bool PowerCubeCtrl::MoveJointSpaceSync(const std::vector<double>& target)
 bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 {
   PCTRL_CHECK_INITIALIZED();
-
+  
+  //== init var ==================================================
+  
+  /// getting paramerters
   unsigned int DOF = m_params->GetDOF();
 	
   std::ostringstream errorMsg;
+	
+	float delta_pos;		// traviling distance for next command
+	float target_pos;	// absolute target postion that is desired with this command
+	double target_time; // time in milliseconds
+   
 
   /// getting limits
   std::vector<double> LowerLimits = m_params->GetLowerLimits();
   std::vector<double> UpperLimits = m_params->GetUpperLimits();
   std::vector<double> maxVels = m_params->GetMaxVel();
 
-  /// check dimensions
+	//== calculate destination position ============================
+	// needed for limit handling and MoveStep command
+	
+  float delta_t;
+  delta_t = ros::Time::now().toSec() - m_last_time_pub.toSec();
+  m_last_time_pub = ros::Time::now();  
+
+  std::vector<double> pos_temp;
+  pos_temp.resize(DOF);
+
+  for (unsigned int i = 0; i < DOF; i++)
+  {
+    // limit step time to 20msec
+    //TODO: set value 0.05 as parameter
+    if (delta_t >= 0.050)
+	{
+	  target_time = 0.050; //sec
+	}
+      else
+	{
+	  target_time = delta_t; //sec
+	}
+	
+	// calculate travel distance
+	delta_pos = target_time * velocities[i]; 
+
+	// calculate target position   
+	target_pos = m_position[i] + delta_pos;
+
+
+	//== check input parameter =====================================
+  
+	/// check dimensions
   if (velocities.size() != DOF)
     {
       m_ErrorMessage = "Skipping command: Commanded velocities and DOF are not same dimension.";
@@ -501,74 +541,60 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
     {
       /// check velocity limit
       if(velocities[i] > maxVels[i])
-	{
-	  //velocities[i] = maxVels[i];
+			{ 
+				// set velocities command to max value
+				velocities[i] = maxVels[i];
 		
-	  errorMsg << "Velocity " << velocities[i] << " exceeds limit " << maxVels[i] << "for axis " << i << " moving with " << maxVels[i] << " instead";
-	  m_ErrorMessage = errorMsg.str();
-	}
+				//TODO: add ros_warn 	
+
+				ROS_INFO("Velocity %f exceeds limit %f for axis %i. moving with max velocity %f instead", velocities[i], maxVels[i], i, maxVels[i]);
+				//errorMsg << "Velocity " << velocities[i] << " exceeds limit " << maxVels[i] << "for axis " << i << " moving with " << maxVels[i] << " instead";
+				//m_ErrorMessage = errorMsg.str();
+			}
+
 
       /// check position limits
-      // TODO: specifiy target pos value 0.02, adapt limitcheck to both move commands, use horizon, or only the sign of the velocity value
-      double targetpos = m_positions[i] + (0.05 * velocities[i]);
-      if (targetpos < LowerLimits[i])
-	{	
-	  ROS_INFO("Skipping command: %f Target position exceeds lower limit (%f).", targetpos, LowerLimits[i]);		
-	  // target position is set to actual position. So only movement in the non limit direction is possible.
-	  targetpos = m_positions[i];
-	} 
-		  
-      if (targetpos > UpperLimits[i])
-	{	
-	  ROS_INFO("Skipping command: %f Target position exceeds upper limit (%f).", targetpos, UpperLimits[i]);		
+ 
+			// if target position is outer limits and the command velocity is in in direction away from working range, skip command
+      if ((target_pos < LowerLimits[i]) && (velocities[i] < 0))
+			{	
+				ROS_INFO("Skipping command: %f Target position exceeds lower limit (%f).", target_pos, LowerLimits[i]);		
+				// target position is set to actual position. So only movement in the non limit direction is possible.
+				target_pos = m_positions[i];
+			} 
+			
+			// if target position is outer limits and the command velocity is in in direction away from working range, skip command
+			if ((target_pos > UpperLimits[i]) && (velocities[i] > 0))
+			{	
+				ROS_INFO("Skipping command: %f Target position exceeds upper limit (%f).", target_pos, UpperLimits[i]);		
 
-	  // target position is set to actual position. So only movement in the non limit direction is possible.
-	  targetpos = m_positions[i];
-	} 
-    }
+				// target position is set to actual position. So only movement in the non limit direction is possible.
+				target_pos = m_positions[i];
+			} 
+		}
 
-  std::vector<std::string> errorMessages;
+  //== check system status ====================================== 
+  
+	std::vector<std::string> errorMessages;
   PC_CTRL_STATUS status;
   getStatus(status, errorMessages);
 	
   if ((status != PC_CTRL_OK))
-    {
-      m_ErrorMessage.assign("");
-      for (unsigned int i = 0; i < DOF; i++)
-	{
-	  m_ErrorMessage.append(errorMessages[i]);
-	}
-      return false;
-    }
+  {
+    m_ErrorMessage.assign("");
+    for (unsigned int i = 0; i < DOF; i++)
+		{
+	  	m_ErrorMessage.append(errorMessages[i]);
+		}
+    return false;
+  }
 
-  float delta_t;
-  delta_t = ros::Time::now().toSec() - m_last_time_pub.toSec();
-  m_last_time_pub = ros::Time::now();  
 
-  std::vector<double> pos_temp;
-  pos_temp.resize(DOF);
 
-  for (unsigned int i = 0; i < DOF; i++)
-    {
-      float pos;
-      float cmd_pos;
-      double  cmd_time; // time in milliseconds
-      int ret; 
 
-      // limit step time to 20msec
-      //TODO: set value 0.05 as parameter
-      if (delta_t >= 0.050)
-	{
-	  cmd_time = 0.050; //sec
-	}
-      else
-	{
-	  cmd_time = delta_t; //sec
-	}
-      cmd_pos = cmd_time * velocities[i];
 
-      // check module type sending command (PRL-Modules can be driven with moveStepExtended(), PW-Modules can only be driven with less safe moveVelExtended())
-      if ((m_ModuleTypes.at(i) == "PRL") && (m_version[i] >= Ready4MoveStep))
+  // check module type sending command (PRL-Modules can be driven with moveStepExtended(), PW-Modules can only be driven with less safe moveVelExtended())
+  if ((m_ModuleTypes.at(i) == "PRL") && (m_version[i] >= Ready4MoveStep))
 	{
 	  pthread_mutex_lock(&m_mutex);
 	  ret = PCube_moveVelExtended(m_DeviceHandle, m_params->GetModuleID(i), velocities[i], &m_status[i], &m_dios[i], &pos);
@@ -576,17 +602,18 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
 	}
       else	/// Types: PRL, other
 	{		
-	  ROS_DEBUG("Modul_id = %i, ModuleType: %s, step=%f, time=%f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), m_positions[i] + cmd_pos, cmd_time);
-	  ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), m_positions[i] + cmd_pos, (cmd_time+m_horizon), &m_status[i], &m_dios[i], &pos);
+	  ROS_DEBUG("Modul_id = %i, ModuleType: %s, step=%f, time=%f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), target_pos, target_time);
+	  ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), target_pos, (target_time+m_horizon), &m_status[i], &m_dios[i], &pos);
 	  pthread_mutex_unlock(&m_mutex);
 	}
 
-      /// error handling
-      if (ret != 0)
+  /// error handling
+  if (ret != 0)
 	{
 	  ROS_INFO("Com Error"); 		  
 	  pos = m_positions[i];
 	  m_pc_status = PC_CTRL_ERR;
+		//TODO: add error msg for diagnostics
 	}
 		
       // !!! Position in pos is position before moveStep movement, to get the expected position after the movement (required as input to the next moveStep command) we add the delta position (cmd_pos) !!!
