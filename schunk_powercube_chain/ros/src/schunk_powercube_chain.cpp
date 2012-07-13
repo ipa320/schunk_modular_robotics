@@ -704,7 +704,7 @@ int main(int argc, char** argv)
 	else
 	{
 		//frequency of driver has to be much higher then controller frequency
-		frequency = 100; //Hz
+		frequency = 10; //Hz
 		ROS_WARN("Parameter frequency not available, setting to default value: %f Hz", frequency);
 	}
 
