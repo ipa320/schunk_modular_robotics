@@ -631,7 +631,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 			//convert the time to int in [ms]
 			unsigned short time4motion = (unsigned short)((target_time + (double)m_horizon)*1000);
 
-			ROS_INFO("Modul_id = %i, ModuleType: %s, step=%f, time4motion=%i [ms], target_time=%f, horizon: %f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), delta_pos[i], time4motion, target_time, m_horizon);
+			//ROS_INFO("Modul_id = %i, ModuleType: %s, step=%f, time4motion=%i [ms], target_time=%f, horizon: %f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), delta_pos[i], time4motion, target_time, m_horizon);
 
 			pthread_mutex_lock(&m_mutex);
 			ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), target_pos[i], time4motion, &m_status[i], &m_dios[i], &pos);
