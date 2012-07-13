@@ -401,64 +401,71 @@ public:
   void topicCallback_CommandVel(const brics_actuator::JointVelocities::ConstPtr& msg)
   {
 	  ROS_DEBUG("Received new velocity command");
-	  if (initialized_)
+	  if (!initialized_)
+	  {	
+			ROS_WARN("Skipping command: powercubes not initialized");
+			publishState(false);
+			return; 
+		}
+		
+		if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK)
+		{
+			publishState(false);
+			return; 
+		}
+
+ 
+	  PowerCubeCtrl::PC_CTRL_STATUS status;
+	  std::vector<std::string> errorMessages;
+	  pc_ctrl_->getStatus(status, errorMessages);
+
+	  /// ToDo: don't rely on position of joint names, but merge them (check between msg.joint_uri and member variable JointStates)
+
+	  unsigned int DOF = pc_params_->GetDOF();
+	  std::vector<std::string> jointNames = pc_params_->GetJointNames();
+	  std::vector<double> cmd_vel(DOF);
+	  std::string unit = "rad";
+
+	  /// check dimensions
+	  if (msg->velocities.size() != DOF)
 	  {
-		  PowerCubeCtrl::PC_CTRL_STATUS status;
-		  std::vector<std::string> errorMessages;
-		  pc_ctrl_->getStatus(status, errorMessages);
+		  ROS_ERROR("Skipping command: Commanded velocities and DOF are not same dimension.");
+		  return;
+	  }
 
-		  /// ToDo: don't rely on position of joint names, but merge them (check between msg.joint_uri and member variable JointStates)
-
-		  unsigned int DOF = pc_params_->GetDOF();
-		  std::vector<std::string> jointNames = pc_params_->GetJointNames();
-		  std::vector<double> cmd_vel(DOF);
-		  std::string unit = "rad";
-
-		  /// check dimensions
-		  if (msg->velocities.size() != DOF)
+	  /// parse velocities
+	  for (unsigned int i = 0; i < DOF; i++)
+	  {
+		  /// check joint name
+		  if (msg->velocities[i].joint_uri != jointNames[i])
 		  {
-			  ROS_ERROR("Skipping command: Commanded velocities and DOF are not same dimension.");
+			  ROS_ERROR("Skipping command: Received joint name %s doesn't match expected joint name %s for joint %d.",msg->velocities[i].joint_uri.c_str(),jointNames[i].c_str(),i);
 			  return;
 		  }
 
-		  /// parse velocities
-		  for (unsigned int i = 0; i < DOF; i++)
+		  /// check unit
+		  if (msg->velocities[i].unit != unit)
 		  {
-			  /// check joint name
-			  if (msg->velocities[i].joint_uri != jointNames[i])
-			  {
-				  ROS_ERROR("Skipping command: Received joint name %s doesn't match expected joint name %s for joint %d.",msg->velocities[i].joint_uri.c_str(),jointNames[i].c_str(),i);
-				  return;
-			  }
-
-			  /// check unit
-			  if (msg->velocities[i].unit != unit)
-			  {
-				  ROS_ERROR("Skipping command: Received unit %s doesn't match expected unit %s.",msg->velocities[i].unit.c_str(),unit.c_str());
-				  return;
-			  }
-
-			  /// if all checks are successful, parse the velocity value for this joint
-			  ROS_DEBUG("Parsing velocity %f for joint %s",msg->velocities[i].value,jointNames[i].c_str());
-			  cmd_vel[i] = msg->velocities[i].value;
-		  }
-
-		  /// command velocities to powercubes
-		  if (!pc_ctrl_->MoveVel(cmd_vel))
-		  {
-        	  error_ = true;
-              error_msg_ = pc_ctrl_->getErrorMessage();
-			  ROS_ERROR("Skipping command: %s",pc_ctrl_->getErrorMessage().c_str());
+			  ROS_ERROR("Skipping command: Received unit %s doesn't match expected unit %s.",msg->velocities[i].unit.c_str(),unit.c_str());
 			  return;
 		  }
 
-		  ROS_DEBUG("Executed velocity command");
+		  /// if all checks are successful, parse the velocity value for this joint
+		  ROS_DEBUG("Parsing velocity %f for joint %s",msg->velocities[i].value,jointNames[i].c_str());
+		  cmd_vel[i] = msg->velocities[i].value;
+	  }
+		
+	  /// command velocities to powercubes
+	  if (!pc_ctrl_->MoveVel(cmd_vel))
+	  {
+     	error_ = true;
+			error_msg_ = pc_ctrl_->getErrorMessage();
+		  ROS_ERROR("Skipping command: %s",pc_ctrl_->getErrorMessage().c_str());
+		  return;
 	  }
 
-	  else
-	  {
-		  ROS_WARN("Skipping command: powercubes not initialized");
-	  }
+	  ROS_DEBUG("Executed velocity command");
+	 
 	  publishState(false);
   }
 
@@ -630,12 +637,20 @@ public:
 
 	  }
 	
-	// check status of PowerCube chain 
-	if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK) { error_ = true; }  
+		// check status of PowerCube chain 
+		if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK) 
+		{ 	
+			error_ = true;
+		} 
+		else 
+		{
+			error_ = false;
+		} 
 
     // publishing diagnotic messages
     diagnostic_msgs::DiagnosticArray diagnostics;
     diagnostics.status.resize(1);
+
     // set data to diagnostics
     if(error_)
     {
@@ -660,9 +675,7 @@ public:
     }
     // publish diagnostic message
     topicPub_Diagnostic_.publish(diagnostics);
-
   }
-
 }; //PowerCubeChainNode
 
 /*!
@@ -686,13 +699,12 @@ int main(int argc, char** argv)
 	{
 		pc_node.n_.getParam("frequency", frequency);
 		//frequency of driver has to be much higher then controller frequency
-		frequency *= 1;
 	}
 
 	else
 	{
 		//frequency of driver has to be much higher then controller frequency
-		frequency = 100 * 1 ; //Hz
+		frequency = 100; //Hz
 		ROS_WARN("Parameter frequency not available, setting to default value: %f Hz", frequency);
 	}
 
@@ -703,7 +715,6 @@ int main(int argc, char** argv)
 		pc_node.n_.getParam("min_publish_duration", sec);
 		min_publish_duration.fromSec(sec);
 	}
-
 	else
 	{
 		ROS_ERROR("Parameter min_publish_time not available");
