@@ -149,10 +149,9 @@ void *EvaluateBuffers(void* TD)
 
 	Thread_data* m_TD = (Thread_data*) TD; 
 	
-	// 1. send SYNC msg
-	SendSYNC();
 	
-	// 2. send all PDOs on the bus
+	
+	// 1. send all PDOs on the bus
 	for (int i=0;i<MAX_PDOS;i++)
 	{
 		if(PDO_buffer->IsActive(i))
@@ -161,6 +160,9 @@ void *EvaluateBuffers(void* TD)
 			//WritePDO(PDO_buffer->data[i].CMsg);
 		}		
 	}
+	
+	// 2. send SYNC msg and start synchronous motion 
+ 	SendSYNC();
 
 	// 3. send 1 SDO form que
 
@@ -172,6 +174,7 @@ void *EvaluateBuffers(void* TD)
 	}
 	//std::cout << "SYNC ID: " << std::hex << CANOpenMasterObj->TxSDO << std::endl;
 	
+	// ??? nötig
 	pthread_exit(0);
 } 
 
@@ -182,7 +185,7 @@ void SendSYNC()
 	CanMsg CMsgTr;
 	
 	CMsgTr.m_iLen = 0;
-	CMsgTr.m_iID = SYNC;
+	CMsgTr.m_iID = CANObj.SYNC;
 
 	can_itf->transmitMsg(CMsgTr);
 	

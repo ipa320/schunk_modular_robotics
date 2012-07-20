@@ -66,16 +66,18 @@
 // own includes
 //#include <CANOpen_driver.h>
 #include <CANOpen_buffer.h>
-#include <CANOpenCiA401_Objects.h>
+#include <CANOpenCiA401_Schunk.h>
 
 
 // TODO make this variable, attention to CANOpen_buffer!
 #define MAX_PDOS 32 //8 nodes with 4 PDOs
 #define MAX_InBuffer_Lenght 32
 
+CANOpenCiA401_Schunk CANObj; 
 CANOpen_buffer* PDO_buffer;
 CANPeakSysUSB* can_itf; 
 std::queue<CanMsg> InBuffer;
+
 
 // as API to use
 void InitMaster();

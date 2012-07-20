@@ -112,6 +112,14 @@ public:
 	{
 		return m_ErrorMessage;
 	}
+	
+	/*!
+	 * \brief Get PC_Status message
+	 */
+	PC_CTRL_STATUS getPC_Status() const
+	{
+		return m_pc_status;
+	}
 
 	/*!
 	 * \brief Close
@@ -205,6 +213,11 @@ public:
 	 * \brief Gets the status of the modules
 	 */
 	bool getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& errorMessages);
+	
+	/*!
+	 * \brief Gets the firmware version of the modules
+	 */
+	std::vector<unsigned long> getVersion();
 
 	/*!
 	 * \brief Returns true if any of the Joints are still moving
@@ -230,6 +243,8 @@ public:
 
 	/*!
 	 * \brief Waits until all Modules are homed.
+	 *
+	 * Homes only Schunk PW-Modules or PRL-Modules don't need to be homed.
 	 */
 	bool doHoming();
 
@@ -244,6 +259,8 @@ protected:
 	PC_CTRL_STATUS m_pc_status;
 
 	std::vector<unsigned long> m_status;
+	std::vector<std::string> m_ModuleTypes;
+	std::vector<unsigned long> m_version;
 	std::vector<unsigned char> m_dios;
 	std::vector<double> m_positions;
 	std::deque< std::vector<double> > m_cached_pos;
