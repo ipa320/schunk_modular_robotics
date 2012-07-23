@@ -248,6 +248,8 @@ public:
 	 */
 	bool doHoming();
 
+	void updateVelocities(std::vector<double> pos_temp, double delta_t);
+
 protected:
 	pthread_mutex_t m_mutex;
 

@@ -221,7 +221,21 @@ public:
     	ROS_ERROR("Parameter modul_ids not set, shutting down node...");
     	n_.shutdown();
     }
-    
+
+    /// get force_use_movevel
+    bool UseMoveVel;
+    if (n_.hasParam("force_use_movevel"))
+    {
+    	n_.getParam("force_use_movevel", UseMoveVel);
+		ROS_INFO("Parameter force_use_movevel set, using moveVel");
+    }
+    else
+    {
+    	ROS_INFO("Parameter force_use_movevel not set, using moveStep");
+		UseMoveVel = false;
+    }
+	pc_params_->SetUseMoveVel(UseMoveVel);
+
     /// Resize and assign of values to the ModulIDs
     ModulIDs.resize(ModulIDsXmlRpc.size());
     for (int i = 0; i < ModulIDsXmlRpc.size(); i++)
