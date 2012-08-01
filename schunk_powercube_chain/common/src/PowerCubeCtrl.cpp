@@ -496,26 +496,29 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 	std::vector<double> velocities; 
 	velocities.resize(DOF); 
 	velocities = vel; 				// temp var for velocity because of const reference of the function
-
-  std::ostringstream errorMsg;			// temp error msg for being copied to m_errorMessage
+	
+	std::ostringstream errorMsg;			// temp error msg for being copied to m_errorMessage
 	
 	std::vector<std::string> errorMessages;		// temp error msg for call of getStatus()
-  PC_CTRL_STATUS status;										// PowerCube Ctrl status variable
+	PC_CTRL_STATUS status;										// PowerCube Ctrl status variable
 
 	std::vector<float> delta_pos;			// traviling distance for next command
+	std::vector<float> delta_pos_horizon;
 	delta_pos.resize(DOF);
+	delta_pos_horizon.resize(DOF);
 	
 	std::vector<float> target_pos;		// absolute target postion that is desired with this command
 	target_pos.resize(DOF);	
 
 	float target_time; 	// time in milliseconds
+	float target_time_horizon;
   
 	float delta_t;			// time from the last moveVel cmd to now
 
-  /// getting limits
-  std::vector<double> LowerLimits = m_params->GetLowerLimits();
-  std::vector<double> UpperLimits = m_params->GetUpperLimits();
-  std::vector<double> maxVels = m_params->GetMaxVel();
+	/// getting limits
+	std::vector<double> LowerLimits = m_params->GetLowerLimits();
+	std::vector<double> UpperLimits = m_params->GetUpperLimits();
+	std::vector<double> maxVels = m_params->GetMaxVel();
 	
 	int ret; 		// temp return value holder
 	float pos; 	// temp position variable for PCube_move.. cmds 
@@ -531,19 +534,24 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 
   for (unsigned int i = 0; i < DOF; i++)
   {
-    // limit step time to 20msec
+    // limit step time to 50msec
     //TODO: set value 0.05 as parameter
   	if (delta_t >= 0.050)
-		{
-	  	target_time = 0.050; //sec
-		}
-    else
-		{
-	  	target_time = delta_t; //sec
-		}
+	  {
+	    target_time = 0.050; //sec
+	  }
+	else
+	  {
+	    target_time = delta_t;
+	  }
 	
-		// calculate travel distance
-		delta_pos[i] = target_time * velocities[i]; 
+	//add horizon to time before calculation of target position, to influence both time and position at the same time
+	target_time_horizon = target_time + (float)m_horizon; //sec
+	// calculate travel distance
+	delta_pos_horizon[i] = target_time_horizon * velocities[i];
+	delta_pos[i] = target_time * velocities[i];
+	
+ 
 		
 		ROS_DEBUG("delta_pos[%i]: %f target_time: %f velocitiy[%i]: %f",i ,delta_pos[i], target_time, i, velocities[i]);
 
@@ -624,12 +632,12 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 	for (unsigned int i = 0; i < DOF; i++)
 	{
 		// check module type sending command (PRL-Modules can be driven with moveStepExtended(), PW-Modules can only be driven with less safe moveVelExtended())
-		if ((m_ModuleTypes.at(i) == "PRL") && (m_version[i] >= Ready4MoveStep))
+		if ((m_ModuleTypes.at(i) == "PRL") && (m_version[i] >= Ready4MoveStep) && !m_params->GetUseMoveVel())
 		{
-			ROS_DEBUG("Modul_id = %i, ModuleType: %s, step=%f, time=%f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), target_pos[i], target_time);
+			//ROS_DEBUG("Modul_id = %i, ModuleType: %s, step=%f, time=%f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), target_pos[i], target_time);
 
 			//convert the time to int in [ms]
-			unsigned short time4motion = (unsigned short)((target_time + (double)m_horizon)*1000);
+			unsigned short time4motion = (unsigned short)((target_time)*1000.0);
 
 			//ROS_INFO("Modul_id = %i, ModuleType: %s, step=%f, time4motion=%i [ms], target_time=%f, horizon: %f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), delta_pos[i], time4motion, target_time, m_horizon);
 
@@ -658,33 +666,43 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 		pos_temp[i] = (double)pos;
 		//ROS_INFO("After cmd (%X) :m_positions[%i] %f = pos: %f + delta_pos[%i]: %f",m_status[i], i, m_positions[i], pos, i, delta_pos[i]);
 	}
+
+	updateVelocities(pos_temp, delta_t);
+
+
+	pthread_mutex_lock(&m_mutex);
+	PCube_startMotionAll(m_DeviceHandle);
+	pthread_mutex_unlock(&m_mutex);
 	
+	return true;
+}
+
 	// Calculation of velocities based on vel = 1/(6*dt) * (-pos(t-3) - 3*pos(t-2) + 3*pos(t-1) + pos(t))
-	if(m_cached_pos.size() < 4)
-  {
-    m_cached_pos.push_back(pos_temp);
+	void PowerCubeCtrl::updateVelocities(std::vector<double> pos_temp, double delta_t)
+	{
+	  unsigned int DOF = m_params->GetDOF();
+	  if(m_cached_pos.size() < 4)
+	    {
+	      m_cached_pos.push_back(pos_temp);
     
-		for(unsigned int i = 0; i < DOF; i++)
+	      for(unsigned int i = 0; i < DOF; i++)
 		{		
-			m_velocities[i] = 0.0;
+		  m_velocities[i] = 0.0;
 		}
-  }
-	else
-  {
-	  m_cached_pos.push_back(pos_temp);
-	  m_cached_pos.pop_front();
-  	for(unsigned int i = 0; i < DOF; i++)
+	    }
+	  else
+	    {
+	      m_cached_pos.push_back(pos_temp);
+	      m_cached_pos.pop_front();
+	      for(unsigned int i = 0; i < DOF; i++)
 		{
-			m_velocities[i] = 1/(6*delta_t) * (-m_cached_pos[0][i]-(3*m_cached_pos[1][i])+(3*m_cached_pos[2][i])+m_cached_pos[3][i]);
+		  m_velocities[i] = 1/(6*delta_t) * (-m_cached_pos[0][i]-(3*m_cached_pos[1][i])+(3*m_cached_pos[2][i])+m_cached_pos[3][i]);
+		  //m_velocities[i] = (m_cached_pos[3][i] - m_cached_pos[2][i])/delta_t;
 		}
+	    }
 	}
 
-  pthread_mutex_lock(&m_mutex);
-  PCube_startMotionAll(m_DeviceHandle);
-  pthread_mutex_unlock(&m_mutex);
 
-  return true;
-}
 
 /*!
  * \brief Stops the manipulator immediately
@@ -990,7 +1008,6 @@ bool PowerCubeCtrl::updateStates()
   unsigned long state;
   PC_CTRL_STATUS pc_status = PC_CTRL_ERR; 
   std::vector<std::string> ErrorMessages;
-	
   std::ostringstream errorMsg;
 
   unsigned char dio;
@@ -1004,26 +1021,30 @@ bool PowerCubeCtrl::updateStates()
       ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
       pthread_mutex_unlock(&m_mutex);
 		
-    if (ret != 0)
-		{
-			//m_pc_status = PC_CTRL_ERR;
-			ROS_INFO("Error on com in UpdateStates"); 
-			//errorMsg << "State: Error com with Module [" <<  i << "]";
-			//ErrorMessages[i] = errorMsg.str();			
-		}
-		    else
-		{	
-			ROS_DEBUG("Module %i, State: %li, Time: %f",i, state, ros::Time::now().toSec());
-
-			m_status[i] = state; 		
-			m_dios[i] = dio;
-			m_positions[i] = position;
-		}	
-		
-      /// TODO: calculate vel and acc
-      ///m_velocities = ???;
-      ///m_accelerations = ???
+      if (ret != 0)
+	{
+	  //m_pc_status = PC_CTRL_ERR;
+	  ROS_INFO("Error on com in UpdateStates");
+	  return true;
+	  //errorMsg << "State: Error com with Module [" <<  i << "]";
+	  //ErrorMessages[i] = errorMsg.str();			
+	}
+      else
+	{	
+	  ROS_DEBUG("Module %i, State: %li, Time: %f",i, state, ros::Time::now().toSec());
+	  
+	  m_status[i] = state; 		
+	  m_dios[i] = dio;
+	  m_positions[i] = position;
+	}	
+      
     }
+
+
+  double delta_t = ros::Time::now().toSec() - m_last_time_pub.toSec();
+  m_last_time_pub = ros::Time::now();  
+
+  updateVelocities(m_positions, delta_t);
 	
   // evaluate state for translation for diagnostics msgs
   getStatus(pc_status, ErrorMessages);
