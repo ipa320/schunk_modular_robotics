@@ -71,7 +71,8 @@
 // ROS message includes
 #include <trajectory_msgs/JointTrajectory.h>
 #include <sensor_msgs/JointState.h>
-#include <pr2_controllers_msgs/JointTrajectoryAction.h>
+//#include <pr2_controllers_msgs/JointTrajectoryAction.h>
+#include <control_msgs/FollowJointTrajectoryAction.h>
 #include <pr2_controllers_msgs/JointTrajectoryControllerState.h>
 #include <schunk_sdh/TactileSensor.h>
 #include <schunk_sdh/TactileMatrix.h>
@@ -111,7 +112,8 @@ class SdhNode
 		ros::ServiceServer srvServer_SetOperationMode_;
 
 		// actionlib server
-		actionlib::SimpleActionServer<pr2_controllers_msgs::JointTrajectoryAction> as_;
+		//actionlib::SimpleActionServer<pr2_controllers_msgs::JointTrajectoryAction> as_;
+		actionlib::SimpleActionServer<control_msgs::FollowJointTrajectoryAction> as_;
 		std::string action_name_;
 
 		// service clients
@@ -252,7 +254,8 @@ class SdhNode
 		* Set the current goal to aborted after receiving a new goal and write new goal to a member variable. Wait for the goal to finish and set actionlib status to succeeded.
 		* \param goal JointTrajectoryGoal
 		*/
-		void executeCB(const pr2_controllers_msgs::JointTrajectoryGoalConstPtr &goal)
+		//void executeCB(const pr2_controllers_msgs::JointTrajectoryGoalConstPtr &goal)
+		void executeCB(const control_msgs::FollowJointTrajectoryGoalConstPtr &goal)
 		{			
 			ROS_INFO("sdh: executeCB");
 			if (!isInitialized_)
@@ -735,7 +738,8 @@ int main(int argc, char** argv)
 	// initialize ROS, spezify name of node
 	ros::init(argc, argv, "schunk_sdh");
 
-	SdhNode sdh_node(ros::this_node::getName() + "/joint_trajectory_action");
+	//SdhNode sdh_node(ros::this_node::getName() + "/joint_trajectory_action");
+	SdhNode sdh_node(ros::this_node::getName() + "/follow_joint_trajectory");
 	if (!sdh_node.init()) return 0;
 	
 	ROS_INFO("...sdh node running...");
