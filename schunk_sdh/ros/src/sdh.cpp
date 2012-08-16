@@ -204,7 +204,7 @@ class SdhNode
 			nh_.param("sdhdevicestring", sdhdevicestring_, std::string("/dev/pcan0"));
 			nh_.param("sdhdevicenum", sdhdevicenum_, 0);
 			
-			nh_.param("dsadevicestring", dsadevicestring_, std::string("/dev/ttyS0"));
+			nh_.param("dsadevicestring", dsadevicestring_, std::string(""));
 			nh_.param("dsadevicenum", dsadevicenum_, 0);
 			
 			nh_.param("baudrate", baudrate_, 1000000);
@@ -377,27 +377,28 @@ class SdhNode
 				}
 				
 				//Init tactile data
-				try
-				{
-					dsa_ = new SDH::cDSA(0, dsadevicenum_, dsadevicestring_.c_str());
-					//dsa_->SetFramerate( 0, true, false );
-					dsa_->SetFramerate( 1, true );
-					ROS_INFO("Initialized RS232 for DSA Tactile Sensors on device %s",dsadevicestring_.c_str());
-					// ROS_INFO("Set sensitivity to 1.0");
-					// for(int i=0; i<6; i++)
-					// 	dsa_->SetMatrixSensitivity(i, 1.0);
-					isDSAInitialized_ = true;
+				if(!dsadevicestring_.empty())  {
+					try
+					{
+						dsa_ = new SDH::cDSA(0, dsadevicenum_, dsadevicestring_.c_str());
+						//dsa_->SetFramerate( 0, true, false );
+						dsa_->SetFramerate( 1, true );
+						ROS_INFO("Initialized RS232 for DSA Tactile Sensors on device %s",dsadevicestring_.c_str());
+						// ROS_INFO("Set sensitivity to 1.0");
+						// for(int i=0; i<6; i++)
+						// 	dsa_->SetMatrixSensitivity(i, 1.0);
+						isDSAInitialized_ = true;
+					}
+					catch (SDH::cSDHLibraryException* e)
+					{
+						isDSAInitialized_ = false;
+						ROS_ERROR("An exception was caught: %s", e->what());
+						res.success.data = false;
+						res.error_message.data = e->what();
+						delete e;
+						return true;
+					}
 				}
-				catch (SDH::cSDHLibraryException* e)
-				{
-					isDSAInitialized_ = false;
-					ROS_ERROR("An exception was caught: %s", e->what());
-					res.success.data = false;
-					res.error_message.data = e->what();
-					delete e;
-					return true;
-				}
-				
 			}
 			else
 			{
