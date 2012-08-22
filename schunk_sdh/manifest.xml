@@ -16,6 +16,7 @@
   <depend package="actionlib"/>
   <depend package="cob_srvs"/>
   <depend package="pr2_controllers_msgs"/>
+  <depend package="control_msgs"/>
   <depend package="libntcan"/>
   <depend package="libpcan"/>
   <depend package="diagnostic_msgs"/>
