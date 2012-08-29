@@ -1240,23 +1240,22 @@ bool PowerCubeCtrl::doHoming()
 
   for (unsigned int i = 0; i < DOF; i++)
     {	
-		
-		
       unsigned long int help; 
       do
-	{
-	  pthread_mutex_lock(&m_mutex);
-	  PCube_getModuleState(m_DeviceHandle, ModuleIDs[i], &help);
-	  pthread_mutex_unlock(&m_mutex);
-	  ROS_DEBUG("Homing active for Module: %i State: %li", ModuleIDs.at(i), help);
+			{
+				pthread_mutex_lock(&m_mutex);
+				PCube_getModuleState(m_DeviceHandle, ModuleIDs[i], &help);
+				pthread_mutex_unlock(&m_mutex);
+				ROS_DEBUG("Homing active for Module: %i State: %li", ModuleIDs.at(i), help);
 
-	  /// timeout watchdog for homing
-	  usleep(intervall * 1000000);	// convert sec to usec
-	  homing_time += intervall; 
-	  if (homing_time >= max_homing_time) {Stop(); break;} 
+				/// timeout watchdog for homing
+				usleep(intervall * 1000000);	// convert sec to usec
+				homing_time += intervall; 
+				if (homing_time >= max_homing_time) {Stop(); break;} 
 
-	} while ((help & STATEID_MOD_HOME) == 0);
-      m_status[i] = help;
+			} while ((help & STATEID_MOD_HOME) == 0);
+     
+			m_status[i] = help;
       ROS_DEBUG("State of Module %i : %li", ModuleIDs.at(i), help);
     }
 
@@ -1264,11 +1263,11 @@ bool PowerCubeCtrl::doHoming()
     {	
       /// check result
       if (!(m_status[i] & STATEID_MOD_HOME) || (m_status[i] & STATEID_MOD_ERROR) )
-	{
-	  std::cout << "Homing failed: Error in  Module " << ModuleIDs[i] << std::endl;
-	  m_pc_status = PC_CTRL_NOT_HOMED;
-	  return false;
-	}
+			{
+				std::cout << "Homing failed: Error in  Module " << ModuleIDs[i] << std::endl;
+				m_pc_status = PC_CTRL_NOT_HOMED;
+				return false;
+			}
 		
       ROS_INFO("Homing for Modul %i done.", ModuleIDs.at(i)); 
     }
