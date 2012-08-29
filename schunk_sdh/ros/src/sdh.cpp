@@ -71,7 +71,8 @@
 // ROS message includes
 #include <trajectory_msgs/JointTrajectory.h>
 #include <sensor_msgs/JointState.h>
-#include <pr2_controllers_msgs/JointTrajectoryAction.h>
+//#include <pr2_controllers_msgs/JointTrajectoryAction.h>
+#include <control_msgs/FollowJointTrajectoryAction.h>
 #include <pr2_controllers_msgs/JointTrajectoryControllerState.h>
 #include <schunk_sdh/TactileSensor.h>
 #include <schunk_sdh/TactileMatrix.h>
@@ -111,7 +112,8 @@ class SdhNode
 		ros::ServiceServer srvServer_SetOperationMode_;
 
 		// actionlib server
-		actionlib::SimpleActionServer<pr2_controllers_msgs::JointTrajectoryAction> as_;
+		//actionlib::SimpleActionServer<pr2_controllers_msgs::JointTrajectoryAction> as_;
+		actionlib::SimpleActionServer<control_msgs::FollowJointTrajectoryAction> as_;
 		std::string action_name_;
 
 		// service clients
@@ -204,7 +206,7 @@ class SdhNode
 			nh_.param("sdhdevicestring", sdhdevicestring_, std::string("/dev/pcan0"));
 			nh_.param("sdhdevicenum", sdhdevicenum_, 0);
 			
-			nh_.param("dsadevicestring", dsadevicestring_, std::string("/dev/ttyS0"));
+			nh_.param("dsadevicestring", dsadevicestring_, std::string(""));
 			nh_.param("dsadevicenum", dsadevicenum_, 0);
 			
 			nh_.param("baudrate", baudrate_, 1000000);
@@ -252,7 +254,8 @@ class SdhNode
 		* Set the current goal to aborted after receiving a new goal and write new goal to a member variable. Wait for the goal to finish and set actionlib status to succeeded.
 		* \param goal JointTrajectoryGoal
 		*/
-		void executeCB(const pr2_controllers_msgs::JointTrajectoryGoalConstPtr &goal)
+		//void executeCB(const pr2_controllers_msgs::JointTrajectoryGoalConstPtr &goal)
+		void executeCB(const control_msgs::FollowJointTrajectoryGoalConstPtr &goal)
 		{			
 			ROS_INFO("sdh: executeCB");
 			if (!isInitialized_)
@@ -377,27 +380,28 @@ class SdhNode
 				}
 				
 				//Init tactile data
-				try
-				{
-					dsa_ = new SDH::cDSA(0, dsadevicenum_, dsadevicestring_.c_str());
-					//dsa_->SetFramerate( 0, true, false );
-					dsa_->SetFramerate( 1, true );
-					ROS_INFO("Initialized RS232 for DSA Tactile Sensors on device %s",dsadevicestring_.c_str());
-					// ROS_INFO("Set sensitivity to 1.0");
-					// for(int i=0; i<6; i++)
-					// 	dsa_->SetMatrixSensitivity(i, 1.0);
-					isDSAInitialized_ = true;
+				if(!dsadevicestring_.empty())  {
+					try
+					{
+						dsa_ = new SDH::cDSA(0, dsadevicenum_, dsadevicestring_.c_str());
+						//dsa_->SetFramerate( 0, true, false );
+						dsa_->SetFramerate( 1, true );
+						ROS_INFO("Initialized RS232 for DSA Tactile Sensors on device %s",dsadevicestring_.c_str());
+						// ROS_INFO("Set sensitivity to 1.0");
+						// for(int i=0; i<6; i++)
+						// 	dsa_->SetMatrixSensitivity(i, 1.0);
+						isDSAInitialized_ = true;
+					}
+					catch (SDH::cSDHLibraryException* e)
+					{
+						isDSAInitialized_ = false;
+						ROS_ERROR("An exception was caught: %s", e->what());
+						res.success.data = false;
+						res.error_message.data = e->what();
+						delete e;
+						return true;
+					}
 				}
-				catch (SDH::cSDHLibraryException* e)
-				{
-					isDSAInitialized_ = false;
-					ROS_ERROR("An exception was caught: %s", e->what());
-					res.success.data = false;
-					res.error_message.data = e->what();
-					delete e;
-					return true;
-				}
-				
 			}
 			else
 			{
@@ -735,7 +739,8 @@ int main(int argc, char** argv)
 	// initialize ROS, spezify name of node
 	ros::init(argc, argv, "schunk_sdh");
 
-	SdhNode sdh_node(ros::this_node::getName() + "/joint_trajectory_action");
+	//SdhNode sdh_node(ros::this_node::getName() + "/joint_trajectory_action");
+	SdhNode sdh_node(ros::this_node::getName() + "/follow_joint_trajectory");
 	if (!sdh_node.init()) return 0;
 	
 	ROS_INFO("...sdh node running...");
