@@ -327,6 +327,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
   }
 
   /// Set limits to hardware
+	//TODO: add safty limit for hardware, that modules don't reach limits
   for (int i = 0; i < DOF; i++)
   {
     pthread_mutex_lock(&m_mutex);
@@ -489,7 +490,8 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
   //== init var ==================================================
 
   /// getting paramerters
-  unsigned int DOF = m_params->GetDOF();
+	unsigned int DOF = m_params->GetDOF();
+	std::vector<int> ModulIDs = m_params->GetModuleIDs();
 	
 	std::vector<double> velocities; 
 	velocities.resize(DOF); 
@@ -573,13 +575,18 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 			}
 
       /// check position limits
- 
+ 		// TODO: add second limit "safty limit" 
 			// if target position is outer limits and the command velocity is in in direction away from working range, skip command
       if ((target_pos[i] < LowerLimits[i]) && (velocities[i] < 0))
 			{	
 				ROS_INFO("Skipping command: %f Target position exceeds lower limit (%f).", target_pos[i], LowerLimits[i]);		
 				// target position is set to actual position and velocity to Null. So only movement in the non limit direction is possible.
-				return false; 
+	
+				pthread_mutex_lock(&m_mutex);
+				PCube_haltModule(m_DeviceHandle, ModulIDs.at(i));
+				pthread_mutex_unlock(&m_mutex);
+				
+				return true; 
 			} 
 			
 			// if target position is outer limits and the command velocity is in in direction away from working range, skip command
@@ -588,7 +595,12 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 				ROS_INFO("Skipping command: %f Target position exceeds upper limit (%f).", target_pos[i], UpperLimits[i]);		
 
 				// target position is set to actual position. So only movement in the non limit direction is possible.
-				return false; 
+				
+				pthread_mutex_lock(&m_mutex);
+				PCube_haltModule(m_DeviceHandle, ModulIDs.at(i));
+				pthread_mutex_unlock(&m_mutex);
+
+				return true; 
 			} 
 		}
 
@@ -603,7 +615,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 		{
 	  	m_ErrorMessage.append(errorMessages[i]);
 		}
-		ROS_INFO("Error during movement. Status: %i", status);
+		ROS_INFO("Error during movement. Status: %i	\n", status);
     return false;
   }
 
@@ -614,18 +626,21 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 		// check module type sending command (PRL-Modules can be driven with moveStepExtended(), PW-Modules can only be driven with less safe moveVelExtended())
 		if ((m_ModuleTypes.at(i) == "PRL") && (m_version[i] >= Ready4MoveStep))
 		{
-			pthread_mutex_lock(&m_mutex);
-			ret = PCube_moveVelExtended(m_DeviceHandle, m_params->GetModuleID(i), velocities[i], &m_status[i], &m_dios[i], &pos);
-			pthread_mutex_unlock(&m_mutex);
-		}
-		else	/// Types: PRL, other
-		{		
 			ROS_DEBUG("Modul_id = %i, ModuleType: %s, step=%f, time=%f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), target_pos[i], target_time);
 
 			//convert the time to int in [ms]
-			unsigned short time4motion = (unsigned short)((target_time + m_horizon)*1000);
+			unsigned short time4motion = (unsigned short)((target_time + (double)m_horizon)*1000);
 
+			//ROS_INFO("Modul_id = %i, ModuleType: %s, step=%f, time4motion=%i [ms], target_time=%f, horizon: %f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), delta_pos[i], time4motion, target_time, m_horizon);
+
+			pthread_mutex_lock(&m_mutex);
 			ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), target_pos[i], time4motion, &m_status[i], &m_dios[i], &pos);
+			pthread_mutex_unlock(&m_mutex);
+		}
+		else	/// Types: PRL, PW, other
+		{		
+			pthread_mutex_lock(&m_mutex);
+			ret = PCube_moveVelExtended(m_DeviceHandle, m_params->GetModuleID(i), velocities[i], &m_status[i], &m_dios[i], &pos);
 			pthread_mutex_unlock(&m_mutex);
 		}
 
@@ -681,15 +696,27 @@ bool PowerCubeCtrl::Stop()
 	std::vector<int> ModulIDs = m_params->GetModuleIDs();
 
   /// stop should be executes without checking any conditions
-  pthread_mutex_lock(&m_mutex);
-  PCube_haltAll(m_DeviceHandle);
-  pthread_mutex_unlock(&m_mutex);
+
+
+	for (unsigned int i = 0; i < DOF; i++)
+  {  
+		pthread_mutex_lock(&m_mutex);
+		int ret =  PCube_haltModule(m_DeviceHandle, ModulIDs.at(i));
+		pthread_mutex_unlock(&m_mutex);
+		if (ret != 0)
+		  {
+		    std::ostringstream errorMsg;
+		    errorMsg << "Could not reset all modules, m5api error code: " << ret;
+		    m_ErrorMessage = errorMsg.str();
+		    return false;
+		  }
+	}
 
   /// after halt the modules don't accept move commands any more, they first have to be reseted
   usleep(500000);
 
    /// reset all modules of the chain
-	for (int i = 0; i < DOF; i++)
+	for (unsigned int i = 0; i < DOF; i++)
   {  
 		pthread_mutex_lock(&m_mutex);
 		int ret =  PCube_resetModule(m_DeviceHandle, ModulIDs.at(i));
