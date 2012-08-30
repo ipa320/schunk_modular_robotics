@@ -63,6 +63,8 @@
 // own includes
 #include <schunk_powercube_chain/PowerCubeCtrl.h>
 
+#include <chrono>
+
 #define PCTRL_CHECK_INITIALIZED()				\
   if ( isInitialized()==false )					\
     {								\
@@ -87,6 +89,8 @@ PowerCubeCtrl::PowerCubeCtrl(PowerCubeCtrlParams * params)
   m_horizon = 0.01; // sec
 
   m_last_time_pub = ros::Time::now();
+
+	m_pc_status = PC_CTRL_OK; 
 }
 
 /*
@@ -197,17 +201,20 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 
   m_CANDeviceOpened = true;
 
-  /// reset all modules
-  pthread_mutex_lock(&m_mutex);
-  ret = PCube_resetAll(m_DeviceHandle);
-  pthread_mutex_unlock(&m_mutex);
-  if (ret != 0)
-    {
-      std::ostringstream errorMsg;
-      errorMsg << "Could not reset all modules, m5api error code: " << ret;
-      m_ErrorMessage = errorMsg.str();
-      return false;
-    }
+  /// reset all modules of the chain
+	for (int i = 0; i < DOF; i++)
+  {  
+		pthread_mutex_lock(&m_mutex);
+		ret =  PCube_resetModule(m_DeviceHandle, ModulIDs.at(i));
+		pthread_mutex_unlock(&m_mutex);
+		if (ret != 0)
+	  {
+	    std::ostringstream errorMsg;
+	    errorMsg << "Could not reset module " << ModulIDs.at(i) << ", m5api error code: " << ret;
+	    m_ErrorMessage = errorMsg.str();
+	    return false;
+	  }
+	}
 
   /// make sure m_IdModules is clear of Elements:
   ModulIDs.clear();
@@ -220,7 +227,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 
   /// Check if the modules are connected
   for (int i = 0; i < DOF; i++)
-    {
+  {
       unsigned long serNo;
       unsigned short verNo;
       unsigned long defConfig;
@@ -231,69 +238,69 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
       ret = PCube_getModuleSerialNo(m_DeviceHandle, ModulIDs[i], &serNo);
       pthread_mutex_unlock(&m_mutex);
       if (ret != 0)
-	{
-	  std::ostringstream errorMsg;
-	  errorMsg << "Could not find Module with ID " << ModulIDs[i] << ", m5api error code: " << ret;
-	  m_ErrorMessage = errorMsg.str();	
-	  return false;
-	}
+			{
+				std::ostringstream errorMsg;
+				errorMsg << "Could not find Module with ID " << ModulIDs[i] << ", m5api error code: " << ret;
+				m_ErrorMessage = errorMsg.str();	
+				return false;
+			}
 		
       /// retrieve version number 		
       pthread_mutex_lock(&m_mutex);
       ret = PCube_getModuleVersion(m_DeviceHandle, ModulIDs[i], &verNo);
       pthread_mutex_unlock(&m_mutex);
       if (ret != 0)
-	{
-	  std::ostringstream errorMsg;
-	  errorMsg << "Could not find Module with ID " << ModulIDs[i] << ", m5api error code: " << ret;
-	  m_ErrorMessage = errorMsg.str();	
-	  return false;
-	}else
-	{
-	  m_version[i] = verNo; 
-	}
+			{
+				std::ostringstream errorMsg;
+				errorMsg << "Could not find Module with ID " << ModulIDs[i] << ", m5api error code: " << ret;
+				m_ErrorMessage = errorMsg.str();	
+				return false;
+			}
+			else
+			{
+			  m_version[i] = verNo; 
+			}
+			
+			/// find out module_type
+			// the typ -if PW or PRL- can be distinguished by the typ of encoder. 
+			pthread_mutex_lock(&m_mutex);
+			ret = PCube_getDefSetup(m_DeviceHandle, ModulIDs[i], &defConfig);
+			pthread_mutex_unlock(&m_mutex);
 
+			ROS_DEBUG("module type check: %li (std::dec)",defConfig); 
+			
+  		if (ret != 0)
+			{
+	  		std::ostringstream errorMsg;
+				errorMsg << "Error on communication with module " << ModulIDs[i] << ", m5api error code: " << ret;
+				m_ErrorMessage = errorMsg.str();	
+				return false;
+			}	
 		
-      /// find out module_type
-      // the typ -if PW or PRL- can be distinguished by the typ of encoder. 
-      pthread_mutex_lock(&m_mutex);
-      ret = PCube_getDefSetup(m_DeviceHandle, ModulIDs[i], &defConfig);
-      pthread_mutex_unlock(&m_mutex);
-		
-      ROS_DEBUG("module type check: %li (std::dec)",defConfig); 
-		
-      if (ret != 0)
-	{
-	  std::ostringstream errorMsg;
-	  errorMsg << "Error on communication with module " << ModulIDs[i] << ", m5api error code: " << ret;
-	  m_ErrorMessage = errorMsg.str();	
-	  return false;
-	}	
-		
-      // Firmware version 4634 of PRL modules replies ABSOULTE_FEEDBACK, firmware 4638 replies RESOLVER_FEEDBACK. 
-      // Both means the same: Module is PRL. PW modules have encoders (ENCODER_FEEDBACK, s.M5API), but this bit is not set is DefConfig word.
-      // For new firmware versions this needs to be evaluated. 
-      if (((defConfig & CONFIG_ABSOLUTE_FEEDBACK)==CONFIG_ABSOLUTE_FEEDBACK) || ((defConfig & CONFIG_RESOLVER_FEEDBACK)==CONFIG_RESOLVER_FEEDBACK))
-	{
-	  m_ModuleTypes[i] = "PRL"; 
-	  ROS_DEBUG("Module %i is from type: PRL", i);
-	}
-      else
-	{
-	  m_ModuleTypes[i] = "PW"; 
-	  ROS_DEBUG("Module %i is from type: PW", i);
-	}
+			// Firmware version 4634 of PRL modules replies ABSOULTE_FEEDBACK, firmware 4638 replies RESOLVER_FEEDBACK. 
+			// Both means the same: Module is PRL. PW modules have encoders (ENCODER_FEEDBACK, s.M5API), but this bit is not set is DefConfig word.
+			// For new firmware versions this needs to be evaluated. 
+			if (((defConfig & CONFIG_ABSOLUTE_FEEDBACK)==CONFIG_ABSOLUTE_FEEDBACK) || ((defConfig & CONFIG_RESOLVER_FEEDBACK)==CONFIG_RESOLVER_FEEDBACK))
+			{
+				m_ModuleTypes[i] = "PRL"; 
+				ROS_DEBUG("Module %i is from type: PRL", i);
+			}
+  		else
+			{
+				m_ModuleTypes[i] = "PW"; 
+				ROS_DEBUG("Module %i is from type: PW", i);
+			}
 
-      /// otherwise success
-      std::cout << "Found module " << std::dec << ModulIDs[i] << " Serial: " << serNo << " Version: " << std::hex << verNo << std::endl;
+			/// otherwise success
+			std::cout << "Found module " << std::dec << ModulIDs[i] << " Serial: " << serNo << " Version: " << std::hex << verNo << std::endl;
 
-    }
+		}
 	
   // modules should be initialized now
   m_pc_status = PC_CTRL_OK;
   m_Initialized = true; 
 
-  // check if modules are in normal state
+  /// check if modules are in normal state
   std::vector<std::string> errorMessages;
   PC_CTRL_STATUS status;
 
@@ -314,24 +321,25 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 
   /// Set angle offsets to hardware
   for (int i = 0; i < DOF; i++)
-    {
-      pthread_mutex_lock(&m_mutex);
-      //std::cout << "------------------------------> PCube_setHomeOffset()" << std::endl;
-      PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
-      pthread_mutex_unlock(&m_mutex);
-    }
+  {
+    pthread_mutex_lock(&m_mutex);
+    //std::cout << "------------------------------> PCube_setHomeOffset()" << std::endl;
+    PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
+    pthread_mutex_unlock(&m_mutex);
+  }
 
   /// Set limits to hardware
+	//TODO: add safty limit for hardware, that modules don't reach limits
   for (int i = 0; i < DOF; i++)
-    {
-      pthread_mutex_lock(&m_mutex);
-      PCube_setMinPos(m_DeviceHandle, ModulIDs[i], LowerLimits[i]);
-      pthread_mutex_unlock(&m_mutex);
+  {
+    pthread_mutex_lock(&m_mutex);
+    PCube_setMinPos(m_DeviceHandle, ModulIDs[i], LowerLimits[i]);
+    pthread_mutex_unlock(&m_mutex);
 
-      pthread_mutex_lock(&m_mutex);
-      PCube_setMaxPos(m_DeviceHandle, ModulIDs[i], UpperLimits[i]);
-      pthread_mutex_unlock(&m_mutex);
-    }
+    pthread_mutex_lock(&m_mutex);
+    PCube_setMaxPos(m_DeviceHandle, ModulIDs[i], UpperLimits[i]);
+    pthread_mutex_unlock(&m_mutex);
+  }
 
   /// Set max velocity to hardware
   setMaxVelocity(MaxVel);
@@ -477,20 +485,88 @@ bool PowerCubeCtrl::MoveJointSpaceSync(const std::vector<double>& target)
  * Calculating positions and times by desired value of the cob_trajectory_controller
  * \param velocities Vector
  */
-bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
+bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 {
   PCTRL_CHECK_INITIALIZED();
+  
+  //== init var ==================================================
 
-  unsigned int DOF = m_params->GetDOF();
+  /// getting paramerters
+	unsigned int DOF = m_params->GetDOF();
+	std::vector<int> ModulIDs = m_params->GetModuleIDs();
 	
-  std::ostringstream errorMsg;
+	std::vector<double> velocities; 
+	velocities.resize(DOF); 
+	velocities = vel; 				// temp var for velocity because of const reference of the function
+	
+	std::ostringstream errorMsg;			// temp error msg for being copied to m_errorMessage
+	
+	std::vector<std::string> errorMessages;		// temp error msg for call of getStatus()
+	PC_CTRL_STATUS status;										// PowerCube Ctrl status variable
 
-  /// getting limits
-  std::vector<double> LowerLimits = m_params->GetLowerLimits();
-  std::vector<double> UpperLimits = m_params->GetUpperLimits();
-  std::vector<double> maxVels = m_params->GetMaxVel();
+	std::vector<float> delta_pos;			// traviling distance for next command
+	std::vector<float> delta_pos_horizon;
+	delta_pos.resize(DOF);
+	delta_pos_horizon.resize(DOF);
+	
+	std::vector<float> target_pos;		// absolute target postion that is desired with this command
+	std::vector<float> target_pos_horizon;	
+	
+	target_pos.resize(DOF);	
+	target_pos_horizon.resize(DOF);
+	float target_time; 	// time in milliseconds
+	float target_time_horizon = 0;
+  
+	float delta_t;			// time from the last moveVel cmd to now
 
-  /// check dimensions
+	/// getting limits
+	std::vector<double> LowerLimits = m_params->GetLowerLimits();
+	std::vector<double> UpperLimits = m_params->GetUpperLimits();
+	std::vector<double> maxVels = m_params->GetMaxVel();
+	
+	int ret; 		// temp return value holder
+	float pos; 	// temp position variable for PCube_move.. cmds 
+
+	//== calculate destination position ============================
+	// needed for limit handling and MoveStep command
+	
+  delta_t = ros::Time::now().toSec() - m_last_time_pub.toSec();
+	std::cout << "delta_t: " << delta_t << std::endl; 
+
+  m_last_time_pub = ros::Time::now();  
+
+  std::vector<double> pos_temp;
+  pos_temp.resize(DOF);
+
+  for (unsigned int i = 0; i < DOF; i++)
+  {
+    // limit step time to 50msec
+    //TODO: set value 0.05 as parameter
+  	if (delta_t >= 0.050)
+	  {
+	    target_time = 0.050; //sec
+	  }
+	else
+	  {
+	    target_time = delta_t;	//sec
+	  }
+	
+	//add horizon to time before calculation of target position, to influence both time and position at the same time
+	target_time_horizon = target_time + (float)m_horizon; //sec
+	// calculate travel distance
+	delta_pos_horizon[i] = target_time_horizon * velocities[i];
+	delta_pos[i] = target_time * velocities[i];
+	
+		ROS_DEBUG("delta_pos[%i]: %f target_time: %f velocitiy[%i]: %f",i ,delta_pos[i], target_time, i, velocities[i]);
+ 
+		// calculate target position   
+		target_pos_horizon[i] = m_positions[i] + delta_pos_horizon[i];
+		ROS_DEBUG("target_pos[%i]: %f m_position[%i]: %f",i ,target_pos[i], i, m_positions[i]);
+	}
+
+	//== check input parameter =====================================
+  
+	/// check dimensions
   if (velocities.size() != DOF)
     {
       m_ErrorMessage = "Skipping command: Commanded velocities and DOF are not same dimension.";
@@ -501,139 +577,187 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& velocities)
     {
       /// check velocity limit
       if(velocities[i] > maxVels[i])
-	{
-	  //velocities[i] = maxVels[i];
+			{ 
+				// set velocities command to max value
+				velocities[i] = maxVels[i];
 		
-	  errorMsg << "Velocity " << velocities[i] << " exceeds limit " << maxVels[i] << "for axis " << i << " moving with " << maxVels[i] << " instead";
-	  m_ErrorMessage = errorMsg.str();
-	}
+				//TODO: add ros_warn 	
+
+				ROS_INFO("Velocity %f exceeds limit %f for axis %i. moving with max velocity %f instead", velocities[i], maxVels[i], i, maxVels[i]);
+			}
 
       /// check position limits
-      // TODO: specifiy target pos value 0.02, adapt limitcheck to both move commands, use horizon, or only the sign of the velocity value
-      double targetpos = m_positions[i] + (0.05 * velocities[i]);
-      if (targetpos < LowerLimits[i])
-	{	
-	  ROS_INFO("Skipping command: %f Target position exceeds lower limit (%f).", targetpos, LowerLimits[i]);		
-	  // target position is set to actual position. So only movement in the non limit direction is possible.
-	  targetpos = m_positions[i];
-	} 
-		  
-      if (targetpos > UpperLimits[i])
-	{	
-	  ROS_INFO("Skipping command: %f Target position exceeds upper limit (%f).", targetpos, UpperLimits[i]);		
+ 			// TODO: add second limit "safty limit" 
+			// if target position is outer limits and the command velocity is in in direction away from working range, skip command
+      if ((target_pos[i] < LowerLimits[i]) && (velocities[i] < 0))
+			{	
+				ROS_INFO("Skipping command: %f Target position exceeds lower limit (%f).", target_pos[i], LowerLimits[i]);		
+				// target position is set to actual position and velocity to Null. So only movement in the non limit direction is possible.
+	
+				pthread_mutex_lock(&m_mutex);
+				PCube_haltModule(m_DeviceHandle, ModulIDs.at(i));
+				pthread_mutex_unlock(&m_mutex);
+				
+				return true; 
+			} 
+			
+			// if target position is outer limits and the command velocity is in in direction away from working range, skip command
+			if ((target_pos[i] > UpperLimits[i]) && (velocities[i] > 0))
+			{	
+				ROS_INFO("Skipping command: %f Target position exceeds upper limit (%f).", target_pos[i], UpperLimits[i]);		
 
-	  // target position is set to actual position. So only movement in the non limit direction is possible.
-	  targetpos = m_positions[i];
-	} 
-    }
+				// target position is set to actual position. So only movement in the non limit direction is possible.
+				
+				pthread_mutex_lock(&m_mutex);
+				PCube_haltModule(m_DeviceHandle, ModulIDs.at(i));
+				pthread_mutex_unlock(&m_mutex);
 
-  std::vector<std::string> errorMessages;
-  PC_CTRL_STATUS status;
+				return true; 
+			} 
+		}
+
+  //== check system status ====================================== 
+  
   getStatus(status, errorMessages);
 	
   if ((status != PC_CTRL_OK))
-    {
-      m_ErrorMessage.assign("");
-      for (unsigned int i = 0; i < DOF; i++)
+  {
+    m_ErrorMessage.assign("");
+    for (unsigned int i = 0; i < DOF; i++)
+		{
+	  	m_ErrorMessage.append(errorMessages[i]);
+		}
+		ROS_INFO("Error during movement. Status: %i	\n", status);
+    return false;
+  }
+
+  //== send velocity cmd to modules ============================== 
+
+	//convert the time to int in [ms]
+	unsigned short time4motion = (unsigned short)((target_time_horizon)*1000.0);
+
+	for (unsigned int i = 0; i < DOF; i++)
 	{
-	  m_ErrorMessage.append(errorMessages[i]);
-	}
-      return false;
-    }
+		// check module type sending command (PRL-Modules can be driven with moveStepExtended(), PW-Modules can only be driven with less safe moveVelExtended())
+		if ((m_ModuleTypes.at(i) == "PRL") && (m_version[i] >= Ready4MoveStep) && !m_params->GetUseMoveVel())
+		{
+			//ROS_DEBUG("Modul_id = %i, ModuleType: %s, step=%f, time=%f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), target_pos[i], target_time);
 
-  float delta_t;
-  delta_t = ros::Time::now().toSec() - m_last_time_pub.toSec();
-  m_last_time_pub = ros::Time::now();  
+			//ROS_INFO("Modul_id = %i, ModuleType: %s, step=%f, time4motion=%i [ms], target_time=%f, horizon: %f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), delta_pos[i], time4motion, target_time, m_horizon);
+			
+			pthread_mutex_lock(&m_mutex);
+			ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), target_pos_horizon[i], time4motion, &m_status[i], &m_dios[i], &pos);
+			pthread_mutex_unlock(&m_mutex);
+		}
+		else	/// Types: PRL, PW, other
+		{		
+			pthread_mutex_lock(&m_mutex);
+			ret = PCube_moveVelExtended(m_DeviceHandle, m_params->GetModuleID(i), velocities[i], &m_status[i], &m_dios[i], &pos);
+			pthread_mutex_unlock(&m_mutex);
+		}
 
-  std::vector<double> pos_temp;
-  pos_temp.resize(DOF);
-
-  for (unsigned int i = 0; i < DOF; i++)
-    {
-      float pos;
-      float cmd_pos;
-      double  cmd_time; // time in milliseconds
-      int ret; 
-
-      // limit step time to 20msec
-      //TODO: set value 0.05 as parameter
-      if (delta_t >= 0.050)
-	{
-	  cmd_time = 0.050; //sec
-	}
-      else
-	{
-	  cmd_time = delta_t; //sec
-	}
-      cmd_pos = cmd_time * velocities[i];
-
-      // check module type sending command (PRL-Modules can be driven with moveStepExtended(), PW-Modules can only be driven with less safe moveVelExtended())
-      if ((m_ModuleTypes.at(i) == "PRL") && (m_version[i] >= Ready4MoveStep))
-	{
-	  pthread_mutex_lock(&m_mutex);
-	  ret = PCube_moveVelExtended(m_DeviceHandle, m_params->GetModuleID(i), velocities[i], &m_status[i], &m_dios[i], &pos);
-	  pthread_mutex_unlock(&m_mutex);
-	}
-      else	/// Types: PRL, other
-	{		
-	  ROS_DEBUG("Modul_id = %i, ModuleType: %s, step=%f, time=%f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), m_positions[i] + cmd_pos, cmd_time);
-	  ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), m_positions[i] + cmd_pos, (cmd_time+m_horizon), &m_status[i], &m_dios[i], &pos);
-	  pthread_mutex_unlock(&m_mutex);
-	}
-
-      /// error handling
-      if (ret != 0)
-	{
-	  ROS_INFO("Com Error"); 		  
-	  pos = m_positions[i];
-	  m_pc_status = PC_CTRL_ERR;
-	}
+		/// error handling
+		if (ret != 0)
+		{
+			ROS_INFO("Com Error: %i", ret); 		  
+			pos = m_positions[i];
+			//m_pc_status = PC_CTRL_ERR;
+			//TODO: add error msg for diagnostics if error occours often
+		}
 		
-      // !!! Position in pos is position before moveStep movement, to get the expected position after the movement (required as input to the next moveStep command) we add the delta position (cmd_pos) !!!
-      m_positions[i] = (double)pos + cmd_pos;
-      pos_temp[i] = (double)pos;
-		
-    }
-  // Calculation of velocities based on vel = 1/(6*dt) * (-pos(t-3) - 3*pos(t-2) + 3*pos(t-1) + pos(t))
-  if(m_cached_pos.size() < 4)
-    {
-      m_cached_pos.push_back(pos_temp);
-      for(unsigned int i = 0; i < DOF; i++)
-	m_velocities[i] = 0.0;
-    }
-  else
-    {
-      m_cached_pos.push_back(pos_temp);
-      m_cached_pos.pop_front();
-      for(unsigned int i = 0; i < DOF; i++)
-	{
-	  m_velocities[i] = 1/(6*delta_t) * (-m_cached_pos[0][i]-(3*m_cached_pos[1][i])+(3*m_cached_pos[2][i])+m_cached_pos[3][i]);
+		// !!! Position in pos is position before moveStep movement, to get the expected position after the movement (required as input to the next moveStep command) we add the delta position (cmd_pos) !!!
+		m_positions[i] = (double)pos + delta_pos[i];
+		std::cout << "pos " << i << ": " << pos << std::endl; 
+		pos_temp[i] = (double)pos;
+		//ROS_INFO("After cmd (%X) :m_positions[%i] %f = pos: %f + delta_pos[%i]: %f",m_status[i], i, m_positions[i], pos, i, delta_pos[i]);
 	}
-    }
 
-  pthread_mutex_lock(&m_mutex);
-  PCube_startMotionAll(m_DeviceHandle);
-  pthread_mutex_unlock(&m_mutex);
+	updateVelocities(pos_temp, delta_t);
+	
+	std::cout << "vel_com: " << velocities[1] << " vel_hori: " << delta_pos_horizon[1]/	target_time_horizon << " vel_real[1]: " << m_velocities.at(1) << std::endl;
 
-  return true;
+	pthread_mutex_lock(&m_mutex);
+	PCube_startMotionAll(m_DeviceHandle);
+	pthread_mutex_unlock(&m_mutex);
+	
+	return true;
 }
+
+	// Calculation of velocities based on vel = 1/(6*dt) * (-pos(t-3) - 3*pos(t-2) + 3*pos(t-1) + pos(t))
+	void PowerCubeCtrl::updateVelocities(std::vector<double> pos_temp, double delta_t)
+	{
+	  unsigned int DOF = m_params->GetDOF();
+
+	  if (m_cached_pos.empty())
+		{	
+			std::vector<double> null; 
+			for (unsigned int i=0;i<DOF;i++){	null.push_back(0); }  
+
+			m_cached_pos.push_back(null);
+      m_cached_pos.push_back(null);
+		}
+
+		  m_cached_pos.push_back(pos_temp);
+      m_cached_pos.pop_front();
+	
+			std::vector<double> last_pos = m_cached_pos.front();
+
+	    for(unsigned int i = 0; i < DOF; i++)
+			{
+		  //m_velocities[i] = 1/(6*delta_t) * (-m_cached_pos[0][i]-(3*m_cached_pos[1][i])+(3*m_cached_pos[2][i])+m_cached_pos[3][i]);
+		  //m_velocities[i] = (m_cached_pos[3][i] - m_cached_pos[2][i])/delta_t;
+					
+
+					m_velocities[i] = (pos_temp.at(i)-last_pos.at(i))/delta_t; 
+				}
+	    
+	}
+
+
 
 /*!
  * \brief Stops the manipulator immediately
  */
 bool PowerCubeCtrl::Stop()
-{
+{	
+	/// getting paramerters
+  unsigned int DOF = m_params->GetDOF();
+	std::vector<int> ModulIDs = m_params->GetModuleIDs();
+
   /// stop should be executes without checking any conditions
-  pthread_mutex_lock(&m_mutex);
-  PCube_haltAll(m_DeviceHandle);
-  pthread_mutex_unlock(&m_mutex);
+
+
+	for (unsigned int i = 0; i < DOF; i++)
+  {  
+		pthread_mutex_lock(&m_mutex);
+		int ret =  PCube_haltModule(m_DeviceHandle, ModulIDs.at(i));
+		pthread_mutex_unlock(&m_mutex);
+		if (ret != 0)
+		  {
+		    std::ostringstream errorMsg;
+		    errorMsg << "Could not reset all modules, m5api error code: " << ret;
+		    m_ErrorMessage = errorMsg.str();
+		    return false;
+		  }
+	}
 
   /// after halt the modules don't accept move commands any more, they first have to be reseted
   usleep(500000);
-  pthread_mutex_lock(&m_mutex);
-  PCube_resetAll(m_DeviceHandle);
-  pthread_mutex_unlock(&m_mutex);
 
+   /// reset all modules of the chain
+	for (unsigned int i = 0; i < DOF; i++)
+  {  
+		pthread_mutex_lock(&m_mutex);
+		int ret =  PCube_resetModule(m_DeviceHandle, ModulIDs.at(i));
+		pthread_mutex_unlock(&m_mutex);
+		if (ret != 0)
+		  {
+		    std::ostringstream errorMsg;
+		    errorMsg << "Could not reset all modules, m5api error code: " << ret;
+		    m_ErrorMessage = errorMsg.str();
+		    return false;
+		  }
+	}
   return true;
 }
 
@@ -643,41 +767,42 @@ bool PowerCubeCtrl::Stop()
 bool PowerCubeCtrl::Recover()
 {	
   unsigned int DOF = m_params->GetDOF();
+
   std::vector<std::string> errorMessages;
   PC_CTRL_STATUS status;
 	
-  unsigned long state = PC_CTRL_ERR;
+  unsigned long state = PC_CTRL_OK;
   unsigned char dio;
   float position;
   int ret = 0;
 	
   // check for each module if reset is necessary
   for (unsigned int i = 0; i < DOF; i++)
-    {	
-      pthread_mutex_lock(&m_mutex);
-      ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
-      pthread_mutex_unlock(&m_mutex);
-      if (ret != 0)
-	{
-	  m_pc_status = PC_CTRL_ERR;
-	  std::cout << "State: Error com with Module: " << i << " Time: " << ros::Time::now() << std::endl; 	
-	  return false; 		
-	}
+  {	
+    pthread_mutex_lock(&m_mutex);
+    ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
+    pthread_mutex_unlock(&m_mutex);
+    if (ret != 0)
+		{
+		  m_pc_status = PC_CTRL_ERR;
+		  std::cout << "State: Error com with Module: " << i << " Time: " << ros::Time::now() << std::endl; 	
+		  return false; 		
+		}
 		
       // if module is in error state --> reset
-      if (state & STATEID_MOD_ERROR)
-	{	
-	  pthread_mutex_lock(&m_mutex);
-	  ret = PCube_resetModule(m_DeviceHandle, m_params->GetModuleID(i));
-	  pthread_mutex_unlock(&m_mutex);
-	  if (ret != 0)
+    if (state & STATEID_MOD_ERROR)
+		{	
+		  pthread_mutex_lock(&m_mutex);
+		  ret = PCube_resetModule(m_DeviceHandle, m_params->GetModuleID(i));
+		  pthread_mutex_unlock(&m_mutex);
+		  if (ret != 0)
 	    {
 	      m_pc_status = PC_CTRL_ERR;
 	      std::cout << "State: Error com with Module: " << i << " Time: " << ros::Time::now() << std::endl; 	
 	      return false; 		
 	    }
-	}
-    }
+		}
+  }
 	
   // time for reboot
   usleep(500000); 
@@ -685,14 +810,13 @@ bool PowerCubeCtrl::Recover()
   // check is everything is ok now
   updateStates(); 
 
-  getStatus(status, errorMessages);
-  if (status == PC_CTRL_NOT_HOMED)
-    {
-      if (!doHoming())
-	{
-	  return false;
-	}
-    }
+  if (m_pc_status == PC_CTRL_NOT_HOMED)
+  {
+    if (!doHoming())
+		{
+		  return false;
+		}
+  }
 	
   usleep(500000);
 
@@ -704,14 +828,15 @@ bool PowerCubeCtrl::Recover()
   getStatus(status, errorMessages);
 
   if ((status != PC_CTRL_OK))
-    {
-      m_ErrorMessage.assign("");
-      for (int i = 0; i < m_params->GetDOF(); i++)
-	{
-	  m_ErrorMessage.append(errorMessages[i]);
-	}
-      return false;
-    }
+  {
+	  m_ErrorMessage.assign("");
+
+    for (int i = 0; i < m_params->GetDOF(); i++)
+		{
+		  m_ErrorMessage.append(errorMessages[i]);
+		}
+    return false;
+  }
 
   /// modules successfully recovered
   m_pc_status = PC_CTRL_OK;
@@ -894,7 +1019,6 @@ bool PowerCubeCtrl::updateStates()
   unsigned long state;
   PC_CTRL_STATUS pc_status = PC_CTRL_ERR; 
   std::vector<std::string> ErrorMessages;
-	
   std::ostringstream errorMsg;
 
   unsigned char dio;
@@ -910,31 +1034,39 @@ bool PowerCubeCtrl::updateStates()
 		
       if (ret != 0)
 	{
-	  m_pc_status = PC_CTRL_ERR;
-	  errorMsg << "State: Error com with Module [" <<  i << "]";
-	  ErrorMessages[i] = errorMsg.str();			
+	  //m_pc_status = PC_CTRL_ERR;
+	  ROS_INFO("Error on com in UpdateStates");
+	  return true;
+	  //errorMsg << "State: Error com with Module [" <<  i << "]";
+	  //ErrorMessages[i] = errorMsg.str();			
 	}
       else
 	{	
 	  ROS_DEBUG("Module %i, State: %li, Time: %f",i, state, ros::Time::now().toSec());
-
+	  
 	  m_status[i] = state; 		
 	  m_dios[i] = dio;
 	  m_positions[i] = position;
 	}	
-		
-      /// TODO: calculate vel and acc
-      ///m_velocities = ???;
-      ///m_accelerations = ???
+      
     }
-	
+
+	/*
+  double delta_t = ros::Time::now().toSec() - m_last_time_pub.toSec();
+  m_last_time_pub = ros::Time::now();  
+
+  updateVelocities(m_positions, delta_t);
+	*/
+
   // evaluate state for translation for diagnostics msgs
   getStatus(pc_status, ErrorMessages);
 
   for (unsigned int i=0; i<ErrorMessages.size(); i++)
-    {
-      m_ErrorMessage += ErrorMessages[i];
-    }
+  {	
+		m_ErrorMessage.clear();
+		m_ErrorMessage.assign("");
+    m_ErrorMessage.append(ErrorMessages[i]);
+  }
 
   return true;
 }
@@ -943,55 +1075,89 @@ bool PowerCubeCtrl::updateStates()
  * \brief Gets the status of the modules
  */
 bool PowerCubeCtrl::getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& errorMessages)
-{
+{	
   unsigned int DOF = m_params->GetDOF();
   std::vector<int> ModuleIDs = m_params->GetModuleIDs();
 	
+	std::vector<PC_CTRL_STATUS> StatusArray;
+	StatusArray.resize(DOF);	
+
   errorMessages.clear();
   errorMessages.resize(DOF);
 
-  status = PC_CTRL_ERR;
+  status = PC_CTRL_OK;
 
   for (unsigned int i = 0; i < DOF; i++)
-    {
-      std::ostringstream errorMsg;
-
-      if (m_status[i] & STATEID_MOD_POW_VOLT_ERR)
-	{
-	  errorMsg << "Error in Module " << ModuleIDs[i] << ": ";
-	  errorMsg << "Motor voltage below minimum value!";
-	  errorMessages[i] = errorMsg.str();
-	  status = PC_CTRL_POW_VOLT_ERR;
+  {
+		std::ostringstream errorMsg;
+		
+		if (m_status[i] & STATEID_MOD_POWERFAULT)
+		{	
+			if (m_status[i] & STATEID_MOD_POW_VOLT_ERR)
+			{
+				errorMsg << "Error in Module " << ModuleIDs[i] << ": ";
+				errorMsg << "Motor voltage below minimum value! Check Emergency Stop!";
+				errorMessages[i] = errorMsg.str();
+			}
+			else if (m_status[i] & STATEID_MOD_POW_FET_TEMP)
+			{
+				errorMsg << "Error in Module " << ModuleIDs[i] << ": ";
+				errorMsg << "Overheated power transitors! Power must be switched of to reset this error.";
+				errorMessages[i] = errorMsg.str();
+			}
+			else if (m_status[i] & STATEID_MOD_POW_INTEGRALERR)
+			{
+				errorMsg << "Error in Module " << ModuleIDs[i] << ": ";
+				errorMsg << "The drive has been overloaded and the servo loop has been disabled. Power must be switched off to reset this error.";
+				errorMessages[i] = errorMsg.str();
+			}
+			StatusArray[i] = PC_CTRL_POW_VOLT_ERR;
+		}
+    else if (m_status[i] & STATEID_MOD_TOW_ERROR)
+		{
+			errorMsg << "Error in Module " << ModuleIDs[i] << ": ";
+			errorMsg << "The servo loop was not able to follow the target position!";
+			errorMessages[i] = errorMsg.str();
+			StatusArray[i] = PC_CTRL_ERR;
+		}
+    else if (m_status[i] & STATEID_MOD_ERROR)
+		{	
+			// STOP the motion for each module
+			pthread_mutex_lock(&m_mutex);
+			PCube_haltModule(m_DeviceHandle, m_params->GetModuleID(i));
+			pthread_mutex_unlock(&m_mutex);
+			 
+			errorMsg << "Error in  Module " << ModuleIDs[i];
+			errorMsg << " : Status code: " << std::hex << m_status[i];
+			errorMessages[i] = errorMsg.str();
+			StatusArray[i] = PC_CTRL_ERR;
+		}
+    else if (m_pc_status & PC_CTRL_ERR)
+		{	
+			Stop(); // stop all motion
+			errorMsg << "PowerCubeCtrl is in global error state";
+			errorMessages[i] = errorMsg.str();
+			StatusArray[i] =  PC_CTRL_ERR;
+		}
+    else
+		{
+			errorMsg << "Module with Id " << ModuleIDs[i];
+			errorMsg << ": Status OK.";
+			errorMessages[i] = errorMsg.str();
+			StatusArray[i] = PC_CTRL_OK;
+		}
 	}
-      else if (m_status[i] & STATEID_MOD_ERROR)
-	{	
-	  // STOP the motion for each module
-	  pthread_mutex_lock(&m_mutex);
-	  PCube_haltModule(m_DeviceHandle, m_params->GetModuleID(i));
-	  pthread_mutex_unlock(&m_mutex);
-		 
-	  errorMsg << "Error in  Module " << ModuleIDs[i];
-	  errorMsg << " : Status code: " << std::hex << m_status[i];
-	  errorMessages[i] = errorMsg.str();
-	  status = PC_CTRL_ERR;
+	
+	// search for worst status
+	for (unsigned int i = 0; i < DOF; i++)
+  {	
+		if ((int)StatusArray[i] <= (int)status)
+		{
+			status = StatusArray[i]; 
+		}	
 	}
-      else if (m_pc_status & PC_CTRL_ERR)
-	{	
-	  Stop(); // stop all motion
-	  errorMsg << "PowerCubeCtrl is in global error state";
-	  errorMessages[i] = errorMsg.str();
-	  status =  PC_CTRL_ERR;
-	}
-      else
-	{
-	  errorMsg << "Module with Id " << ModuleIDs[i];
-	  errorMsg << ": Status OK.";
-	  errorMessages[i] = errorMsg.str();
-	  status = PC_CTRL_OK;
-	}
-    }
-
-  m_pc_status = status;
+  	
+	m_pc_status = status;
 
   return true;
 }
@@ -1134,23 +1300,22 @@ bool PowerCubeCtrl::doHoming()
 
   for (unsigned int i = 0; i < DOF; i++)
     {	
-		
-		
       unsigned long int help; 
       do
-	{
-	  pthread_mutex_lock(&m_mutex);
-	  PCube_getModuleState(m_DeviceHandle, ModuleIDs[i], &help);
-	  pthread_mutex_unlock(&m_mutex);
-	  ROS_DEBUG("Homing active for Module: %i State: %li", ModuleIDs.at(i), help);
+			{
+				pthread_mutex_lock(&m_mutex);
+				PCube_getModuleState(m_DeviceHandle, ModuleIDs[i], &help);
+				pthread_mutex_unlock(&m_mutex);
+				ROS_DEBUG("Homing active for Module: %i State: %li", ModuleIDs.at(i), help);
 
-	  /// timeout watchdog for homing
-	  usleep(intervall * 1000000);	// convert sec to usec
-	  homing_time += intervall; 
-	  if (homing_time >= max_homing_time) {Stop(); break;} 
+				/// timeout watchdog for homing
+				usleep(intervall * 1000000);	// convert sec to usec
+				homing_time += intervall; 
+				if (homing_time >= max_homing_time) {Stop(); break;} 
 
-	} while ((help & STATEID_MOD_HOME) == 0);
-      m_status[i] = help;
+			} while ((help & STATEID_MOD_HOME) == 0);
+     
+			m_status[i] = help;
       ROS_DEBUG("State of Module %i : %li", ModuleIDs.at(i), help);
     }
 
@@ -1158,11 +1323,11 @@ bool PowerCubeCtrl::doHoming()
     {	
       /// check result
       if (!(m_status[i] & STATEID_MOD_HOME) || (m_status[i] & STATEID_MOD_ERROR) )
-	{
-	  std::cout << "Homing failed: Error in  Module " << ModuleIDs[i] << std::endl;
-	  m_pc_status = PC_CTRL_NOT_HOMED;
-	  return false;
-	}
+			{
+				std::cout << "Homing failed: Error in  Module " << ModuleIDs[i] << std::endl;
+				m_pc_status = PC_CTRL_NOT_HOMED;
+				return false;
+			}
 		
       ROS_INFO("Homing for Modul %i done.", ModuleIDs.at(i)); 
     }
