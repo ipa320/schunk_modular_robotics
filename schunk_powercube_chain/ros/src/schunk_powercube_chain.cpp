@@ -624,7 +624,7 @@ public:
 		  ROS_DEBUG("publish state");
 
 		  if(update)
-			  pc_ctrl_->updateStates();
+			{pc_ctrl_->updateStates();}
 
 		  sensor_msgs::JointState joint_state_msg;
 		  joint_state_msg.header.stamp = ros::Time::now();

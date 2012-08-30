@@ -63,6 +63,8 @@
 // own includes
 #include <schunk_powercube_chain/PowerCubeCtrl.h>
 
+#include <chrono>
+
 #define PCTRL_CHECK_INITIALIZED()				\
   if ( isInitialized()==false )					\
     {								\
@@ -208,7 +210,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 		if (ret != 0)
 	  {
 	    std::ostringstream errorMsg;
-	    errorMsg << "Could not reset module " << i << ", m5api error code: " << ret;
+	    errorMsg << "Could not reset module " << ModulIDs.at(i) << ", m5api error code: " << ret;
 	    m_ErrorMessage = errorMsg.str();
 	    return false;
 	  }
@@ -508,10 +510,12 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 	delta_pos_horizon.resize(DOF);
 	
 	std::vector<float> target_pos;		// absolute target postion that is desired with this command
+	std::vector<float> target_pos_horizon;	
+	
 	target_pos.resize(DOF);	
-
+	target_pos_horizon.resize(DOF);
 	float target_time; 	// time in milliseconds
-	float target_time_horizon;
+	float target_time_horizon = 0;
   
 	float delta_t;			// time from the last moveVel cmd to now
 
@@ -527,6 +531,8 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 	// needed for limit handling and MoveStep command
 	
   delta_t = ros::Time::now().toSec() - m_last_time_pub.toSec();
+	std::cout << "delta_t: " << delta_t << std::endl; 
+
   m_last_time_pub = ros::Time::now();  
 
   std::vector<double> pos_temp;
@@ -542,7 +548,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 	  }
 	else
 	  {
-	    target_time = delta_t;
+	    target_time = delta_t;	//sec
 	  }
 	
 	//add horizon to time before calculation of target position, to influence both time and position at the same time
@@ -551,12 +557,10 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 	delta_pos_horizon[i] = target_time_horizon * velocities[i];
 	delta_pos[i] = target_time * velocities[i];
 	
- 
-		
 		ROS_DEBUG("delta_pos[%i]: %f target_time: %f velocitiy[%i]: %f",i ,delta_pos[i], target_time, i, velocities[i]);
-
+ 
 		// calculate target position   
-		target_pos[i] = m_positions[i] + delta_pos[i];
+		target_pos_horizon[i] = m_positions[i] + delta_pos_horizon[i];
 		ROS_DEBUG("target_pos[%i]: %f m_position[%i]: %f",i ,target_pos[i], i, m_positions[i]);
 	}
 
@@ -583,7 +587,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 			}
 
       /// check position limits
- 		// TODO: add second limit "safty limit" 
+ 			// TODO: add second limit "safty limit" 
 			// if target position is outer limits and the command velocity is in in direction away from working range, skip command
       if ((target_pos[i] < LowerLimits[i]) && (velocities[i] < 0))
 			{	
@@ -629,6 +633,9 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 
   //== send velocity cmd to modules ============================== 
 
+	//convert the time to int in [ms]
+	unsigned short time4motion = (unsigned short)((target_time_horizon)*1000.0);
+
 	for (unsigned int i = 0; i < DOF; i++)
 	{
 		// check module type sending command (PRL-Modules can be driven with moveStepExtended(), PW-Modules can only be driven with less safe moveVelExtended())
@@ -636,13 +643,10 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 		{
 			//ROS_DEBUG("Modul_id = %i, ModuleType: %s, step=%f, time=%f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), target_pos[i], target_time);
 
-			//convert the time to int in [ms]
-			unsigned short time4motion = (unsigned short)((target_time)*1000.0);
-
 			//ROS_INFO("Modul_id = %i, ModuleType: %s, step=%f, time4motion=%i [ms], target_time=%f, horizon: %f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), delta_pos[i], time4motion, target_time, m_horizon);
-
+			
 			pthread_mutex_lock(&m_mutex);
-			ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), target_pos[i], time4motion, &m_status[i], &m_dios[i], &pos);
+			ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), target_pos_horizon[i], time4motion, &m_status[i], &m_dios[i], &pos);
 			pthread_mutex_unlock(&m_mutex);
 		}
 		else	/// Types: PRL, PW, other
@@ -655,20 +659,22 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 		/// error handling
 		if (ret != 0)
 		{
-			ROS_INFO("Com Error"); 		  
+			ROS_INFO("Com Error: %i", ret); 		  
 			pos = m_positions[i];
 			//m_pc_status = PC_CTRL_ERR;
-			//TODO: add error msg for diagnostics
+			//TODO: add error msg for diagnostics if error occours often
 		}
 		
 		// !!! Position in pos is position before moveStep movement, to get the expected position after the movement (required as input to the next moveStep command) we add the delta position (cmd_pos) !!!
 		m_positions[i] = (double)pos + delta_pos[i];
+		std::cout << "pos " << i << ": " << pos << std::endl; 
 		pos_temp[i] = (double)pos;
 		//ROS_INFO("After cmd (%X) :m_positions[%i] %f = pos: %f + delta_pos[%i]: %f",m_status[i], i, m_positions[i], pos, i, delta_pos[i]);
 	}
 
 	updateVelocities(pos_temp, delta_t);
-
+	
+	std::cout << "vel_com: " << velocities[1] << " vel_hori: " << delta_pos_horizon[1]/	target_time_horizon << " vel_real[1]: " << m_velocities.at(1) << std::endl;
 
 	pthread_mutex_lock(&m_mutex);
 	PCube_startMotionAll(m_DeviceHandle);
@@ -681,25 +687,30 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 	void PowerCubeCtrl::updateVelocities(std::vector<double> pos_temp, double delta_t)
 	{
 	  unsigned int DOF = m_params->GetDOF();
-	  if(m_cached_pos.size() < 4)
-	    {
-	      m_cached_pos.push_back(pos_temp);
-    
-	      for(unsigned int i = 0; i < DOF; i++)
-		{		
-		  m_velocities[i] = 0.0;
+
+	  if (m_cached_pos.empty())
+		{	
+			std::vector<double> null; 
+			for (unsigned int i=0;i<DOF;i++){	null.push_back(0); }  
+
+			m_cached_pos.push_back(null);
+      m_cached_pos.push_back(null);
 		}
-	    }
-	  else
-	    {
-	      m_cached_pos.push_back(pos_temp);
-	      m_cached_pos.pop_front();
-	      for(unsigned int i = 0; i < DOF; i++)
-		{
-		  m_velocities[i] = 1/(6*delta_t) * (-m_cached_pos[0][i]-(3*m_cached_pos[1][i])+(3*m_cached_pos[2][i])+m_cached_pos[3][i]);
+
+		  m_cached_pos.push_back(pos_temp);
+      m_cached_pos.pop_front();
+	
+			std::vector<double> last_pos = m_cached_pos.front();
+
+	    for(unsigned int i = 0; i < DOF; i++)
+			{
+		  //m_velocities[i] = 1/(6*delta_t) * (-m_cached_pos[0][i]-(3*m_cached_pos[1][i])+(3*m_cached_pos[2][i])+m_cached_pos[3][i]);
 		  //m_velocities[i] = (m_cached_pos[3][i] - m_cached_pos[2][i])/delta_t;
-		}
-	    }
+					
+
+					m_velocities[i] = (pos_temp.at(i)-last_pos.at(i))/delta_t; 
+				}
+	    
 	}
 
 
@@ -1040,12 +1051,13 @@ bool PowerCubeCtrl::updateStates()
       
     }
 
-
+	/*
   double delta_t = ros::Time::now().toSec() - m_last_time_pub.toSec();
   m_last_time_pub = ros::Time::now();  
 
   updateVelocities(m_positions, delta_t);
-	
+	*/
+
   // evaluate state for translation for diagnostics msgs
   getStatus(pc_status, ErrorMessages);
 
