@@ -259,8 +259,50 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			else
 			{
 			  m_version[i] = verNo; 
-			}
+			}	
 			
+			/// retrieve defined gear ratio
+			float gear_ratio; 	
+      pthread_mutex_lock(&m_mutex);
+      ret = PCube_getDefGearRatio(m_DeviceHandle, ModulIDs[i], &gear_ratio);
+      pthread_mutex_unlock(&m_mutex);
+      if (ret != 0)
+			{
+				std::ostringstream errorMsg;
+				errorMsg << "Could not get Module type with ID " << ModulIDs[i] << ", m5api error code: " << ret;
+				m_ErrorMessage = errorMsg.str();	
+				return false;
+			}
+			else
+			{
+				if (true)
+				{
+			  	std::cout << "gear ratio: " << gear_ratio << std::endl; 
+					//return false; 
+				} 
+			}	
+			
+			/// retrieve axis type (linear or rotational) 
+			unsigned char type; 	
+      pthread_mutex_lock(&m_mutex);
+      ret = PCube_getModuleType(m_DeviceHandle, ModulIDs[i], &type);
+      pthread_mutex_unlock(&m_mutex);
+      if (ret != 0)
+			{
+				std::ostringstream errorMsg;
+				errorMsg << "Could not get Module type with ID " << ModulIDs[i] << ", m5api error code: " << ret;
+				m_ErrorMessage = errorMsg.str();	
+				return false;
+			}
+			else
+			{
+				if (type != TYPEID_MOD_ROTARY)
+				{
+			  	std::cout << "wrong module type configured. Type must be rotary axis. Use Windows configuration software to change type." << std::endl; 
+					return false; 
+				} 
+			}	
+
 			/// find out module_type
 			// the typ -if PW or PRL- can be distinguished by the typ of encoder. 
 			pthread_mutex_lock(&m_mutex);
@@ -674,7 +716,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 
 	updateVelocities(pos_temp, delta_t);
 	
-	std::cout << "vel_com: " << velocities[1] << " vel_hori: " << delta_pos_horizon[1]/	target_time_horizon << " vel_real[1]: " << m_velocities.at(1) << std::endl;
+	//std::cout << "vel_com: " << velocities[1] << " vel_hori: " << delta_pos_horizon[1]/	target_time_horizon << " vel_real[1]: " << m_velocities.at(1) << std::endl;
 
 	pthread_mutex_lock(&m_mutex);
 	PCube_startMotionAll(m_DeviceHandle);
@@ -1233,6 +1275,13 @@ bool PowerCubeCtrl::doHoming()
   /// start homing
   for (unsigned int i = 0; i < DOF; i++)
     {	
+			pthread_mutex_lock(&m_mutex);
+	  	ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
+	  	pthread_mutex_unlock(&m_mutex);
+		
+			// init m_position variable for trajectory controller
+			m_positions[i] = position; 
+
       // check module type before homing (PRL-Modules need not to be homed by ROS)
       if ( (m_ModuleTypes.at(i) == "PW") || (m_ModuleTypes.at(i) == "other") )
 	{	
