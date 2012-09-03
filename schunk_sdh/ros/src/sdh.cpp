@@ -478,6 +478,11 @@ class SdhNode
 		ROS_INFO("Set operation mode to [%s]", req.operation_mode.data.c_str());
 		operationMode_ = req.operation_mode.data;
 		res.success.data = true;
+		if( operationMode_ == "position"){
+			sdh_->SetController(SDH::cSDH::eCT_POSE);
+		}else if( operationMode_ == "veloctiy"){
+			sdh_->SetController(SDH::cSDH::eCT_VELOCITY);
+		}
 		return true;
 	}
 
