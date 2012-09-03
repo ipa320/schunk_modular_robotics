@@ -511,8 +511,18 @@ class SdhNode
 		res.success.data = true;
 		if( operationMode_ == "position"){
 			sdh_->SetController(SDH::cSDH::eCT_POSE);
-		}else if( operationMode_ == "veloctiy"){
-			sdh_->SetController(SDH::cSDH::eCT_VELOCITY);
+		}else if( operationMode_ == "velocity"){
+			try{
+				sdh_->SetController(SDH::cSDH::eCT_VELOCITY);
+				sdh_->SetAxisEnable(sdh_->All, 1.0);
+			}
+			catch (SDH::cSDHLibraryException* e)
+			{
+				ROS_ERROR("An exception was caught: %s", e->what());
+				delete e;
+			}
+		}else{
+			ROS_ERROR_STREAM("Operation mode '" << req.operation_mode.data << "'  not supported");
 		}
 		return true;
 	}
