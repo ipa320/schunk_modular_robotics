@@ -107,7 +107,7 @@ class SdhNode
 		ros::Publisher topicPub_Diagnostics_;
 		
 		// topic subscribers
-		ros::Subscriber subSetVelocities_;
+		ros::Subscriber subSetVelocitiesRaw_;
 
 		// service servers
 		ros::ServiceServer srvServer_Init_;
@@ -207,7 +207,7 @@ class SdhNode
 			srvServer_Recover_ = nh_.advertiseService("recover", &SdhNode::srvCallback_Init, this); //HACK: There is no recover implemented yet, so we execute a init
 			srvServer_SetOperationMode_ = nh_.advertiseService("set_operation_mode", &SdhNode::srvCallback_SetOperationMode, this);
 			
-			subSetVelocities_ = nh_.subscribe("set_velocities", 1, &SdhNode::topicCallback_setVelocities, this);
+			subSetVelocitiesRaw_ = nh_.subscribe("set_velocities_raw", 1, &SdhNode::topicCallback_setVelocitiesRaw, this);
 
 			// getting hardware parameters from parameter server
 			nh_.param("sdhdevicetype", sdhdevicetype_, std::string("PCAN"));
@@ -333,7 +333,7 @@ class SdhNode
 			as_.setSucceeded();
 		}
 
-		void topicCallback_setVelocities(const std_msgs::Float32MultiArrayPtr& velocities)
+		void topicCallback_setVelocitiesRaw(const std_msgs::Float32MultiArrayPtr& velocities)
 		{
 			if(velocities->data.size() != velocities_.size()){
 				ROS_ERROR("Velocity array dimension mismatch");
@@ -575,6 +575,7 @@ class SdhNode
 					try
 					{
 						sdh_->SetAxisTargetVelocity(axes_,velocities_);
+						// ROS_DEBUG_STREAM("velocities: " << velocities_[0] << " "<< velocities_[1] << " "<< velocities_[2] << " "<< velocities_[3] << " "<< velocities_[4] << " "<< velocities_[5] << " "<< velocities_[6]);
 					}
 					catch (SDH::cSDHLibraryException* e)
 					{
