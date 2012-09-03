@@ -144,6 +144,7 @@ class SdhNode
 		std::vector<int> axes_;
 		std::vector<double> targetAngles_; // in degrees
 		bool hasNewGoal_;
+		std::string operationMode_; 
 		
 	public:
 		/*!
@@ -258,6 +259,12 @@ class SdhNode
 		void executeCB(const control_msgs::FollowJointTrajectoryGoalConstPtr &goal)
 		{			
 			ROS_INFO("sdh: executeCB");
+			if (operationMode_ != "position")
+			{
+				ROS_ERROR("%s: Rejected, sdh not in position mode", action_name_.c_str());
+				as_.setAborted();
+				return;
+			}
 			if (!isInitialized_)
 			{
 				ROS_ERROR("%s: Rejected, sdh not initialized", action_name_.c_str());
@@ -469,7 +476,7 @@ class SdhNode
 									cob_srvs::SetOperationMode::Response &res )
 	{
 		ROS_INFO("Set operation mode to [%s]", req.operation_mode.data.c_str());
-		nh_.setParam("OperationMode", req.operation_mode.data.c_str());
+		operationMode_ = req.operation_mode.data;
 		res.success.data = true;
 		return true;
 	}
@@ -497,9 +504,7 @@ class SdhNode
 					delete e;
 				}
 		
-				std::string operationMode;
-				nh_.getParam("OperationMode", operationMode);
-				if (operationMode == "position")
+				if (operationMode_ == "position")
 				{
 					ROS_DEBUG("moving sdh in position mode");
 
@@ -514,13 +519,13 @@ class SdhNode
 						delete e;
 					}
 				}
-				else if (operationMode == "velocity")
+				else if (operationMode_ == "velocity")
 				{
 					ROS_DEBUG("moving sdh in velocity mode");
 					//sdh_->MoveVel(goal->trajectory.points[0].velocities);
 					ROS_WARN("Moving in velocity mode currently disabled");
 				}
-				else if (operationMode == "effort")
+				else if (operationMode_ == "effort")
 				{
 					ROS_DEBUG("moving sdh in effort mode");
 					//sdh_->MoveVel(goal->trajectory.points[0].velocities);
@@ -528,7 +533,7 @@ class SdhNode
 				}
 				else
 				{
-					ROS_ERROR("sdh neither in position nor in velocity nor in effort mode. OperationMode = [%s]", operationMode.c_str());
+					ROS_ERROR("sdh neither in position nor in velocity nor in effort mode. OperationMode = [%s]", operationMode_.c_str());
 				}
 				
 				hasNewGoal_ = false;
