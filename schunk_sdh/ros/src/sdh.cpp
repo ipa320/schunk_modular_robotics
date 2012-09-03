@@ -342,16 +342,20 @@ class SdhNode
 			if (operationMode_ != "velocity")
 			{
 				ROS_ERROR("%s: Rejected, sdh not in position mode", action_name_.c_str());
-				as_.setAborted();
 				return;
 			}
 
 			// TODO: write proper lock!
 			while (hasNewGoal_ == true ) usleep(10000);
 
-			for( unsigned int i = 0; i < velocities_.size();++i){
-				velocities_[i] = velocities->data[i] * 180.0 / M_PI; // rad to deg
-			}
+			velocities_[0] = velocities->data[0] * 180.0 / pi_; // sdh_knuckle_joint
+			velocities_[1] = velocities->data[5] * 180.0 / pi_; // sdh_finger22_joint
+			velocities_[2] = velocities->data[6] * 180.0 / pi_; // sdh_finger23_joint
+			velocities_[3] = velocities->data[1] * 180.0 / pi_; // sdh_thumb2_joint
+			velocities_[4] = velocities->data[2] * 180.0 / pi_; // sdh_thumb3_joint
+			velocities_[5] = velocities->data[3] * 180.0 / pi_; // sdh_finger12_joint
+			velocities_[6] = velocities->data[4] * 180.0 / pi_; // sdh_finger13_joint
+
 			hasNewGoal_ = true;
 		}		
 		/*!
