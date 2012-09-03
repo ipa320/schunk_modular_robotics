@@ -253,6 +253,8 @@ class SdhNode
 			ROS_INFO("DOF = %d",DOF_);
 			
 			state_.resize(axes_.size());
+
+			operationMode_ = "position";
 			
 			return true;
 		}
