@@ -559,7 +559,6 @@ class SdhNode
 					try
 					{
 						sdh_->SetAxisTargetVelocity(axes_,velocities_);
-						sdh_->MoveHand(false);
 					}
 					catch (SDH::cSDHLibraryException* e)
 					{
