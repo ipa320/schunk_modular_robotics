@@ -69,6 +69,7 @@
 #include <actionlib/server/simple_action_server.h>
 
 // ROS message includes
+#include <std_msgs/Float32MultiArray.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <sensor_msgs/JointState.h>
 //#include <pr2_controllers_msgs/JointTrajectoryAction.h>
@@ -104,6 +105,9 @@ class SdhNode
 		ros::Publisher topicPub_ControllerState_;
 		ros::Publisher topicPub_TactileSensor_;
 		ros::Publisher topicPub_Diagnostics_;
+		
+		// topic subscribers
+		ros::Subscriber subSetVelocities_;
 
 		// service servers
 		ros::ServiceServer srvServer_Init_;
@@ -143,6 +147,7 @@ class SdhNode
 		std::vector<std::string> joint_names_;
 		std::vector<int> axes_;
 		std::vector<double> targetAngles_; // in degrees
+		std::vector<double> velocities_; // in rad/s
 		bool hasNewGoal_;
 		std::string operationMode_; 
 		
@@ -201,6 +206,8 @@ class SdhNode
 			srvServer_Stop_ = nh_.advertiseService("stop", &SdhNode::srvCallback_Stop, this);
 			srvServer_Recover_ = nh_.advertiseService("recover", &SdhNode::srvCallback_Init, this); //HACK: There is no recover implemented yet, so we execute a init
 			srvServer_SetOperationMode_ = nh_.advertiseService("set_operation_mode", &SdhNode::srvCallback_SetOperationMode, this);
+			
+			subSetVelocities_ = nh_.subscribe("set_velocities", 1, &SdhNode::topicCallback_setVelocities, this);
 
 			// getting hardware parameters from parameter server
 			nh_.param("sdhdevicetype", sdhdevicetype_, std::string("PCAN"));
@@ -238,6 +245,7 @@ class SdhNode
 			
 			// define axes to send to sdh
 			axes_.resize(DOF_);
+			velocities_.resize(DOF_);
 			for(int i=0; i<DOF_; i++)
 			{
 				axes_[i] = i;
@@ -323,6 +331,27 @@ class SdhNode
 			as_.setSucceeded();
 		}
 
+		void topicCallback_setVelocities(const std_msgs::Float32MultiArrayPtr& velocities)
+		{
+			if(velocities->data.size() != velocities_.size()){
+				ROS_ERROR("Velocity array dimension mismatch");
+				return;
+			}
+			if (operationMode_ != "velocity")
+			{
+				ROS_ERROR("%s: Rejected, sdh not in position mode", action_name_.c_str());
+				as_.setAborted();
+				return;
+			}
+
+			// TODO: write proper lock!
+			while (hasNewGoal_ == true ) usleep(10000);
+
+			for( unsigned int i = 0; i < velocities_.size();++i){
+				velocities_[i] = velocities->data[i] * 180.0 / M_PI; // rad to deg
+			}
+			hasNewGoal_ = true;
+		}		
 		/*!
 		* \brief Executes the service callback for init.
 		*
@@ -527,8 +556,16 @@ class SdhNode
 				else if (operationMode_ == "velocity")
 				{
 					ROS_DEBUG("moving sdh in velocity mode");
-					//sdh_->MoveVel(goal->trajectory.points[0].velocities);
-					ROS_WARN("Moving in velocity mode currently disabled");
+					try
+					{
+						sdh_->SetAxisTargetVelocity(axes_,velocities_);
+						sdh_->MoveHand(false);
+					}
+					catch (SDH::cSDHLibraryException* e)
+					{
+						ROS_ERROR("An exception was caught: %s", e->what());
+						delete e;
+					}
 				}
 				else if (operationMode_ == "effort")
 				{
