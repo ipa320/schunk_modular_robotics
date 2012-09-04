@@ -761,6 +761,7 @@ class SdhNode
 	*/
 	void updateDsa()
 	{
+                static const int dsa_reorder[6] = { 2 ,3, 4, 5, 0 , 1 }; // t1,t2,f11,f12,f21,f22
 		ROS_DEBUG("updateTactileData");
 
 		if(isDSAInitialized_)
@@ -784,10 +785,11 @@ class SdhNode
 			msg.header.stamp = ros::Time::now();
 			int m, x, y;
 			msg.tactile_matrix.resize(dsa_->GetSensorInfo().nb_matrices);
-			for ( m = 0; m < dsa_->GetSensorInfo().nb_matrices; m++ )
+			for ( int i = 0; i < dsa_->GetSensorInfo().nb_matrices; i++ )
 			{
-				schunk_sdh::TactileMatrix &tm = msg.tactile_matrix[m];
-				tm.matrix_id = m;
+				m = dsa_reorder[i];                                  
+				schunk_sdh::TactileMatrix &tm = msg.tactile_matrix[i];
+				tm.matrix_id = i;
 				tm.cells_x = dsa_->GetMatrixInfo( m ).cells_x;
 				tm.cells_y = dsa_->GetMatrixInfo( m ).cells_y;
 				tm.tactile_array.resize(tm.cells_x * tm.cells_y);
