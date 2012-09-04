@@ -521,7 +521,7 @@ class SdhNode
 									cob_srvs::SetOperationMode::Response &res )
 	{
 		hasNewGoal_ = false;
-                sdh_->Stop();
+		sdh_->Stop();
 		ROS_INFO("Set operation mode to [%s]", req.operation_mode.data.c_str());
 		operationMode_ = req.operation_mode.data;
 		res.success.data = true;
