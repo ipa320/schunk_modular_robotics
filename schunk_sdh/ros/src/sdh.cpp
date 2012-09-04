@@ -254,8 +254,7 @@ class SdhNode
 			
 			state_.resize(axes_.size());
 
-			operationMode_ = "position";
-			
+			nh_.param("OperationMode", operationMode_, std::string("position"));
 			return true;
 		}
 
