@@ -282,6 +282,12 @@ class SdhNode
 				return;
 			}
 
+			if (goal->trajectory.points.empty() || goal->trajectory.points[0].positions.size() != DOF_)
+			{
+				ROS_ERROR("%s: Rejected, malformed FollowJointTrajectoryGoal", action_name_.c_str());
+				as_.setAborted();
+				return;
+			}
 			while (hasNewGoal_ == true ) usleep(10000);
 
 			// \todo TODO: use joint_names for assigning values
@@ -335,13 +341,18 @@ class SdhNode
 
 		void topicCallback_setVelocitiesRaw(const std_msgs::Float32MultiArrayPtr& velocities)
 		{
+			if (!isInitialized_)
+			{
+				ROS_ERROR("%s: Rejected, sdh not initialized", action_name_.c_str());
+				return;
+			}
 			if(velocities->data.size() != velocities_.size()){
 				ROS_ERROR("Velocity array dimension mismatch");
 				return;
 			}
 			if (operationMode_ != "velocity")
 			{
-				ROS_ERROR("%s: Rejected, sdh not in position mode", action_name_.c_str());
+				ROS_ERROR("%s: Rejected, sdh not in velocity mode", action_name_.c_str());
 				return;
 			}
 
