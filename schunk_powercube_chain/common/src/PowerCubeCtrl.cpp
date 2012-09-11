@@ -583,8 +583,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 	// needed for limit handling and MoveStep command
 	
   delta_t = ros::Time::now().toSec() - m_last_time_pub.toSec();
-	std::cout << "delta_t: " << delta_t << std::endl; 
-
+	
   m_last_time_pub = ros::Time::now();  
 
   std::vector<double> pos_temp;
@@ -719,7 +718,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 		
 		// !!! Position in pos is position before moveStep movement, to get the expected position after the movement (required as input to the next moveStep command) we add the delta position (cmd_pos) !!!
 		m_positions[i] = (double)pos + delta_pos[i];
-		std::cout << "pos " << i << ": " << pos << std::endl; 
+		
 		pos_temp[i] = (double)pos;
 		//ROS_INFO("After cmd (%X) :m_positions[%i] %f = pos: %f + delta_pos[%i]: %f",m_status[i], i, m_positions[i], pos, i, delta_pos[i]);
 	}
@@ -735,35 +734,34 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 	return true;
 }
 
-	// Calculation of velocities based on vel = 1/(6*dt) * (-pos(t-3) - 3*pos(t-2) + 3*pos(t-1) + pos(t))
-	void PowerCubeCtrl::updateVelocities(std::vector<double> pos_temp, double delta_t)
-	{
-	  unsigned int DOF = m_params->GetDOF();
+// Calculation of velocities based on vel = 1/(6*dt) * (-pos(t-3) - 3*pos(t-2) + 3*pos(t-1) + pos(t))
+void PowerCubeCtrl::updateVelocities(std::vector<double> pos_temp, double delta_t)
+{
+  unsigned int DOF = m_params->GetDOF();
 
-	  if (m_cached_pos.empty())
-		{	
-			std::vector<double> null; 
-			for (unsigned int i=0;i<DOF;i++){	null.push_back(0); }  
+	if (m_cached_pos.empty())
+	{	
+		std::vector<double> null; 
+		for (unsigned int i=0;i<DOF;i++){	null.push_back(0); }  
 
-			m_cached_pos.push_back(null);
-      m_cached_pos.push_back(null);
-		}
-
-		  m_cached_pos.push_back(pos_temp);
-      m_cached_pos.pop_front();
-	
-			std::vector<double> last_pos = m_cached_pos.front();
-
-	    for(unsigned int i = 0; i < DOF; i++)
-			{
-		  //m_velocities[i] = 1/(6*delta_t) * (-m_cached_pos[0][i]-(3*m_cached_pos[1][i])+(3*m_cached_pos[2][i])+m_cached_pos[3][i]);
-		  //m_velocities[i] = (m_cached_pos[3][i] - m_cached_pos[2][i])/delta_t;
-					
-
-					m_velocities[i] = (pos_temp.at(i)-last_pos.at(i))/delta_t; 
-				}
-	    
+		m_cached_pos.push_back(null);
+		m_cached_pos.push_back(null);
+		m_cached_pos.push_back(null);
+		m_cached_pos.push_back(null);
 	}
+
+	m_cached_pos.push_back(pos_temp);
+  	m_cached_pos.pop_front();
+
+	std::vector<double> last_pos = m_cached_pos.front();
+
+    for(unsigned int i = 0; i < DOF; i++)
+	{
+		m_velocities[i] = 1/(6*delta_t) * (-m_cached_pos[0][i]-(3*m_cached_pos[1][i])+(3*m_cached_pos[2][i])+m_cached_pos[3][i]);
+		//m_velocities[i] = (m_cached_pos[3][i] - m_cached_pos[2][i])/delta_t;		
+		//m_velocities[i] = (pos_temp.at(i)-last_pos.at(i))/delta_t; 
+	}   
+}
 
 
 
