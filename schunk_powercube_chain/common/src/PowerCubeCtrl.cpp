@@ -210,7 +210,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 		if (ret != 0)
 		{	
 			// little break
-			usleep(200000); 
+			usleep(750000); 
 
 			// second chance for reset (if more chains are one the same bus conflicts can happe during parallel init) 
 			pthread_mutex_lock(&m_mutex);
