@@ -31,10 +31,10 @@
      
      The node subscribes to the following topics to receive data from the
      simulation:
-     * finger_12/state
-     * finger_13/state
      * thumb_2/state
      * thumb_3/state
+     * finger_12/state
+     * finger_13/state
      * finger_22/state
      * finger_23/state
      
