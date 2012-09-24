@@ -209,10 +209,10 @@ class GazeboVirtualTactileSensor():
 	
 	def __init__(self):
 		self.pads = []
-		self.pads.append(GazeboTactilePad("finger_12/state", 0.0865, 0.03))
-		self.pads.append(GazeboTactilePad("finger_13/state", 0.0675, 0.03))
 		self.pads.append(GazeboTactilePad("thumb_2/state", 0.0865, 0.03))
 		self.pads.append(GazeboTactilePad("thumb_3/state", 0.0675, 0.03))
+		self.pads.append(GazeboTactilePad("finger_12/state", 0.0865, 0.03))
+		self.pads.append(GazeboTactilePad("finger_13/state", 0.0675, 0.03))
 		self.pads.append(GazeboTactilePad("finger_22/state", 0.0865, 0.03))
 		self.pads.append(GazeboTactilePad("finger_23/state", 0.0675, 0.03))
 		
