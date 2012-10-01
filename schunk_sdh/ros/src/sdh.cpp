@@ -281,7 +281,7 @@ class SdhNode
 				return;
 			}
 
-			if (goal->trajectory.points.empty() || goal->trajectory.points[0].positions.size() != DOF_)
+			if (goal->trajectory.points.empty() || goal->trajectory.points[0].positions.size() != size_t(DOF_))
 			{
 				ROS_ERROR("%s: Rejected, malformed FollowJointTrajectoryGoal", action_name_.c_str());
 				as_.setAborted();
