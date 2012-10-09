@@ -84,6 +84,7 @@
 // own includes
 #include <schunk_powercube_chain/PowerCubeCtrl.h>
 #include <schunk_powercube_chain/PowerCubeCtrlParams.h>
+#include <schunk_powercube_chain/Diagnostics.h>
 
 /*!
  * \brief Implementation of ROS node for powercube_chain.
@@ -125,12 +126,12 @@ public:
   bool error_;
   std::string error_msg_;
   ros::Time last_publish_time_;
-  
+
   ///Constructor
   PowerCubeChainNode()
   {
   	n_ = ros::NodeHandle("~");
-  	
+
     pc_params_ = new PowerCubeCtrlParams();
     pc_ctrl_ = new PowerCubeCtrl(pc_params_);
 
@@ -155,7 +156,7 @@ public:
     error_ = false;
     last_publish_time_ = ros::Time::now();
   }
-  
+
   /// Destructor
   ~PowerCubeChainNode()
   {
@@ -259,7 +260,7 @@ public:
     	ROS_ERROR("Parameter joint_names not set, shutting down node...");
     	n_.shutdown();
     }
-    
+
     /// Resize and assign of values to the JointNames
     JointNames.resize(JointNamesXmlRpc.size());
     for (int i = 0; i < JointNamesXmlRpc.size(); i++)
@@ -274,7 +275,7 @@ public:
     	n_.shutdown();
     }
     pc_params_->SetJointNames(JointNames);
-    
+
     /// Get max accelerations
     XmlRpc::XmlRpcValue MaxAccelerationsXmlRpc;
     std::vector<double> MaxAccelerations;
@@ -288,7 +289,7 @@ public:
     	ROS_ERROR("Parameter max_accelerations not set, shutting down node...");
     	n_.shutdown();
     }
-    
+
     /// Resize and assign of values to the MaxAccelerations
     MaxAccelerations.resize(MaxAccelerationsXmlRpc.size());
     for (int i = 0; i < MaxAccelerationsXmlRpc.size(); i++)
@@ -624,7 +625,7 @@ public:
 		  ROS_DEBUG("publish state");
 
 		  if(update)
-			  pc_ctrl_->updateStates();
+			{pc_ctrl_->updateStates();}
 
 		  sensor_msgs::JointState joint_state_msg;
 		  joint_state_msg.header.stamp = ros::Time::now();
@@ -650,6 +651,9 @@ public:
 		  last_publish_time_ = joint_state_msg.header.stamp;
 
 	  }
+
+	// check status of PowerCube chain
+	if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK) { error_ = true; }
 	
 		// check status of PowerCube chain 
 		if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK) 
