@@ -365,9 +365,17 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
   for (int i = 0; i < DOF; i++)
   {
     pthread_mutex_lock(&m_mutex);
-    //std::cout << "------------------------------> PCube_setHomeOffset()" << std::endl;
-    PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
+    ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
     pthread_mutex_unlock(&m_mutex);
+
+		if (ret!=0) 
+		{		// 2. chance
+				pthread_mutex_lock(&m_mutex);
+     		ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
+    		pthread_mutex_unlock(&m_mutex);
+				if (ret!=0)
+				{return false;}
+		}
   }
 
   /// Set limits to hardware

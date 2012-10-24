@@ -84,7 +84,7 @@
 // own includes
 #include <schunk_powercube_chain/PowerCubeCtrl.h>
 #include <schunk_powercube_chain/PowerCubeCtrlParams.h>
-#include <schunk_powercube_chain/Diagnostics.h>
+//#include <schunk_powercube_chain/Diagnostics.h>
 
 /*!
  * \brief Implementation of ROS node for powercube_chain.
@@ -223,8 +223,6 @@ public:
     	n_.shutdown();
     }
 
-<<<<<<< HEAD
-=======
     /// get force_use_movevel
     bool UseMoveVel;
     if (n_.hasParam("force_use_movevel"))
@@ -239,7 +237,6 @@ public:
     }
 	pc_params_->SetUseMoveVel(UseMoveVel);
 
->>>>>>> 61e659cb019c063aa6d5bfa07cc321a9346c8a66
     /// Resize and assign of values to the ModulIDs
     ModulIDs.resize(ModulIDsXmlRpc.size());
     for (int i = 0; i < ModulIDsXmlRpc.size(); i++)
@@ -654,11 +651,10 @@ public:
 		  last_publish_time_ = joint_state_msg.header.stamp;
 
 	  }
-<<<<<<< HEAD
+
 
 	// check status of PowerCube chain
 	if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK) { error_ = true; }
-=======
 	
 		// check status of PowerCube chain 
 		if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK) 
@@ -669,7 +665,6 @@ public:
 		{
 			error_ = false;
 		} 
->>>>>>> 61e659cb019c063aa6d5bfa07cc321a9346c8a66
 
     // publishing diagnotic messages
     diagnostic_msgs::DiagnosticArray diagnostics;
