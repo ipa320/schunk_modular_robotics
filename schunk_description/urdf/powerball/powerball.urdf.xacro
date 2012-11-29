@@ -26,7 +26,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball0.stl" />
+					<mesh filename="package://schunk_description/meshes/powerball/arm_0_link.stl" />
 				</geometry>
 				<material name="Grey" />
 			</visual>
@@ -34,14 +34,14 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball0.stl" />
+					<mesh filename="package://schunk_description/meshes/powerball/arm_0_link.stl" />
 				</geometry>
 			</collision>
 		</link>
 
 		<!-- joint between arm_0_link and arm_1_link -->
 		<joint name="${name}_1_joint" type="revolute">
-			<origin xyz="0 0 -0.0897" rpy="0 0 0"/>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<parent link="${name}_0_link"/>
 			<child link="${name}_1_link"/>
 			<axis xyz="0 0 1"/>
@@ -61,7 +61,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball1.stl" />
+					<mesh filename="package://schunk_description/meshes/powerball/arm_1_link.stl" />
 				</geometry>
 				<material name="Blue" />
 			</visual>
@@ -69,7 +69,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball1.stl" />
+					<mesh filename="package://schunk_description/meshes/powerball/arm_1_link.stl" />
 				</geometry>
 			</collision>
 		</link>
@@ -83,7 +83,7 @@
 			<calibration rising="${arm_2_ref}"/>
 			<dynamics damping="10" />
 			<limit effort="370" velocity="2.0" lower="-2.0943951" upper="2.0943951"/>
-			<safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-2.0943 + 0.01}" 	soft_upper_limit="${2.0943 - 0.01}" />
+			<safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-2.0943 + 0.01}" soft_upper_limit="${2.0943 - 0.01}" />
 		</joint>
 
 		<link name="${name}_2_link">
@@ -96,7 +96,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball2.stl" />
+					<mesh filename="package://schunk_description/meshes/powerball/arm_2_link.stl" />
 				</geometry>
 				<material name="Grey" />
 			</visual>
@@ -104,14 +104,14 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball2.stl"/>
+					<mesh filename="package://schunk_description/meshes/powerball/arm_2_link.stl" />
 				</geometry>
 			</collision>
 		</link>
 
 		<!-- joint between arm_2_link and arm_3_link -->	
 		<joint name="${name}_3_joint" type="revolute">
-			<origin xyz="0 -0.350 0" rpy="3.14159 0 0"/>
+			<origin xyz="0 0.350 0" rpy="0 3.14159 0"/>
 			<parent link="${name}_2_link"/>
 			<child link="${name}_3_link"/>
 			<axis xyz="0 0 1"/>
@@ -131,7 +131,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball3.stl" />
+					<mesh filename="package://schunk_description/meshes/powerball/arm_3_link.stl" />
 				</geometry>
 				<material name="Blue" />
 			</visual>
@@ -139,14 +139,14 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball3.stl"/>
+					<mesh filename="package://schunk_description/meshes/powerball/arm_3_link.stl" />
 				</geometry>
 			</collision>
 		</link>	
 
 		<!-- joint between arm_3_link and arm_4_link -->
 		<joint name="${name}_4_joint" type="revolute">
-			<origin xyz="0 0 0" rpy="1.5708 0 0" />
+			<origin xyz="0 0 0" rpy="-1.5708 3.14159 0" />
 			<parent link="${name}_3_link"/>
 			<child link="${name}_4_link"/>
 			<axis xyz="0 0 1" />
@@ -166,7 +166,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball4.stl" />
+					<mesh filename="package://schunk_description/meshes/powerball/arm_4_link.stl" />
 				</geometry>
 				<material name="Grey" />
 			</visual>
@@ -174,14 +174,14 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball4.stl"/>
+					<mesh filename="package://schunk_description/meshes/powerball/arm_4_link.stl" />
 				</geometry>
 			</collision>
 		</link>
 
 		<!-- joint between arm_4_link and arm_5_link -->
 		<joint name="${name}_5_joint" type="revolute">
-			<origin xyz="0 0.005 -0.3049" rpy="1.5708 0 0" />
+			<origin xyz="0 0.05263 0.3049" rpy="1.5708 0 3.14159" />
 			<parent link="${name}_4_link"/>
 			<child link="${name}_5_link"/>
 			<axis xyz="0 0 1" />
@@ -201,7 +201,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball5.stl" />
+					<mesh filename="package://schunk_description/meshes/powerball/arm_5_link.stl" />
 				</geometry>
 				<material name="Blue" />
 			</visual>
@@ -209,7 +209,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball5.stl"/>
+					<mesh filename="package://schunk_description/meshes/powerball/arm_5_link.stl" />
 				</geometry>
 			</collision>
 		</link>
@@ -236,7 +236,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball6.stl" />
+					<mesh filename="package://schunk_description/meshes/powerball/arm_6_link.stl" />
 				</geometry>
 				<material name="Grey" />
 			</visual>
@@ -244,7 +244,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/powerball6.stl"/>
+					<mesh filename="package://schunk_description/meshes/powerball/arm_6_link.stl" />
 				</geometry>
 			</collision>
 		</link>
