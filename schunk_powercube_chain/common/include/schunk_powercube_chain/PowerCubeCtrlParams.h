@@ -74,6 +74,7 @@ public:
 	PowerCubeCtrlParams()
 	{
 		m_DOF = 0;
+		m_UseMoveVel = true;
 	};
 
 	/// Destructor
@@ -103,6 +104,18 @@ public:
 	int GetDOF()
 	{
 		return m_DOF;
+	}
+
+	/// Sets UseMoveVel
+	void SetUseMoveVel(bool UseMoveVel)
+	{
+		m_UseMoveVel = UseMoveVel;
+	}
+
+	/// Gets UseMoveVel
+	int GetUseMoveVel()
+	{
+		return m_UseMoveVel;
 	}
 
 	/// Sets the CAN Module
@@ -146,7 +159,8 @@ public:
 	{
 		return m_ModulIDs;
 	}
-
+	
+	/// Gets the ModuleID
 	int GetModuleID(int no)
 	{
 		if (no < GetDOF())
@@ -154,7 +168,7 @@ public:
 		else
 			return -1;
 	}
-
+	
 	/// Sets the Module IDs
 	int SetModuleID(int no, int id)
 	{
@@ -165,7 +179,6 @@ public:
 		}
 		else
 			return -1;
-
 	}
 
 	/// Gets the joint names
@@ -283,6 +296,7 @@ private:
 	std::string m_CanModule;
 	std::string m_CanDevice;
 	int m_Baudrate;
+	bool m_UseMoveVel;
 	std::vector<double> m_Offsets;
 	std::vector<double> m_UpperLimits;
 	std::vector<double> m_LowerLimits;
