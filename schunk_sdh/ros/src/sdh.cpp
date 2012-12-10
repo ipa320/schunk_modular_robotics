@@ -688,6 +688,7 @@ class SdhNode
 			msg.name.resize(DOF_);
 			msg.position.resize(DOF_);
 			msg.velocity.resize(DOF_);
+			msg.effort.resize(DOF_);
 			// set joint names and map them to angles
 			msg.name = joint_names_;
 			//['sdh_knuckle_joint', 'sdh_thumb_2_joint', 'sdh_thumb_3_joint', 'sdh_finger_12_joint', 'sdh_finger_13_joint', 'sdh_finger_22_joint', 'sdh_finger_23_joint']
