@@ -393,12 +393,16 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
   for (int i = 0; i < DOF; i++)
   {
     pthread_mutex_lock(&m_mutex);
-    PCube_setMinPos(m_DeviceHandle, ModulIDs[i], LowerLimits[i]);
+    ret = PCube_setMinPos(m_DeviceHandle, ModulIDs[i], LowerLimits[i]);
     pthread_mutex_unlock(&m_mutex);
+		if (ret!=0)
+		{return false;}
 
     pthread_mutex_lock(&m_mutex);
-    PCube_setMaxPos(m_DeviceHandle, ModulIDs[i], UpperLimits[i]);
+    ret = PCube_setMaxPos(m_DeviceHandle, ModulIDs[i], UpperLimits[i]);
     pthread_mutex_unlock(&m_mutex);
+		if (ret!=0)
+		{return false;}
   }
 
   /// Set max velocity to hardware
@@ -1301,11 +1305,23 @@ bool PowerCubeCtrl::doHoming()
 	if ((position > UpperLimits[i]) || (position < LowerLimits[i]))
 	{	
 		std::ostringstream errorMsg;
-		errorMsg << "Module " << ModuleIDs[i] << " has position " << position << " that is outside limits (" << UpperLimits[i] << " <-> " << LowerLimits[i] << "). Try to reboot the robot." << std::endl;
-		m_ErrorMessage = errorMsg.str(); 
-		m_pc_status = PC_CTRL_ERR;
-		ROS_INFO("Homing for Module: %i not necessary", m_params->GetModuleID(i));
-		return false; 	
+		errorMsg << "Module " << ModuleIDs[i] << " has position " << position << " that is outside limits (" << UpperLimits[i] << " <-> " << LowerLimits[i] << std::endl; 
+		if ((m_ModuleTypes.at(i)=="PW") || (m_ModuleTypes.at(i) == "other"))
+		{	std::cout << "Position error for PW-Module. Init is aborted. Try to reboot the robot." << std::endl;
+			m_ErrorMessage = errorMsg.str(); 
+			m_pc_status = PC_CTRL_ERR;
+			return false;
+		}
+		else if (m_ModuleTypes.at(i)=="PRL") 
+		{	
+			ROS_INFO("Position of Module %i is outside limits. Module can only be moved in opposite direction.",i );
+			ROS_INFO("Homing for Module: %i not necessary", m_params->GetModuleID(i));
+		} 	
+		else 
+		{	
+			ROS_INFO("Module type incorrect. (in func. PowerCubeCtrl::doHoming();)");
+			return false;
+		}
 	}
 	else
 	{

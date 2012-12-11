@@ -652,10 +652,6 @@ public:
 		  last_publish_time_ = joint_state_msg.header.stamp;
 
 	  }
-<<<<<<< HEAD
-
-=======
->>>>>>> 1e5f40e44faa9093be5206ab6c44d73fb8f04f43
 
 	// check status of PowerCube chain
 	if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK) { error_ = true; }
