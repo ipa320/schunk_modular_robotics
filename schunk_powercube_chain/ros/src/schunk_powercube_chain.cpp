@@ -84,7 +84,7 @@
 // own includes
 #include <schunk_powercube_chain/PowerCubeCtrl.h>
 #include <schunk_powercube_chain/PowerCubeCtrlParams.h>
-#include <schunk_powercube_chain/Diagnostics.h>
+//#include <schunk_powercube_chain/Diagnostics.h>
 
 /*!
  * \brief Implementation of ROS node for powercube_chain.
