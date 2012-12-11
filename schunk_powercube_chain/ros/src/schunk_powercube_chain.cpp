@@ -632,6 +632,7 @@ public:
 		  joint_state_msg.name = pc_params_->GetJointNames();
 		  joint_state_msg.position = pc_ctrl_->getPositions();
 		  joint_state_msg.velocity = pc_ctrl_->getVelocities();
+		  joint_state_msg.effort.resize(pc_params_->GetDOF());
 
 		  pr2_controllers_msgs::JointTrajectoryControllerState controller_state_msg;
 		  controller_state_msg.header.stamp = joint_state_msg.header.stamp;
