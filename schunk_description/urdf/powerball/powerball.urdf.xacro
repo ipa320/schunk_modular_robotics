@@ -28,7 +28,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/powerball/arm_0_link.stl" />
 				</geometry>
-				<material name="Grey" />
+				<material name="IPA/LightGrey" />
 			</visual>
 			
 			<collision>
@@ -98,7 +98,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/powerball/arm_2_link.stl" />
 				</geometry>
-				<material name="Grey" />
+				<material name="IPA/LightGrey" />
 			</visual>
 			
 			<collision>
@@ -168,7 +168,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/powerball/arm_4_link.stl" />
 				</geometry>
-				<material name="Grey" />
+				<material name="IPA/LightGrey" />
 			</visual>
 			
 			<collision>
@@ -238,7 +238,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/powerball/arm_6_link.stl" />
 				</geometry>
-				<material name="Grey" />
+				<material name="IPA/LightGrey" />
 			</visual>
 			
 			<collision>
