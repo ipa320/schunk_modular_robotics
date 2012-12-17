@@ -28,7 +28,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/sdh/palm.stl" />
 				</geometry>
-				<material name="Grey" />
+				<material name="IPA/DarkGrey" />
 			</visual>
 			
 			<collision>
@@ -80,7 +80,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/sdh/knuckle.stl" />
 				</geometry>
-				<material name="Black" />
+				<material name="IPA/Black" />
 			</visual>
 			
 			<collision>
@@ -113,7 +113,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/sdh/finger.stl" />
 				</geometry>
-			<material name="Grey" />
+			<material name="IPA/DarkGrey" />
 			</visual>
 			
 			<collision>
@@ -147,7 +147,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/sdh/finger_tip.stl" />
 				</geometry>
-				<material name="Black" />
+				<material name="IPA/Black" />
 			</visual>
 			
 			<collision>
@@ -182,7 +182,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/sdh/knuckle.stl" />
 				</geometry>
-				<material name="Black" />
+				<material name="IPA/Black" />
 			</visual>
 			
 			<collision>
@@ -215,7 +215,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/sdh/finger.stl" />
 				</geometry>
-				<material name="Grey" />
+				<material name="IPA/DarkGrey" />
 			</visual>
 			
 			<collision>
@@ -248,7 +248,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/sdh/finger_tip.stl" />
 				</geometry>
-				<material name="Black" />
+				<material name="IPA/Black" />
 			</visual>
 			
 			<collision>
@@ -279,7 +279,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/sdh/knuckle.stl" />
 				</geometry>
-				<material name="Black" />
+				<material name="IPA/Black" />
 			</visual>
 			
 			<collision>
@@ -312,7 +312,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/sdh/finger.stl" />
 				</geometry>
-				<material name="Grey" />
+				<material name="IPA/DarkGrey" />
 			</visual>
 		
 			<collision>
@@ -345,7 +345,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/sdh/finger_tip.stl" />
 				</geometry>
-				<material name="Black" />
+				<material name="IPA/Black" />
 			</visual>
 			
 			<collision>
