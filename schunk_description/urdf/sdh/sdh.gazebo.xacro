@@ -29,7 +29,7 @@
 					<interface:bumper name="${name}_finger_12_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
-			<material>Gazebo/Red</material>
+			<material>IPA/Grey1</material>
 			<turnGravityOff>false</turnGravityOff>
 		</gazebo>
 
@@ -46,7 +46,7 @@
 					<interface:bumper name="${name}_finger_13_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
-			<material>Gazebo/Blue</material>
+			<material>IPA/Grey2</material>
 		</gazebo>
 
 		<gazebo reference="${name}_finger_21_link">
@@ -67,7 +67,7 @@
 					<interface:bumper name="${name}_finger_22_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
-			<material>Gazebo/Red</material>
+			<material>IPA/Grey1</material>
 			<turnGravityOff>false</turnGravityOff>
 		</gazebo>
 
@@ -84,7 +84,7 @@
 					<interface:bumper name="${name}_finger_23_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
-			<material>Gazebo/Blue</material>
+			<material>IPA/Grey2</material>
 		</gazebo>
 
 		<gazebo reference="${name}_thumb_1_link">
@@ -105,7 +105,7 @@
 					<interface:bumper name="${name}_thumb_2_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
-			<material>Gazebo/Red</material>
+			<material>IPA/Grey1</material>
 			<turnGravityOff>false</turnGravityOff>
 		</gazebo>
 
@@ -122,7 +122,7 @@
 					<interface:bumper name="${name}_thumb_3_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
-			<material>Gazebo/Blue</material>
+			<material>IPA/Grey2</material>
 		</gazebo>
 
 	</xacro:macro>

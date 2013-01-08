@@ -21,5 +21,6 @@
   <depend package="libpcan"/>
   <depend package="diagnostic_msgs"/>
   <depend package="rostest"/>
+  <depend package="brics_actuator"/>
 
 </package>
