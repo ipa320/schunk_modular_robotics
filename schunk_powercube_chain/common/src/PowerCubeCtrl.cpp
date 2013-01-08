@@ -722,7 +722,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 		/// error handling
 		if (ret != 0)
 		{
-			ROS_INFO("Com Error: %i", ret); 		  
+			ROS_DEBUG("Com Error: %i", ret); 		  
 			pos = m_positions[i];
 			//m_pc_status = PC_CTRL_ERR;
 			//TODO: add error msg for diagnostics if error occours often
