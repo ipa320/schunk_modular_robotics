@@ -1097,7 +1097,7 @@ bool PowerCubeCtrl::updateStates()
       if (ret != 0)
 	{
 	  //m_pc_status = PC_CTRL_ERR;
-	  ROS_INFO("Error on com in UpdateStates");
+	  ROS_DEBUG("Error on com in UpdateStates");
 	  return true;
 	  //errorMsg << "State: Error com with Module [" <<  i << "]";
 	  //ErrorMessages[i] = errorMsg.str();			
