@@ -202,28 +202,36 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
   m_CANDeviceOpened = true;
 
 	/// reset all modules of the chain
+	int max_tries = 3; 
 	for (int i = 0; i < DOF; i++)
 	{  
-		pthread_mutex_lock(&m_mutex);
-		ret =  PCube_resetModule(m_DeviceHandle, ModulIDs.at(i));
-		pthread_mutex_unlock(&m_mutex);
-		if (ret != 0)
-		{	
-			// little break
-			usleep(750000); 
-
-			// second chance for reset (if more chains are one the same bus conflicts can happe during parallel init) 
+		for (int reset_try = 0; reset_try < max_tries; i++)
+		{
 			pthread_mutex_lock(&m_mutex);
 			ret =  PCube_resetModule(m_DeviceHandle, ModulIDs.at(i));
 			pthread_mutex_unlock(&m_mutex);
-			if (ret != 0)
+			
+			if (ret == 0)
 			{	
-	    		std::ostringstream errorMsg;
-	    		errorMsg << "Could not reset module " << ModulIDs.at(i) << ", m5api error code: " << ret;
-	    		m_ErrorMessage = errorMsg.str();
-	    		return false;
+				ROS_INFO("Module succesfully reseted: %i",i);
+				break; 
 			}
+			else if ((ret != 0) && (reset_try == (max_tries-1)))
+			{
+				std::ostringstream errorMsg;
+      	errorMsg << "Could not reset module " << i << " during init. Try to init once more.";
+      	m_ErrorMessage = errorMsg.str();
+				return false;
+			}
+			else
+			{
+				// little break
+				usleep(1000000); 
+				ROS_INFO("Try reset %i",i); 
+			}
+			
 		}
+	    		
 	}
 
   /// make sure m_IdModules is clear of Elements:
