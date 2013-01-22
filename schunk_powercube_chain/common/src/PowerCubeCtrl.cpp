@@ -213,7 +213,6 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			
 			if (ret == 0)
 			{	
-				ROS_INFO("Module succesfully reseted: %i",i);
 				break; 
 			}
 			else if ((ret != 0) && (reset_try == (max_tries-1)))
@@ -227,11 +226,9 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			{
 				// little break
 				usleep(1000000); 
-				ROS_INFO("Try reset %i",i); 
 			}
 			
 		}
-	    		
 	}
 
   /// make sure m_IdModules is clear of Elements:
