@@ -28,7 +28,7 @@
 				<geometry>
 					<cylinder radius="0.045" length="0.08"/>
 				</geometry>
-				<material name="Red" />
+				<material name="Schunk/DarkGolden" />
 			</visual>
 
 			<collision>
@@ -64,7 +64,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa/lwa1.stl" />
 				</geometry>
-				<material name="Blue" />
+				<material name="Schunk/DarkGolden" />
 			</visual>
 			
 			<collision>
@@ -100,7 +100,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa/lwa2.stl" />
 				</geometry>
-				<material name="Red" />
+				<material name="Schunk/DarkGolden" />
 			</visual>
 			
 			<collision>
@@ -136,7 +136,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa/lwa3.stl" />
 				</geometry>
-				<material name="Blue" />
+				<material name="Schunk/DarkGolden" />
 			</visual>
 			
 			<collision>
@@ -172,7 +172,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa/lwa4.stl" />
 				</geometry>
-				<material name="Red" />
+				<material name="Schunk/DarkGolden" />
 			</visual>
 			
 			<collision>
@@ -207,7 +207,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa/lwa5.stl" />
 				</geometry>
-				<material name="Blue" />
+				<material name="Schunk/DarkGolden" />
 			</visual>
 			
 			<collision>
@@ -242,7 +242,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa/lwa6.stl" />
 				</geometry>
-				<material name="Red" />
+				<material name="Schunk/DarkGolden" />
 			</visual>
 			
 			<collision>
@@ -277,7 +277,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa/lwa7.stl" />
 				</geometry>
-				<material name="Blue" />
+				<material name="Schunk/DarkGolden" />
 			</visual>
 			
 			<collision>

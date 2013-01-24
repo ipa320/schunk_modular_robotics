@@ -8,43 +8,43 @@
 	<xacro:macro name="schunk_powerball_gazebo" params="name">
 
 		<gazebo reference="${name}_0_link">
-			<material value="Grey" />
+			<material value="Schunk/LightGrey" />
 			<turnGravityOff>false</turnGravityOff>
                         <selfCollide>true</selfCollide>
 		</gazebo>
 
 		<gazebo reference="${name}_1_link">
-			<material value="Gazebo/Blue" />
+			<material value="Schunk/Blue" />
 			<turnGravityOff>false</turnGravityOff>
                         <selfCollide>true</selfCollide>
 		</gazebo>
 
 		<gazebo reference="${name}_2_link">
-			<material value="Grey" />
+			<material value="Schunk/LightGrey" />
 			<turnGravityOff>false</turnGravityOff>
                         <selfCollide>true</selfCollide>
 		</gazebo>
 
 		<gazebo reference="${name}_3_link">
-			<material value="Gazebo/Blue" />
+			<material value="Schunk/Blue" />
 			<turnGravityOff>false</turnGravityOff>
                         <selfCollide>true</selfCollide>
 		</gazebo>
 
 		<gazebo reference="${name}_4_link">
-			<material value="Grey" />
+			<material value="Schunk/LightGrey" />
 			<turnGravityOff>false</turnGravityOff>
                         <selfCollide>true</selfCollide>
 		</gazebo>
 
 		<gazebo reference="${name}_5_link">
-			<material value="Gazebo/Blue" />
+			<material value="Schunk/Blue" />
 			<turnGravityOff>false</turnGravityOff>
                         <selfCollide>true</selfCollide>
 		</gazebo>
 
 		<gazebo reference="${name}_6_link">
-			<material value="Grey" />
+			<material value="Schunk/LightGrey" />
 			<turnGravityOff>false</turnGravityOff>
                         <selfCollide>true</selfCollide>
 		</gazebo>
