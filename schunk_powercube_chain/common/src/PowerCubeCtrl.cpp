@@ -63,8 +63,6 @@
 // own includes
 #include <schunk_powercube_chain/PowerCubeCtrl.h>
 
-#include <chrono>
-
 #define PCTRL_CHECK_INITIALIZED()				\
   if ( isInitialized()==false )					\
     {								\
