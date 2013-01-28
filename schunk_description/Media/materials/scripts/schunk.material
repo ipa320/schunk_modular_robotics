@@ -1,4 +1,4 @@
-material IPA/LightGrey
+material Schunk/LightGrey
 {
   receive_shadows on
 
@@ -13,7 +13,7 @@ material IPA/LightGrey
 	}
 }
 
-material IPA/DarkGrey
+material Schunk/DarkGrey
 {
   receive_shadows on
 
@@ -28,7 +28,7 @@ material IPA/DarkGrey
 }
 
 
-material IPA/Black
+material Schunk/Black
 {
 	technique
 	{
@@ -48,6 +48,19 @@ material Schunk/DarkGolden
 		pass
 		{
 			ambient 0.72 0.5255 0.043  1.0
+			diffuse 0.1 0.1 0.1 1
+		}
+	}
+}
+
+material Schunk/Blue
+{
+  	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.0 0.0 0.8 1.0  1.0
 			diffuse 0.1 0.1 0.1 1
 		}
 	}

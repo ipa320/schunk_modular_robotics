@@ -7,12 +7,12 @@
 	<xacro:macro name="schunk_sdh_gazebo" params="name">
 
 		<gazebo reference="${name}_palm_link">
-			<material>Gazebo/Grey</material>
+			<material>Schunk/LightGrey</material>
 			<turnGravityOff>false</turnGravityOff>
 		</gazebo>
 	
 		<gazebo reference="${name}_finger_11_link">
-			<material>Gazebo/Black</material>
+			<material>Schunk/Black</material>
 			<turnGravityOff>false</turnGravityOff>
 		</gazebo>
 	
@@ -29,7 +29,7 @@
 					<interface:bumper name="${name}_finger_12_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
-			<material>IPA/Grey1</material>
+			<material>Schunk/LightGrey</material>
 			<turnGravityOff>false</turnGravityOff>
 		</gazebo>
 
@@ -46,11 +46,11 @@
 					<interface:bumper name="${name}_finger_13_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
-			<material>IPA/Grey2</material>
+			<material>Schunk/LightGrey</material>
 		</gazebo>
 
 		<gazebo reference="${name}_finger_21_link">
-			<material>Gazebo/Black</material>
+			<material>Schunk/Black</material>
 			<turnGravityOff>false</turnGravityOff>
 		</gazebo>
 	
@@ -67,7 +67,7 @@
 					<interface:bumper name="${name}_finger_22_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
-			<material>IPA/Grey1</material>
+			<material>Schunk/LightGrey</material>
 			<turnGravityOff>false</turnGravityOff>
 		</gazebo>
 
@@ -84,11 +84,11 @@
 					<interface:bumper name="${name}_finger_23_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
-			<material>IPA/Grey2</material>
+			<material>Schunk/LightGrey</material>
 		</gazebo>
 
 		<gazebo reference="${name}_thumb_1_link">
-			<material>Gazebo/Black</material>
+			<material>Schunk/Black</material>
 			<turnGravityOff>false</turnGravityOff>
 		</gazebo>
 
@@ -105,7 +105,7 @@
 					<interface:bumper name="${name}_thumb_2_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
-			<material>IPA/Grey1</material>
+			<material>Schunk/LightGrey</material>
 			<turnGravityOff>false</turnGravityOff>
 		</gazebo>
 
@@ -122,7 +122,7 @@
 					<interface:bumper name="${name}_thumb_3_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
-			<material>IPA/Grey2</material>
+			<material>Schunk/LightGrey</material>
 		</gazebo>
 
 	</xacro:macro>
