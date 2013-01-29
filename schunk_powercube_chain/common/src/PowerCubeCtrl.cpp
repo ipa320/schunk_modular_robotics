@@ -396,13 +396,13 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
   for (int i = 0; i < DOF; i++)
   {
     pthread_mutex_lock(&m_mutex);
-    ret = PCube_setMinPos(m_DeviceHandle, ModulIDs[i], LowerLimits[i]);
+    //ret = PCube_setMinPos(m_DeviceHandle, ModulIDs[i], LowerLimits[i]);
     pthread_mutex_unlock(&m_mutex);
 		if (ret!=0)
 		{return false;}
 
     pthread_mutex_lock(&m_mutex);
-    ret = PCube_setMaxPos(m_DeviceHandle, ModulIDs[i], UpperLimits[i]);
+    //ret = PCube_setMaxPos(m_DeviceHandle, ModulIDs[i], UpperLimits[i]);
     pthread_mutex_unlock(&m_mutex);
 		if (ret!=0)
 		{return false;}
@@ -410,13 +410,12 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 
   /// Set max velocity to hardware
   setMaxVelocity(MaxVel);
-
-  /// Set max acceleration to hardware
-  setMaxAcceleration(MaxAcc);
+	
+  /// Set max acceleration to hardware 
+	setMaxAcceleration(MaxAcc);
 
   /// set synchronous or asynchronous movements
   setSyncMotion();
-  //setASyncMotion();
 
   // All modules initialized successfully
   m_pc_status = PC_CTRL_OK;
@@ -671,7 +670,6 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 			if ((target_pos[i] > UpperLimits[i]) && (velocities[i] > 0))
 			{	
 				ROS_INFO("Skipping command: %f Target position exceeds upper limit (%f).", target_pos[i], UpperLimits[i]);		
-
 				// target position is set to actual position. So only movement in the non limit direction is possible.
 				
 				pthread_mutex_lock(&m_mutex);
@@ -832,7 +830,11 @@ bool PowerCubeCtrl::Stop()
 bool PowerCubeCtrl::Recover()
 {	
   unsigned int DOF = m_params->GetDOF();
-
+	std::vector<int> ModulIDs = m_params->GetModuleIDs();
+  std::vector<double> MaxVel = m_params->GetMaxVel();
+  std::vector<double> MaxAcc = m_params->GetMaxAcc();
+  std::vector<double> Offsets = m_params->GetOffsets();
+  
   std::vector<std::string> errorMessages;
   PC_CTRL_STATUS status;
 	
@@ -885,6 +887,32 @@ bool PowerCubeCtrl::Recover()
 	
   usleep(500000);
 
+	/// Set angle offsets to hardware
+  for (int i = 0; i < DOF; i++)
+  {
+    pthread_mutex_lock(&m_mutex);
+    ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
+    pthread_mutex_unlock(&m_mutex);
+
+		if (ret!=0) 
+		{		// 2. chance
+				pthread_mutex_lock(&m_mutex);
+     		ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
+    		pthread_mutex_unlock(&m_mutex);
+				if (ret!=0)
+				{return false;}
+		}
+  }
+
+	/// Set max velocity to hardware
+  setMaxVelocity(MaxVel);
+	
+  /// Set max acceleration to hardware
+	setMaxAcceleration(MaxAcc);
+	
+  /// set synchronous or asynchronous movements
+  setSyncMotion();
+
   // modules should be recovered now
   m_pc_status = PC_CTRL_OK;	
 	
@@ -915,12 +943,21 @@ bool PowerCubeCtrl::Recover()
  */
 bool PowerCubeCtrl::setMaxVelocity(double maxVelocity)
 {
+	std::vector<int> ModulIDs = m_params->GetModuleIDs();
+
   PCTRL_CHECK_INITIALIZED();
   for (int i = 0; i < m_params->GetDOF(); i++)
     {
       pthread_mutex_lock(&m_mutex);
-      PCube_setMaxVel(m_DeviceHandle, m_params->GetModuleID(i), maxVelocity);
+      int ret = PCube_setMaxVel(m_DeviceHandle, m_params->GetModuleID(i), maxVelocity);
       pthread_mutex_unlock(&m_mutex);
+			if (ret!=0)
+			{	
+				std::ostringstream errorMsg;
+				errorMsg << "Could not set MaxVelocity in Module ID: " << ModulIDs[i] << ", m5api error code: " << ret;
+				m_ErrorMessage = errorMsg.str();
+				return false;
+			}
 
       std::vector<double> maxVelocities(maxVelocity);
       m_params->SetMaxVel(maxVelocities);
@@ -933,15 +970,25 @@ bool PowerCubeCtrl::setMaxVelocity(double maxVelocity)
  * \brief Sets the maximum angular velocity (rad/s) for the Joints, use with care!
  */
 bool PowerCubeCtrl::setMaxVelocity(const std::vector<double>& maxVelocities)
-{
+{	
   PCTRL_CHECK_INITIALIZED();
-
+	
+	std::vector<int> ModulIDs = m_params->GetModuleIDs();
+	
   for (int i = 0; i < m_params->GetDOF(); i++)
     {
       pthread_mutex_lock(&m_mutex);
       //std::cout << "------------------------------> PCube_setMaxVel()" << std::endl;
-      PCube_setMaxVel(m_DeviceHandle, m_params->GetModuleID(i), maxVelocities[i]);
+      int ret = PCube_setMaxVel(m_DeviceHandle, m_params->GetModuleID(i), maxVelocities[i]);
       pthread_mutex_unlock(&m_mutex);
+			if (ret!=0)
+			{	
+				std::ostringstream errorMsg;
+				errorMsg << "Could not set MaxVelocity in Module ID: " << ModulIDs[i] << ", m5api error code: " << ret;
+				m_ErrorMessage = errorMsg.str();
+				return false;
+			}
+
       m_params->SetMaxVel(maxVelocities);
     }
 
@@ -956,13 +1003,23 @@ bool PowerCubeCtrl::setMaxVelocity(const std::vector<double>& maxVelocities)
 bool PowerCubeCtrl::setMaxAcceleration(double maxAcceleration)
 {
   PCTRL_CHECK_INITIALIZED();
+	
+	std::vector<int> ModulIDs = m_params->GetModuleIDs();
 
   for (int i = 0; i < m_params->GetDOF(); i++)
     {
       pthread_mutex_lock(&m_mutex);
       //std::cout << "------------------------------> PCube_setMaxAcc()" << std::endl;
-      PCube_setMaxAcc(m_DeviceHandle, m_params->GetModuleID(i), maxAcceleration);
+      int ret = PCube_setMaxAcc(m_DeviceHandle, m_params->GetModuleID(i), maxAcceleration);
       pthread_mutex_unlock(&m_mutex);
+			if (ret!=0)
+			{	
+				std::ostringstream errorMsg;
+				errorMsg << "Could not set MaxAcceleration in Module ID: " << ModulIDs[i] << ", m5api error code: " << ret;
+				m_ErrorMessage = errorMsg.str();
+				return false;
+			}
+
       std::vector<double> maxAccelerations(maxAcceleration);
       m_params->SetMaxAcc(maxAccelerations);
     }
@@ -976,12 +1033,22 @@ bool PowerCubeCtrl::setMaxAcceleration(double maxAcceleration)
 bool PowerCubeCtrl::setMaxAcceleration(const std::vector<double>& maxAccelerations)
 {
   PCTRL_CHECK_INITIALIZED();
+	
+	std::vector<int> ModulIDs = m_params->GetModuleIDs();
 
   for (int i = 0; i < m_params->GetDOF(); i++)
     {
       pthread_mutex_lock(&m_mutex);
-      PCube_setMaxAcc(m_DeviceHandle, m_params->GetModuleID(i), maxAccelerations[i]);
+      int ret = PCube_setMaxAcc(m_DeviceHandle, m_params->GetModuleID(i), maxAccelerations[i]);
       pthread_mutex_unlock(&m_mutex);
+			if (ret!=0)
+			{	
+				std::ostringstream errorMsg;
+				errorMsg << "Could not set MaxAcceleration in Module ID: " << ModulIDs[i] << ", m5api error code: " << ret;
+				m_ErrorMessage = errorMsg.str();
+				return false;
+			}
+
       m_params->SetMaxAcc(maxAccelerations);
     }
 
@@ -1019,22 +1086,31 @@ double PowerCubeCtrl::getHorizon()
  */
 bool PowerCubeCtrl::setSyncMotion()
 {
+	std::vector<int> ModulIDs = m_params->GetModuleIDs();
+
   if (m_CANDeviceOpened)
-    {
-      for (int i = 0; i < m_params->GetDOF(); i++)
-	{
-	  unsigned long confword;
+  {
+		for (int i = 0; i < m_params->GetDOF(); i++)
+		{
+	  	unsigned long confword;
 
-	  /// get config
-	  pthread_mutex_lock(&m_mutex);
-	  PCube_getConfig(m_DeviceHandle, m_params->GetModuleID(i), &confword);
-	  pthread_mutex_unlock(&m_mutex);
+	  	/// get config
+	  	pthread_mutex_lock(&m_mutex);
+	  	PCube_getConfig(m_DeviceHandle, m_params->GetModuleID(i), &confword);
+	  	pthread_mutex_unlock(&m_mutex);
 
-	  /// set config to synchronous
-	  pthread_mutex_lock(&m_mutex);
-	  PCube_setConfig(m_DeviceHandle, m_params->GetModuleID(i), confword | CONFIGID_MOD_SYNC_MOTION);
-	  pthread_mutex_unlock(&m_mutex);
-	}
+	  	/// set config to synchronous
+	  	pthread_mutex_lock(&m_mutex);
+	  	int ret = PCube_setConfig(m_DeviceHandle, m_params->GetModuleID(i), confword | CONFIGID_MOD_SYNC_MOTION);
+	  	pthread_mutex_unlock(&m_mutex);
+			if (ret!=0)
+			{	
+				std::ostringstream errorMsg;
+				errorMsg << "Could not set SyncMotion in Module ID: " << ModulIDs[i] << ", m5api error code: " << ret;
+				m_ErrorMessage = errorMsg.str();
+				return false;
+			}
+		}
       return true;
     }
   else
