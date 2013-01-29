@@ -2,11 +2,11 @@
 <robot>
 
 	<material name="Schunk/LightGrey">
-		<color rgba="0.81 0.81 0.81 1.0"/>
+		<color rgba="0.7 0.7 0.7 1.0"/>
 	</material>
 
 	<material name="Schunk/DarkGrey">
-		<color rgba="0.7 0.7 0.7 1.0"/>
+		<color rgba="0.4 0.4 0.4 1.0"/>
 	</material>
 
 	<material name="Schunk/Black">
@@ -14,7 +14,7 @@
 	</material>
 
 	<material name="Schunk/DarkGolden">
-		<color rgba="0.72 0.5255 0.043 1.0"/>
+		<color rgba="0.4 0.4 0.3 1.0"/>
 	</material>
 
 	<material name="Schunk/Blue">
