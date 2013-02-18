@@ -146,12 +146,6 @@ class DsaNode
 			// implementation of topics to publish
 			topicPub_TactileSensor_ = nh_.advertise<schunk_sdh::TactileSensor>("tactile_data", 1);
 
-
-			// implementation of service servers
-			srvServer_Init_ = nh_.advertiseService("init", &DsaNode::srvCallback_Init, this);
-			srvServer_Stop_ = nh_.advertiseService("stop", &DsaNode::srvCallback_Stop, this);
-			srvServer_Recover_ = nh_.advertiseService("recover", &DsaNode::srvCallback_Init, this); //HACK: There is no recover implemented yet, so we execute a init
-
 			nh_.param("dsadevicestring", dsadevicestring_, std::string(""));
 			nh_.param("dsadevicenum", dsadevicenum_, 0);
 			nh_.param("maxerror", maxerror_, 16);
