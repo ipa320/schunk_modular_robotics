@@ -62,7 +62,7 @@ rosbuild_link_boost(sdh_only thread)
 target_link_libraries(sdh_only ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)
 
 # DSA only
-rosbuild_add_executable(dsa_only ros/src/sdh_only.cpp )
+rosbuild_add_executable(dsa_only ros/src/dsa_only.cpp )
 rosbuild_add_compile_flags(dsa_only -DOSNAME_LINUX)
 #rosbuild_link_boost(dsa_only thread)
 target_link_libraries(dsa_only ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)

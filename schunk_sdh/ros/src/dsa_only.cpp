@@ -119,7 +119,7 @@ class DsaNode
 		*
 		* \param name Name for the actionlib server
 		*/
-		DsaNode(std::string name):dsa_(0),isDSAInitialized_(false),error_counter_(0)
+		DsaNode():dsa_(0),isDSAInitialized_(false),error_counter_(0)
 		{
 			nh_ = ros::NodeHandle ("~");
 			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
@@ -160,6 +160,7 @@ class DsaNode
 			}
 			dsa_ = 0;
 			isDSAInitialized_ = false;
+			return true;
 		}
 
 		bool start()
@@ -205,7 +206,7 @@ class DsaNode
 			try
 			{
 				//dsa_->SetFramerate( 0, true, true );
-				UInt32 last_time = dsa_->GetFrame().timestamp;
+				SDH::UInt32 last_time = dsa_->GetFrame().timestamp;
 				dsa_->UpdateFrame();
 				if(dsa_->GetFrame().timestamp == last_time) return; // no new frame available
 				
@@ -248,7 +249,7 @@ class DsaNode
 	    diagnostic_msgs::DiagnosticArray diagnostics;
 	    diagnostics.status.resize(1);
 	    // set data to diagnostics
-	    if (isDsaInitialized_)
+	    if (isDSAInitialized_)
 	    {
 		diagnostics.status[0].level = 0;
 		diagnostics.status[0].name = nh_.getNamespace(); //"schunk_powercube_chain";
@@ -259,7 +260,6 @@ class DsaNode
 		diagnostics.status[0].level = 1;
 		diagnostics.status[0].name = nh_.getNamespace(); //"schunk_powercube_chain";
 		diagnostics.status[0].message = "DSA not initialized";
-	    }
 	    }
 	    // publish diagnostic message
 	    topicPub_Diagnostics_.publish(diagnostics);
@@ -276,7 +276,7 @@ int main(int argc, char** argv)
 	// initialize ROS, spezify name of node
 	ros::init(argc, argv, "schunk_dsa");
 
-	DsaNode dsa_node();
+	DsaNode dsa_node;
 	if (!dsa_node.init()) return 0;
 	
 	ROS_INFO("...dsa node running...");
