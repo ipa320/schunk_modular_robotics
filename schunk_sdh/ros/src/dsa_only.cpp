@@ -281,19 +281,19 @@ int main(int argc, char** argv)
 	
 	ROS_INFO("...dsa node running...");
 
-	double frequency;
-	if (dsa_node.nh_.hasParam("frequency"))
-	{
-		dsa_node.nh_.getParam("frequency", frequency);
-	}
-	else
-	{
-		frequency = 5; //Hz
-		ROS_WARN("Parameter frequency not available, setting to default value: %f Hz", frequency);
-	}
+// 	double frequency;
+// 	if (dsa_node.nh_.hasParam("frequency"))
+// 	{
+// 		dsa_node.nh_.getParam("frequency", frequency);
+// 	}
+// 	else
+// 	{
+// 		frequency = 5; //Hz
+// 		ROS_WARN("Parameter frequency not available, setting to default value: %f Hz", frequency);
+// 	}
 
 	//sleep(1);
-	ros::Rate loop_rate(frequency); // Hz
+	ros::Rate loop_rate(60); // Hz (2*30 Hz)
 	while(dsa_node.nh_.ok())
 	{
 		dsa_node.updateDsa();
