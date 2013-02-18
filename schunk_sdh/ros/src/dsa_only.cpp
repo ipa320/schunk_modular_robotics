@@ -108,8 +108,10 @@ class DsaNode
 
 		std::string dsadevicestring_;
 		int dsadevicenum_;
+		int maxerror_;
 
 		bool isDSAInitialized_;
+		int error_counter_;
 		
 	public:
 		/*!
@@ -117,7 +119,7 @@ class DsaNode
 		*
 		* \param name Name for the actionlib server
 		*/
-		DsaNode(std::string name):dsa_(0),isDSAInitialized_(false)
+		DsaNode(std::string name):dsa_(0),isDSAInitialized_(false),error_counter_(0)
 		{
 			nh_ = ros::NodeHandle ("~");
 			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
@@ -152,6 +154,7 @@ class DsaNode
 
 			nh_.param("dsadevicestring", dsadevicestring_, std::string(""));
 			nh_.param("dsadevicenum", dsadevicenum_, 0);
+			nh_.param("maxerror", maxerror_, 16);
 			
 			return true;
 		}
@@ -181,6 +184,7 @@ class DsaNode
 						// ROS_INFO("Set sensitivity to 1.0");
 						// for(int i=0; i<6; i++)
 						// 	dsa_->SetMatrixSensitivity(i, 1.0);
+						error_counter_ = 0;
 						isDSAInitialized_ = true;
 					}
 					catch (SDH::cSDHLibraryException* e)
@@ -204,21 +208,20 @@ class DsaNode
 
 		if(isDSAInitialized_)
 		{
-			// read tactile data
-			for(int i=0; i<7; i++)
+			try
 			{
-				try
-				{
-					//dsa_->SetFramerate( 0, true, true );
-					dsa_->UpdateFrame();
-				}
-				catch (SDH::cSDHLibraryException* e)
-				{
-					ROS_ERROR("An exception was caught: %s", e->what());
-					delete e;
-					stop();
-					return;
-				}
+				//dsa_->SetFramerate( 0, true, true );
+				UInt32 last_time = dsa_->GetFrame().timestamp;
+				dsa_->UpdateFrame();
+				if(dsa_->GetFrame().timestamp == last_time) return; // no new frame available
+				
+			}
+			catch (SDH::cSDHLibraryException* e)
+			{
+				ROS_ERROR("An exception was caught: %s", e->what());
+				delete e;
+				if(++error_counter_ > maxerror_) stop();
+				return;
 			}
 
 			schunk_sdh::TactileSensor msg;
