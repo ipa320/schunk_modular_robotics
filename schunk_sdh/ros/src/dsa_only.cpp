@@ -247,7 +247,7 @@ class DsaNode
 
 	void updateDsa()
 	{
-		ROS_DEBUG("updateTactileData");
+		//ROS_DEBUG("updateTactileData");
 
 		if(isDSAInitialized_)
 		{
@@ -301,33 +301,26 @@ class DsaNode
 	    // publishing diagnotic messages
 	    diagnostic_msgs::DiagnosticArray diagnostics;
 	    diagnostics.status.resize(1);
+	    diagnostics.status[0].name = nh_.getNamespace();
+	    diagnostics.status[0].values.resize(1);
+	    diagnostics.status[0].values[0].key = "error_count";
+	    diagnostics.status[0].values[0].value = boost::lexical_cast<std::string>( error_counter_);
+
 	    // set data to diagnostics
 	    if (isDSAInitialized_)
 	    {
 		diagnostics.status[0].level = 0;
-		diagnostics.status[0].name = nh_.getNamespace();
 		diagnostics.status[0].message = "DSA tactile sensing initialized and running";
-		diagnostics.status[0].values.resize(1);
-		diagnostics.status[0].values[0].key = "error_count";
-		diagnostics.status[0].values[0].value = boost::lexical_cast<std::string>( error_counter_);
 	    }
 	    else if(error_counter_ == 0)
 	    {
 		diagnostics.status[0].level = 1;
-		diagnostics.status[0].name = nh_.getNamespace();
 		diagnostics.status[0].message = "DSA not initialized";
-		diagnostics.status[0].values.resize(1);
-		diagnostics.status[0].values[0].key = "error_count";
-		diagnostics.status[0].values[0].value = boost::lexical_cast<std::string>( error_counter_);
 	    }
 	    else
 	    {
 		diagnostics.status[0].level = 2;
-		diagnostics.status[0].name = nh_.getNamespace();
-		diagnostics.status[0].message = "DSA error";
-		diagnostics.status[0].values.resize(1);
-		diagnostics.status[0].values[0].key = "error_count";
-		diagnostics.status[0].values[0].value = boost::lexical_cast<std::string>( error_counter_);
+		diagnostics.status[0].message = "DSA exceeded eror count";
 	    }
 	    // publish diagnostic message
 	    topicPub_Diagnostics_.publish(diagnostics);
