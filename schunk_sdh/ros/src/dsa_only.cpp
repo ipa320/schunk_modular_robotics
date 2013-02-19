@@ -126,15 +126,15 @@ class DsaNode
 
 		// other variables
 		SDH::cDSA *dsa_;
-		SDH::UInt32 last_data_publish_;
+		SDH::UInt32 last_data_publish_; // time stamp of last data publishing
 
 		std::string dsadevicestring_;
 		int dsadevicenum_;
-		int maxerror_;
+		int maxerror_; // maximum error count allowed
 
 		bool isDSAInitialized_;
 		int error_counter_;
-		bool auto_publish_;
+		bool auto_publish_; // try to publish on each response
 		
 		ros::Timer timer_dsa,timer_publish, timer_diag;
 		
@@ -253,7 +253,13 @@ class DsaNode
 		{
 			try
 			{
+				SDH::UInt32 last_time;
+				last_time = dsa_->GetFrame().timestamp;
 				dsa_->UpdateFrame();
+				if(last_time != dsa_->GetFrame().timestamp{ // new data
+				    if(error_counter_ > 0) --error_counter_;
+				    if(auto_publish_) publishTactileData();
+				}
 				
 			}
 			catch (SDH::cSDHLibraryException* e)
@@ -266,7 +272,6 @@ class DsaNode
 		}else{
 		    start();
 		}
-		if(auto_publish_) publishTactileData();
 	}
 	void publishTactileData()
 	{
