@@ -81,6 +81,8 @@
 #include <schunk_sdh/dsa.h>
 
 #include <boost/lexical_cast.hpp>
+#include <boost/bind.hpp>
+
 /*!
 * \brief Implementation of ROS node for DSA.
 *
@@ -298,31 +300,17 @@ int main(int argc, char** argv)
 	DsaNode dsa_node(nh);
 	if (!dsa_node.init()) return 0;
 	
+	
+	//TODO; implement dedicated publish timer
+	ros::Timer timer_dsa = nh.createTimer(ros::Rate(60).expectedCycleTime(),boost::bind(&DsaNode::updateDsa, &dsa_node));
+	//TODO: use paramater
+	ros::Timer timer_diag = nh.createTimer(ros::Rate(5).expectedCycleTime(),boost::bind(&DsaNode::publishDiagnostics, &dsa_node));
+	    
 	ROS_INFO("...dsa node running...");
 
-// 	double frequency;
-// 	if (dsa_node.nh_.hasParam("frequency"))
-// 	{
-// 		dsa_node.nh_.getParam("frequency", frequency);
-// 	}
-// 	else
-// 	{
-// 		frequency = 5; //Hz
-// 		ROS_WARN("Parameter frequency not available, setting to default value: %f Hz", frequency);
-// 	}
-
-	//sleep(1);
-	ros::Rate loop_rate(60); // Hz (2*30 Hz)
-	while(dsa_node.nh_.ok())
-	{
-		dsa_node.updateDsa();
-		dsa_node.publishDiagnostics();
-		
-		// sleep and waiting for messages, callbacks
-		ros::spinOnce();
-		loop_rate.sleep();
-	}
-
+	ros::spin();
+	
+	ROS_INFO("...dsa node shut down...");
 	return 0;
 }
 
