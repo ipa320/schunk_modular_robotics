@@ -76,9 +76,11 @@
 
 // ROS diagnostic msgs
 #include <diagnostic_msgs/DiagnosticArray.h>
+#include <diagnostic_msgs/KeyValue.h>
 
 #include <schunk_sdh/dsa.h>
 
+#include <boost/lexical_cast.hpp>
 /*!
 * \brief Implementation of ROS node for DSA.
 *
@@ -251,14 +253,29 @@ class DsaNode
 	    if (isDSAInitialized_)
 	    {
 		diagnostics.status[0].level = 0;
-		diagnostics.status[0].name = nh_.getNamespace(); //"schunk_powercube_chain";
+		diagnostics.status[0].name = nh_.getNamespace();
 		diagnostics.status[0].message = "DSA tactile sensing initialized and running";
+		diagnostics.status[0].values.resize(1);
+		diagnostics.status[0].values[0].key = "error_count";
+		diagnostics.status[0].values[0].value = boost::lexical_cast<std::string>( error_counter_);
+	    }
+	    else if(error_counter_ == 0)
+	    {
+		diagnostics.status[0].level = 1;
+		diagnostics.status[0].name = nh_.getNamespace();
+		diagnostics.status[0].message = "DSA not initialized";
+		diagnostics.status[0].values.resize(1);
+		diagnostics.status[0].values[0].key = "error_count";
+		diagnostics.status[0].values[0].value = boost::lexical_cast<std::string>( error_counter_);
 	    }
 	    else
 	    {
-		diagnostics.status[0].level = 1;
-		diagnostics.status[0].name = nh_.getNamespace(); //"schunk_powercube_chain";
-		diagnostics.status[0].message = "DSA not initialized";
+		diagnostics.status[0].level = 2;
+		diagnostics.status[0].name = nh_.getNamespace();
+		diagnostics.status[0].message = "DSA error";
+		diagnostics.status[0].values.resize(1);
+		diagnostics.status[0].values[0].key = "error_count";
+		diagnostics.status[0].values[0].value = boost::lexical_cast<std::string>( error_counter_);
 	    }
 	    // publish diagnostic message
 	    topicPub_Diagnostics_.publish(diagnostics);
