@@ -119,9 +119,8 @@ class DsaNode
 		*
 		* \param name Name for the actionlib server
 		*/
-		DsaNode():dsa_(0),isDSAInitialized_(false),error_counter_(0)
+		DsaNode(ros::NodeHandle &nh):nh_(nh),dsa_(0),isDSAInitialized_(false),error_counter_(0)
 		{
-			nh_ = ros::NodeHandle ("~");
 			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
 
 		}
@@ -275,8 +274,11 @@ int main(int argc, char** argv)
 {
 	// initialize ROS, spezify name of node
 	ros::init(argc, argv, "schunk_dsa");
+	
+	ros::NodeHandle nh("~");
 
-	DsaNode dsa_node;
+
+	DsaNode dsa_node(nh);
 	if (!dsa_node.init()) return 0;
 	
 	ROS_INFO("...dsa node running...");
