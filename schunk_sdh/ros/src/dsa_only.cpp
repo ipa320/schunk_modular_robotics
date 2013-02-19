@@ -83,6 +83,23 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp>
 
+template <typename T> bool read_vector(ros::NodeHandle &n_, const std::string &key, std::vector<T> & res){
+    XmlRpc::XmlRpcValue namesXmlRpc;
+    if (!n_.hasParam(key))
+    {
+	return false;
+    }
+
+    n_.getParam(key, namesXmlRpc);
+    /// Resize and assign of values to the vector
+    res.resize(namesXmlRpc.size());
+    for (int i = 0; i < namesXmlRpc.size(); i++)
+    {
+    	res[i] = (T)namesXmlRpc[i];
+    }
+    return true;
+}
+
 /*!
 * \brief Implementation of ROS node for DSA.
 *
@@ -121,6 +138,7 @@ class DsaNode
 		
 		ros::Timer timer_dsa,timer_publish, timer_diag;
 		
+		std::vector<int> dsa_reorder_;
 	public:
 		/*!
 		* \brief Constructor for SdhNode class
@@ -164,11 +182,22 @@ class DsaNode
 			auto_publish_ = publish_frequency <= 0;
 			
 			
+			
 			timer_dsa = nh_.createTimer(ros::Rate(60).expectedCycleTime(),boost::bind(&DsaNode::updateDsa,  this));
 			if(!auto_publish_)
 			    timer_publish = nh_.createTimer(ros::Rate(publish_frequency).expectedCycleTime(),boost::bind(&DsaNode::publishTactileData, this));
 			
 			timer_diag = nh_.createTimer(ros::Rate(diag_frequency).expectedCycleTime(),boost::bind(&DsaNode::publishDiagnostics, this));
+			
+			if(!read_vector(nh_, "dsa_reorder", dsa_reorder_)){
+			    dsa_reorder_.resize(6);
+			    dsa_reorder_[0] = 2; // t1
+			    dsa_reorder_[1] = 3; // t2
+			    dsa_reorder_[2] = 4; // f11
+			    dsa_reorder_[3] = 5; // f12
+			    dsa_reorder_[4] = 0; // f21
+			    dsa_reorder_[5] = 1; // f22
+			}
 			
 			return true;
 		}
@@ -241,8 +270,6 @@ class DsaNode
 	}
 	void publishTactileData()
 	{
-            static const int dsa_reorder[6] = { 2 ,3, 4, 5, 0 , 1 }; // t1,t2,f11,f12,f21,f22 //TODO: init based on parameters
-            
 	    if(!isDSAInitialized_ || dsa_->GetFrame().timestamp != last_data_publish_) return; // no new frame available
 	    last_data_publish_ = dsa_->GetFrame().timestamp;
 	    
@@ -250,9 +277,10 @@ class DsaNode
 	    msg.header.stamp = ros::Time::now();
 	    int m, x, y;
 	    msg.tactile_matrix.resize(dsa_->GetSensorInfo().nb_matrices);
-	    for ( int i = 0; i < dsa_->GetSensorInfo().nb_matrices; i++ )
+	    ROS_ASSERT(dsa_->GetSensorInfo().nb_matrices == dsa_reorder_.size());
+	    for ( unsigned int i = 0; i < dsa_reorder_.size(); i++ )
 	    {
-		    m = dsa_reorder[i];                                  
+		    m = dsa_reorder_[i];                                  
 		    schunk_sdh::TactileMatrix &tm = msg.tactile_matrix[i];
 		    tm.matrix_id = i;
 		    tm.cells_x = dsa_->GetMatrixInfo( m ).cells_x;
