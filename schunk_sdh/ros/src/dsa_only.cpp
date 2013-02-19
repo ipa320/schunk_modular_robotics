@@ -109,6 +109,7 @@ class DsaNode
 
 		// other variables
 		SDH::cDSA *dsa_;
+		SDH::UInt32 last_data_publish_;
 
 		std::string dsadevicestring_;
 		int dsadevicenum_;
@@ -116,6 +117,9 @@ class DsaNode
 
 		bool isDSAInitialized_;
 		int error_counter_;
+		bool auto_publish_;
+		
+		ros::Timer timer_dsa,timer_publish, timer_diag;
 		
 	public:
 		/*!
@@ -123,9 +127,8 @@ class DsaNode
 		*
 		* \param name Name for the actionlib server
 		*/
-		DsaNode(ros::NodeHandle &nh):nh_(nh),dsa_(0),isDSAInitialized_(false),error_counter_(0)
+		DsaNode():nh_("~"),dsa_(0),last_data_publish_(0),isDSAInitialized_(false),error_counter_(0)
 		{
-			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
 
 		}
 
@@ -147,11 +150,25 @@ class DsaNode
 		bool init()
 		{
 			// implementation of topics to publish
+			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
+			
 			topicPub_TactileSensor_ = nh_.advertise<schunk_sdh::TactileSensor>("tactile_data", 1);
 
 			nh_.param("dsadevicestring", dsadevicestring_, std::string(""));
 			nh_.param("dsadevicenum", dsadevicenum_, 0);
 			nh_.param("maxerror", maxerror_, 16);
+			
+			double publish_frequency, diag_frequency;
+			nh_.param("publish_frequency", publish_frequency, 0.0);
+			nh_.param("diag_frequency", diag_frequency, 5.0);
+			auto_publish_ = publish_frequency <= 0;
+			
+			
+			timer_dsa = nh_.createTimer(ros::Rate(60).expectedCycleTime(),boost::bind(&DsaNode::updateDsa,  this));
+			if(!auto_publish_)
+			    timer_publish = nh_.createTimer(ros::Rate(publish_frequency).expectedCycleTime(),boost::bind(&DsaNode::publishTactileData, this));
+			
+			timer_diag = nh_.createTimer(ros::Rate(diag_frequency).expectedCycleTime(),boost::bind(&DsaNode::publishDiagnostics, this));
 			
 			return true;
 		}
@@ -201,17 +218,13 @@ class DsaNode
 
 	void updateDsa()
 	{
-                static const int dsa_reorder[6] = { 2 ,3, 4, 5, 0 , 1 }; // t1,t2,f11,f12,f21,f22
 		ROS_DEBUG("updateTactileData");
 
 		if(isDSAInitialized_)
 		{
 			try
 			{
-				//dsa_->SetFramerate( 0, true, true );
-				SDH::UInt32 last_time = dsa_->GetFrame().timestamp;
 				dsa_->UpdateFrame();
-				if(dsa_->GetFrame().timestamp == last_time) return; // no new frame available
 				
 			}
 			catch (SDH::cSDHLibraryException* e)
@@ -219,32 +232,41 @@ class DsaNode
 				ROS_ERROR("An exception was caught: %s", e->what());
 				delete e;
 				if(++error_counter_ > maxerror_) stop();
-				return;
 			}
 
-			schunk_sdh::TactileSensor msg;
-			msg.header.stamp = ros::Time::now();
-			int m, x, y;
-			msg.tactile_matrix.resize(dsa_->GetSensorInfo().nb_matrices);
-			for ( int i = 0; i < dsa_->GetSensorInfo().nb_matrices; i++ )
-			{
-				m = dsa_reorder[i];                                  
-				schunk_sdh::TactileMatrix &tm = msg.tactile_matrix[i];
-				tm.matrix_id = i;
-				tm.cells_x = dsa_->GetMatrixInfo( m ).cells_x;
-				tm.cells_y = dsa_->GetMatrixInfo( m ).cells_y;
-				tm.tactile_array.resize(tm.cells_x * tm.cells_y);
-				for ( y = 0; y < tm.cells_y; y++ )
-				{
-					for ( x = 0; x < tm.cells_x; x++ )
-						tm.tactile_array[tm.cells_x*y + x] = dsa_->GetTexel( m, x, y );
-				}
-			}
-			//publish matrix
-			topicPub_TactileSensor_.publish(msg);
 		}else{
 		    start();
 		}
+		if(auto_publish_) publishTactileData();
+	}
+	void publishTactileData()
+	{
+            static const int dsa_reorder[6] = { 2 ,3, 4, 5, 0 , 1 }; // t1,t2,f11,f12,f21,f22 //TODO: init based on parameters
+            
+	    if(!isDSAInitialized_ || dsa_->GetFrame().timestamp != last_data_publish_) return; // no new frame available
+	    last_data_publish_ = dsa_->GetFrame().timestamp;
+	    
+	    schunk_sdh::TactileSensor msg;
+	    msg.header.stamp = ros::Time::now();
+	    int m, x, y;
+	    msg.tactile_matrix.resize(dsa_->GetSensorInfo().nb_matrices);
+	    for ( int i = 0; i < dsa_->GetSensorInfo().nb_matrices; i++ )
+	    {
+		    m = dsa_reorder[i];                                  
+		    schunk_sdh::TactileMatrix &tm = msg.tactile_matrix[i];
+		    tm.matrix_id = i;
+		    tm.cells_x = dsa_->GetMatrixInfo( m ).cells_x;
+		    tm.cells_y = dsa_->GetMatrixInfo( m ).cells_y;
+		    tm.tactile_array.resize(tm.cells_x * tm.cells_y);
+		    for ( y = 0; y < tm.cells_y; y++ )
+		    {
+			    for ( x = 0; x < tm.cells_x; x++ )
+				    tm.tactile_array[tm.cells_x*y + x] = dsa_->GetTexel( m, x, y );
+		    }
+	    }
+	    //publish matrix
+	    topicPub_TactileSensor_.publish(msg);
+	    
 	}
 	void publishDiagnostics()
 	{
@@ -294,18 +316,12 @@ int main(int argc, char** argv)
 	// initialize ROS, spezify name of node
 	ros::init(argc, argv, "schunk_dsa");
 	
-	ros::NodeHandle nh("~");
-
-
-	DsaNode dsa_node(nh);
+	DsaNode dsa_node;
+	
 	if (!dsa_node.init()) return 0;
 	
+	dsa_node.start();
 	
-	//TODO; implement dedicated publish timer
-	ros::Timer timer_dsa = nh.createTimer(ros::Rate(60).expectedCycleTime(),boost::bind(&DsaNode::updateDsa, &dsa_node));
-	//TODO: use paramater
-	ros::Timer timer_diag = nh.createTimer(ros::Rate(5).expectedCycleTime(),boost::bind(&DsaNode::publishDiagnostics, &dsa_node));
-	    
 	ROS_INFO("...dsa node running...");
 
 	ros::spin();
