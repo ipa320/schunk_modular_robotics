@@ -168,10 +168,7 @@ class DsaNode
 		bool init()
 		{
 			// implementation of topics to publish
-			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
-			
-			topicPub_TactileSensor_ = nh_.advertise<schunk_sdh::TactileSensor>("tactile_data", 1);
-
+ 
 			nh_.param("dsadevicestring", dsadevicestring_, std::string(""));
 			nh_.param("dsadevicenum", dsadevicenum_, 0);
 			nh_.param("maxerror", maxerror_, 16);
@@ -181,7 +178,9 @@ class DsaNode
 			nh_.param("diag_frequency", diag_frequency, 5.0);
 			auto_publish_ = publish_frequency <= 0;
 			
-			
+			if (dsadevicestring_.empty()) return false;
+			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
+			topicPub_TactileSensor_ = nh_.advertise<schunk_sdh::TactileSensor>("tactile_data", 1);
 			
 			timer_dsa = nh_.createTimer(ros::Rate(60).expectedCycleTime(),boost::bind(&DsaNode::updateDsa,  this));
 			if(!auto_publish_)
@@ -247,7 +246,7 @@ class DsaNode
 
 	void updateDsa()
 	{
-		//ROS_DEBUG("updateTactileData");
+		ROS_DEBUG("updateTactileData");
 
 		if(isDSAInitialized_)
 		{
@@ -256,7 +255,7 @@ class DsaNode
 				SDH::UInt32 last_time;
 				last_time = dsa_->GetFrame().timestamp;
 				dsa_->UpdateFrame();
-				if(last_time != dsa_->GetFrame().timestamp{ // new data
+				if(last_time != dsa_->GetFrame().timestamp){ // new data
 				    if(error_counter_ > 0) --error_counter_;
 				    if(auto_publish_) publishTactileData();
 				}
@@ -266,8 +265,9 @@ class DsaNode
 			{
 				ROS_ERROR("An exception was caught: %s", e->what());
 				delete e;
-				if(++error_counter_ > maxerror_) stop();
+				++error_counter_;
 			}
+			if(error_counter_ > maxerror_) stop();
 
 		}else{
 		    start();
@@ -275,7 +275,8 @@ class DsaNode
 	}
 	void publishTactileData()
 	{
-	    if(!isDSAInitialized_ || dsa_->GetFrame().timestamp != last_data_publish_) return; // no new frame available
+	    ROS_DEBUG("publishTactileData %ul %ul",dsa_->GetFrame().timestamp, last_data_publish_);
+	    if(!isDSAInitialized_ || dsa_->GetFrame().timestamp == last_data_publish_) return; // no new frame available
 	    last_data_publish_ = dsa_->GetFrame().timestamp;
 	    
 	    schunk_sdh::TactileSensor msg;
@@ -329,6 +330,8 @@ class DsaNode
 	    }
 	    // publish diagnostic message
 	    topicPub_Diagnostics_.publish(diagnostics);
+	    ROS_DEBUG_STREAM("publishDiagnostics " << diagnostics);
+
 	}	 
 }; //DsaNode
 
