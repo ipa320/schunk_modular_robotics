@@ -134,7 +134,11 @@ class DsaNode
 
 		bool isDSAInitialized_;
 		int error_counter_;
-		bool auto_publish_; // try to publish on each response
+		bool polling_; // try to publish on each response
+		bool auto_publish_;
+		bool use_rle_;
+		bool debug_;
+		
 		
 		ros::Timer timer_dsa,timer_publish, timer_diag;
 		
@@ -170,22 +174,35 @@ class DsaNode
 			// implementation of topics to publish
  
 			nh_.param("dsadevicestring", dsadevicestring_, std::string(""));
+			if (dsadevicestring_.empty()) return false;
+
 			nh_.param("dsadevicenum", dsadevicenum_, 0);
-			nh_.param("maxerror", maxerror_, 16);
+			nh_.param("maxerror", maxerror_, 8);
 			
 			double publish_frequency, diag_frequency;
-			nh_.param("publish_frequency", publish_frequency, 0.0);
-			nh_.param("diag_frequency", diag_frequency, 5.0);
-			auto_publish_ = publish_frequency <= 0;
 			
-			if (dsadevicestring_.empty()) return false;
+			nh_.param("debug", debug_, false);
+			nh_.param("polling", polling_, true);
+			nh_.param("use_rle", use_rle_, true);
+			nh_.param("diag_frequency", diag_frequency, 5.0);
+			
 			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
 			topicPub_TactileSensor_ = nh_.advertise<schunk_sdh::TactileSensor>("tactile_data", 1);
 			
-			timer_dsa = nh_.createTimer(ros::Rate(60).expectedCycleTime(),boost::bind(&DsaNode::updateDsa,  this));
-			if(!auto_publish_)
-			    timer_publish = nh_.createTimer(ros::Rate(publish_frequency).expectedCycleTime(),boost::bind(&DsaNode::publishTactileData, this));
+			auto_publish_ = true;
 			
+			if(polling_){
+			    nh_.param("publish_frequency", publish_frequency, 5.0);
+			    timer_dsa = nh_.createTimer(ros::Rate(publish_frequency).expectedCycleTime(),boost::bind(&DsaNode::pollDsa,  this));
+ 			}else{
+			    nh_.param("publish_frequency", publish_frequency, 0.0);
+			    timer_dsa = nh_.createTimer(ros::Rate(30).expectedCycleTime(),boost::bind(&DsaNode::readDsaFrame,  this));
+			    if(publish_frequency <= 0){
+				auto_publish_ = false;
+				timer_publish = nh_.createTimer(ros::Rate(publish_frequency).expectedCycleTime(),boost::bind(&DsaNode::publishTactileData, this));
+			    }
+			}
+
 			timer_diag = nh_.createTimer(ros::Rate(diag_frequency).expectedCycleTime(),boost::bind(&DsaNode::publishDiagnostics, this));
 			
 			if(!read_vector(nh_, "dsa_reorder", dsa_reorder_)){
@@ -221,8 +238,9 @@ class DsaNode
 					try
 					{
 						dsa_ = new SDH::cDSA(0, dsadevicenum_, dsadevicestring_.c_str());
-						//dsa_->SetFramerate( 0, true, false );
-						dsa_->SetFramerate( 1, true );
+						if(!polling_)
+						    dsa_->SetFramerate( 1, use_rle_ );
+						
 						ROS_INFO("Initialized RS232 for DSA Tactile Sensors on device %s",dsadevicestring_.c_str());
 						// ROS_INFO("Set sensitivity to 1.0");
 						// for(int i=0; i<6; i++)
@@ -244,9 +262,9 @@ class DsaNode
 			return true;
 		}
 
-	void updateDsa()
+	void readDsaFrame()
 	{
-		ROS_DEBUG("updateTactileData");
+		if(debug_) ROS_DEBUG("readDsaFrame");
 
 		if(isDSAInitialized_)
 		{
@@ -273,9 +291,34 @@ class DsaNode
 		    start();
 		}
 	}
+	
+	void pollDsa(){
+		if(debug_) ROS_DEBUG("pollDsa");
+
+		if(isDSAInitialized_)
+		{
+			try
+			{
+				dsa_->SetFramerate( 0, use_rle_ );
+				readDsaFrame();
+				
+			}
+			catch (SDH::cSDHLibraryException* e)
+			{
+				ROS_ERROR("An exception was caught: %s", e->what());
+				delete e;
+				++error_counter_;
+			}
+			if(error_counter_ > maxerror_) stop();
+
+		}else{
+		    start();
+		}
+	}
+	
 	void publishTactileData()
 	{
-	    ROS_DEBUG("publishTactileData %ul %ul",dsa_->GetFrame().timestamp, last_data_publish_);
+	    if(debug_) ROS_DEBUG("publishTactileData %ul %ul",dsa_->GetFrame().timestamp, last_data_publish_);
 	    if(!isDSAInitialized_ || dsa_->GetFrame().timestamp == last_data_publish_) return; // no new frame available
 	    last_data_publish_ = dsa_->GetFrame().timestamp;
 	    
@@ -330,7 +373,7 @@ class DsaNode
 	    }
 	    // publish diagnostic message
 	    topicPub_Diagnostics_.publish(diagnostics);
-	    ROS_DEBUG_STREAM("publishDiagnostics " << diagnostics);
+	    if(debug_) ROS_DEBUG_STREAM("publishDiagnostics " << diagnostics);
 
 	}	 
 }; //DsaNode
