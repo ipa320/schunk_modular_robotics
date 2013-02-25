@@ -138,6 +138,7 @@ class DsaNode
 		bool auto_publish_;
 		bool use_rle_;
 		bool debug_;
+		double frequency_;
 		
 		
 		ros::Timer timer_dsa,timer_publish, timer_diag;
@@ -166,6 +167,13 @@ class DsaNode
 				delete dsa_;
 		}
 
+		void shutdown(){
+		    timer_dsa.stop();
+		    timer_publish.stop();
+		    timer_diag.stop();
+		    nh_.shutdown();
+		}
+
 
 		/*!
 		* \brief Initializes node to get parameters, subscribe and publish to topics.
@@ -180,23 +188,22 @@ class DsaNode
 			nh_.param("dsadevicenum", dsadevicenum_, 0);
 			nh_.param("maxerror", maxerror_, 8);
 			
- 			double frequency, publish_frequency, diag_frequency;
+ 			double publish_frequency, diag_frequency;
 			
 			nh_.param("debug", debug_, false);
 			nh_.param("polling", polling_, false);
 			nh_.param("use_rle", use_rle_, true);
 			nh_.param("diag_frequency", diag_frequency, 5.0);
-			nh_.param("frequency", frequency, 5.0);
+			nh_.param("frequency", frequency_, 5.0);
 			nh_.param("publish_frequency", publish_frequency, 0.0);
 			
 			auto_publish_ = true;
 
 				
 			if(polling_){
-			    timer_dsa = nh_.createTimer(ros::Rate(frequency).expectedCycleTime(),boost::bind(&DsaNode::pollDsa,  this));
+			    timer_dsa = nh_.createTimer(ros::Rate(frequency_).expectedCycleTime(),boost::bind(&DsaNode::pollDsa,  this));
  			}else{
-			    nh_.param("frequency", frequency, 5.0);
-			    timer_dsa = nh_.createTimer(ros::Rate(frequency).expectedCycleTime(),boost::bind(&DsaNode::readDsaFrame,  this));
+			    timer_dsa = nh_.createTimer(ros::Rate(frequency_).expectedCycleTime(),boost::bind(&DsaNode::readDsaFrame,  this));
 			    if(publish_frequency > 0.0){
 				auto_publish_ = false;
 				timer_publish = nh_.createTimer(ros::Rate(publish_frequency).expectedCycleTime(),boost::bind(&DsaNode::publishTactileData, this));
@@ -239,7 +246,7 @@ class DsaNode
 					{
 						dsa_ = new SDH::cDSA(0, dsadevicenum_, dsadevicestring_.c_str());
 						if(!polling_)
-						    dsa_->SetFramerate( 1, use_rle_ );
+						    dsa_->SetFramerate( frequency_, use_rle_ );
 						
 						ROS_INFO("Initialized RS232 for DSA Tactile Sensors on device %s",dsadevicestring_.c_str());
 						// ROS_INFO("Set sensitivity to 1.0");
@@ -253,7 +260,8 @@ class DsaNode
 						isDSAInitialized_ = false;
 						ROS_ERROR("An exception was caught: %s", e->what());
 						delete e;
-						nh_.shutdown();
+						
+						shutdown();
 						return false;
 					}
 				}
