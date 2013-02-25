@@ -179,25 +179,27 @@ class DsaNode
 			nh_.param("dsadevicenum", dsadevicenum_, 0);
 			nh_.param("maxerror", maxerror_, 8);
 			
-			double publish_frequency, diag_frequency;
+ 			double frequency, publish_frequency, diag_frequency;
 			
 			nh_.param("debug", debug_, false);
-			nh_.param("polling", polling_, true);
+			nh_.param("polling", polling_, false);
 			nh_.param("use_rle", use_rle_, true);
 			nh_.param("diag_frequency", diag_frequency, 5.0);
+			nh_.param("frequency", frequency, 5.0);
+			nh_.param("publish_frequency", publish_frequency, 0.0);
 			
 			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
 			topicPub_TactileSensor_ = nh_.advertise<schunk_sdh::TactileSensor>("tactile_data", 1);
 			
 			auto_publish_ = true;
-			
+
+				
 			if(polling_){
-			    nh_.param("publish_frequency", publish_frequency, 5.0);
-			    timer_dsa = nh_.createTimer(ros::Rate(publish_frequency).expectedCycleTime(),boost::bind(&DsaNode::pollDsa,  this));
+			    timer_dsa = nh_.createTimer(ros::Rate(frequency).expectedCycleTime(),boost::bind(&DsaNode::pollDsa,  this));
  			}else{
-			    nh_.param("publish_frequency", publish_frequency, 0.0);
-			    timer_dsa = nh_.createTimer(ros::Rate(30).expectedCycleTime(),boost::bind(&DsaNode::readDsaFrame,  this));
-			    if(publish_frequency <= 0){
+			    nh_.param("frequency", frequency, 5.0);
+			    timer_dsa = nh_.createTimer(ros::Rate(frequency).expectedCycleTime(),boost::bind(&DsaNode::readDsaFrame,  this));
+			    if(publish_frequency > 0.0){
 				auto_publish_ = false;
 				timer_publish = nh_.createTimer(ros::Rate(publish_frequency).expectedCycleTime(),boost::bind(&DsaNode::publishTactileData, this));
 			    }
