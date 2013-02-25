@@ -151,7 +151,8 @@ class DsaNode
 		*/
 		DsaNode():nh_("~"),dsa_(0),last_data_publish_(0),isDSAInitialized_(false),error_counter_(0)
 		{
-
+			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
+			topicPub_TactileSensor_ = nh_.advertise<schunk_sdh::TactileSensor>("tactile_data", 1);
 		}
 
 		/*!
@@ -187,9 +188,6 @@ class DsaNode
 			nh_.param("diag_frequency", diag_frequency, 5.0);
 			nh_.param("frequency", frequency, 5.0);
 			nh_.param("publish_frequency", publish_frequency, 0.0);
-			
-			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
-			topicPub_TactileSensor_ = nh_.advertise<schunk_sdh::TactileSensor>("tactile_data", 1);
 			
 			auto_publish_ = true;
 
