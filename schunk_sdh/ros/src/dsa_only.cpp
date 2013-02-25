@@ -167,6 +167,13 @@ class DsaNode
 				delete dsa_;
 		}
 
+		void shutdown(){
+		    timer_dsa.stop();
+		    timer_publish.stop();
+		    timer_diag.stop();
+		    nh_.shutdown();
+		}
+
 
 		/*!
 		* \brief Initializes node to get parameters, subscribe and publish to topics.
@@ -253,7 +260,8 @@ class DsaNode
 						isDSAInitialized_ = false;
 						ROS_ERROR("An exception was caught: %s", e->what());
 						delete e;
-						nh_.shutdown();
+						
+						shutdown();
 						return false;
 					}
 				}
