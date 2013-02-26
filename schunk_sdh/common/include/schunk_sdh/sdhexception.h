@@ -18,7 +18,7 @@
 
     \subsection sdhlibrary_cpp_sdhexception_h_details SVN related, detailed file specific information:
       $LastChangedBy: Osswald2 $
-      $LastChangedDate: 2011-03-09 11:55:11 +0100 (Mi, 09 Mrz 2011) $
+      $LastChangedDate: 2011-03-09 11:55:11 +0100 (Wed, 09 Mar 2011) $
       \par SVN file revision:
         $Id: sdhexception.h 6526 2011-03-09 10:55:11Z Osswald2 $
 

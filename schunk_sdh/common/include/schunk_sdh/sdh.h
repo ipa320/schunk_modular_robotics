@@ -20,9 +20,9 @@
 
     \subsection sdhlibrary_cpp_sdh_h_details SVN related, detailed file specific information:
       $LastChangedBy: Osswald2 $
-      $LastChangedDate: 2011-04-26 17:40:10 +0200 (Di, 26 Apr 2011) $
+      $LastChangedDate: 2012-04-20 15:27:21 +0200 (Fr, 20 Apr 2012) $
       \par SVN file revision:
-        $Id: sdh.h 6744 2011-04-26 15:40:10Z Osswald2 $
+        $Id: sdh.h 8536 2012-04-20 13:27:21Z Osswald2 $
 
   \subsection sdhlibrary_cpp_sdh_h_changelog Changelog of this file:
       \include sdh.h.log
@@ -408,6 +408,23 @@ protected:
           is in [\a min_values[axes[i]] .. \a max_values[axes[i]]].
         - If \b any index or value is invalid then \b none of the specified values is
           sent to the %SDH, instead a #SDH::cSDHErrorInvalidParameter* exception is thrown.
+
+                        // \bug: setting a single axis velocity only sets the velocities of all other axes to 0!
+                // So in order to address only some axes you must provide the desired velocity for all
+                // axes that you want to move in every call:
+        \bug
+          With %SDH firmware 0.0.2.16 and SDHLibrary-CPP 0.0.2.3 and binary
+          communication (see also #SDH_USE_BINARY_COMMUNICATION) setting of
+          single (more precisely: less-than-all) axis parameters (position,
+          velocity, acceleration) does not work as expected:
+          If a single parameter is to be set for a single axis then that
+          parameter is set to 0 for all other axes. <br>
+          \b Workaround:
+          If you want to access several different axes one after another
+          then you have to keep a vector of the parameter for all
+          your used axes in your application. You can then update single
+          values of the vector on demand, but you have to send the
+          complete vector to the SDHlibrary functions on every call.
     */
     std::vector<double> SetAxisValueVector( std::vector<int> const& axes,
                                             std::vector<double> const& values,
@@ -787,7 +804,7 @@ public:
 
        \par Examples:
        \code
-         // static member functon, so no cSDH object is needed for access:
+         // static member function, so no cSDH object is needed for access:
 
          cout << "The SDHLibrary reports release name " << cSDH::GetReleaseLibrary() << "\n";
 
@@ -805,7 +822,7 @@ public:
 
        \par Examples:
        \code
-         // static member functon, so no cSDH object is needed for access:
+         // static member function, so no cSDH object is needed for access:
 
          cout << "The SDHLibrary reports name " << cSDH::GetLibraryName() << "\n";
 
@@ -818,7 +835,7 @@ public:
 
     //-----------------------------------------------------------------
     /*!
-      Return the release name of the firmware of the %SDH (not the library) as string.
+      Return the actual release name of the firmware of the %SDH (not the library) as string.
 
       This will throw a (cSDHErrorCommunication*) exception if the
       connection to the %SDH is not yet opened.
@@ -831,11 +848,64 @@ public:
 
        \endcode
 
+       \see See GetFirmwareReleaseRecommended() to get the recommended SDH firmware release.
        <hr>
     */
     char const* GetFirmwareRelease( void )
         throw (cSDHLibraryException*);
 
+    //-----------------------------------------------------------------
+    /*!
+      Return the recommended release of the firmware of the %SDH
+      by this library as string.
+
+       \par Examples:
+       \code
+         // static member function, so no cSDH object is needed for access:
+
+         cout << "This SDHLibrary recommends an SDH firmware release " << cSDH::GetFirmwareReleaseRecommended() << "\n";
+
+       \endcode
+
+       \see See GetFirmwareRelease() to get the actual release of the SDH firmware
+       <hr>
+    */
+    static char const* GetFirmwareReleaseRecommended( void );
+
+    //-----------------------------------------------------------------
+    /*!
+      Check the actual release of the firmware of the connected %SDH against the
+      recommended firmware release.
+      \return true - if the actual firmware is the recommended one
+              false - the actual firmware is NOT the recommended one (communication with the SDH might not work as expected)
+
+      This will throw a (cSDHErrorCommunication*) exception if the
+      connection to the %SDH is not yet opened.
+
+       \par Examples:
+       \code
+         // Assuming 'hand' is a cSDH object ...
+
+         if ( hand.CheckFirmwareRelease() )
+         {
+             cout << "The firmware release of the connected SDH is the one recommended by this SDHLibrary\n";
+         }
+         else
+         {
+             cout << "The firmware release of the connected SDH is NOT the one recommended by this SDHLibrary\n";
+             cout << "  Actual SDH firmware release      " << hand.GetFirmwareRelease() << "\n";
+             cout << "  Recommended SDH firmware release " << hand.GetFirmwareReleaseRecommended() << "\n";
+         }
+
+       \endcode
+
+       \see See GetFirmwareReleaseRecommended() to get the recommended SDH firmware release.
+       <hr>
+    */
+    bool CheckFirmwareRelease( void )
+        throw (cSDHLibraryException*);
+
+    //-----------------------------------------------------------------
     /*! Return info according to \a what
     #
     #  The following values are valid for \a what:
@@ -843,6 +913,8 @@ public:
     #  - "release-library"  : release name of the sdh.py python module
     #  - "release-firmware" : release name of the %SDH firmware (requires
     #                         an opened communication to the %SDH)
+    #  - "release-firmware-recommended" : recommended release name of the %SDH
+    #                         firmware
     #  - "date-firmware"    : date of the %SDH firmware (requires
     #                         an opened communication to the %SDH)
     #  - "release-soc"      : release name of the %SDH SoC (requires
