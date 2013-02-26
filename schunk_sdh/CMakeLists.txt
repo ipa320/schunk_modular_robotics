@@ -49,7 +49,7 @@ rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_compile_flags(${PROJECT_NAME}_driver -DWITH_PEAK_CAN)
 
 #target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan)
-target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)
+target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a pcan)
 #target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)
 #target_link_libraries(${PROJECT_NAME}_driver ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)
 #${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so pcan)
@@ -57,12 +57,12 @@ target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/common/lib/libSDHLib
 # SDH only
 rosbuild_add_executable(sdh_only ros/src/sdh_only.cpp )
 rosbuild_add_compile_flags(sdh_only -DOSNAME_LINUX)
-rosbuild_add_compile_flags(sdh_only -DWITH_ESD_CAN)
+rosbuild_add_compile_flags(sdh_only -DWITH_PEAK_CAN)
 rosbuild_link_boost(sdh_only thread)
-target_link_libraries(sdh_only ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)
+target_link_libraries(sdh_only ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a pcan)
 
 # DSA only
 rosbuild_add_executable(dsa_only ros/src/dsa_only.cpp )
 rosbuild_add_compile_flags(dsa_only -DOSNAME_LINUX)
 #rosbuild_link_boost(dsa_only thread)
-target_link_libraries(dsa_only ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)
+target_link_libraries(dsa_only ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a pcan)
