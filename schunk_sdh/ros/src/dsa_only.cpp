@@ -247,6 +247,8 @@ class DsaNode
 						dsa_ = new SDH::cDSA(0, dsadevicenum_, dsadevicestring_.c_str());
 						if(!polling_)
 						    dsa_->SetFramerate( frequency_, use_rle_ );
+                        else
+                            dsa_->SetFramerate( 0, use_rle_, false );
 						
 						ROS_INFO("Initialized RS232 for DSA Tactile Sensors on device %s",dsadevicestring_.c_str());
 						// ROS_INFO("Set sensitivity to 1.0");
