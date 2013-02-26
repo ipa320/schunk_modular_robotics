@@ -18,9 +18,9 @@
 
     \subsection sdhlibrary_cpp_unit_converter_h_details SVN related, detailed file specific information:
       $LastChangedBy: Osswald2 $
-      $LastChangedDate: 2011-03-09 11:55:11 +0100 (Mi, 09 Mrz 2011) $
+      $LastChangedDate: 2013-01-21 17:11:57 +0100 (Mon, 21 Jan 2013) $
       \par SVN file revision:
-        $Id: unit_converter.h 6526 2011-03-09 10:55:11Z Osswald2 $
+        $Id: unit_converter.h 9648 2013-01-21 16:11:57Z Osswald2 $
 
   \subsection sdhlibrary_cpp_unit_converter_h_changelog Changelog of this file:
       \include unit_converter.h.log
@@ -205,7 +205,7 @@ protected:
 extern cUnitConverter const uc_identity;
 
 //----------------------------------------------------------------------
-//! Type of a pointer to a function like 'double cUnitConverter::ToExternal( double )' or 'cUnitConverter::ToInternal( double )'
+//! Type of a pointer to a function like 'double SDH::cUnitConverter::ToExternal( double ) const' or 'double SDH::cUnitConverter::ToInternal( double ) const'
 typedef double (cUnitConverter::*pDoubleUnitConverterFunction) ( double ) const;
 
 
