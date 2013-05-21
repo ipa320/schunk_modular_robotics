@@ -202,9 +202,9 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 	/// reset all modules of the chain
 	int max_tries = 3; 
 	for (int i = 0; i < DOF; i++)
-	{  
-		for (int reset_try = 0; reset_try < max_tries; i++)
-		{
+	{  	
+		for (int reset_try = 0; reset_try < max_tries; reset_try++)
+		{	
 			pthread_mutex_lock(&m_mutex);
 			ret =  PCube_resetModule(m_DeviceHandle, ModulIDs.at(i));
 			pthread_mutex_unlock(&m_mutex);
@@ -216,21 +216,19 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			else if ((ret != 0) && (reset_try == (max_tries-1)))
 			{
 				std::ostringstream errorMsg;
-      	errorMsg << "Could not reset module " << i << " during init. Try to init once more.";
+      	errorMsg << "Could not reset module " << i << " during init. Errorcode during reset: " << ret << " Try to init once more.";
       	m_ErrorMessage = errorMsg.str();
 				return false;
 			}
 			else
 			{
 				// little break
-				usleep(1000000); 
+				usleep(1500000); 
 			}
 			
 		}
 	}
-
-  /// make sure m_IdModules is clear of Elements:
-  ModulIDs.clear();
+	std::cout << "number of moduleIDs" << ModulIDs.size() << std::endl;
 
   /// check number of modules connected to the bus
   pthread_mutex_lock(&m_mutex);
@@ -377,14 +375,15 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
   /// Set angle offsets to hardware
   for (int i = 0; i < DOF; i++)
   {
+	std::cout << "set offset for module" << i << std::endl;
     pthread_mutex_lock(&m_mutex);
-    ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
+    // ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
     pthread_mutex_unlock(&m_mutex);
 
 		if (ret!=0) 
 		{		// 2. chance
 				pthread_mutex_lock(&m_mutex);
-     		ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
+     		//ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
     		pthread_mutex_unlock(&m_mutex);
 				if (ret!=0)
 				{return false;}
