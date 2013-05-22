@@ -18,6 +18,12 @@
 	
 		<gazebo reference="${name}_finger_12_link">
 			<selfCollide>true</selfCollide>
+			<sensor name='${name}_finger_12_contact_sensor' type='contact'>
+				<contact>
+					<collision>${name}_finger_12_link_geom</collision>
+				</contact>
+			</sensor>
+<!--
 			<sensor:contact name="${name}_finger_12_contact_sensor">
 				<geom>${name}_finger_12_link_geom</geom>
 				<updateRate>100.0</updateRate>
@@ -29,12 +35,19 @@
 					<interface:bumper name="${name}_finger_12_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
+-->
 			<material>Schunk/LightGrey</material>
 			<turnGravityOff>false</turnGravityOff>
 		</gazebo>
 
 		<gazebo reference="${name}_finger_13_link">
 			<selfCollide>true</selfCollide>
+			<sensor name='${name}_finger_13_contact_sensor' type='contact'>
+				<contact>
+					<collision>${name}_finger_13_link_geom</collision>
+				</contact>
+			</sensor>
+<!--
 			<sensor:contact name="${name}_finger_13_contact_sensor">
 				<geom>${name}_finger_13_link_geom</geom>
 				<updateRate>100.0</updateRate>
@@ -46,6 +59,7 @@
 					<interface:bumper name="${name}_finger_13_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
+-->
 			<material>Schunk/LightGrey</material>
 		</gazebo>
 
@@ -55,7 +69,13 @@
 		</gazebo>
 	
 		<gazebo reference="${name}_finger_22_link">
-		<selfCollide>true</selfCollide>
+			<selfCollide>true</selfCollide>
+			<sensor name='${name}_finger_22_contact_sensor' type='contact'>
+				<contact>
+					<collision>${name}_finger_22_link_geom</collision>
+				</contact>
+			</sensor>
+<!--
 			<sensor:contact name="${name}_finger_22_contact_sensor">
 				<geom>${name}_finger_22_link_geom</geom>
 				<updateRate>100.0</updateRate>
@@ -67,12 +87,19 @@
 					<interface:bumper name="${name}_finger_22_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
+-->
 			<material>Schunk/LightGrey</material>
 			<turnGravityOff>false</turnGravityOff>
 		</gazebo>
 
 		<gazebo reference="${name}_finger_23_link">
 			<selfCollide>true</selfCollide>
+			<sensor name='${name}_finger_23_contact_sensor' type='contact'>
+				<contact>
+					<collision>${name}_finger_23_link_geom</collision>
+				</contact>
+			</sensor>
+<!--
 			<sensor:contact name="${name}_finger_23_contact_sensor">
 				<geom>${name}_finger_23_link_geom</geom>
 				<updateRate>100.0</updateRate>
@@ -84,6 +111,7 @@
 					<interface:bumper name="${name}_finger_23_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
+-->
 			<material>Schunk/LightGrey</material>
 		</gazebo>
 
@@ -94,6 +122,12 @@
 
 		<gazebo reference="${name}_thumb_2_link">
 			<selfCollide>true</selfCollide>
+			<sensor name='${name}_thumb_2_contact_sensor' type='contact'>
+				<contact>
+					<collision>${name}_thumb_2_link_geom</collision>
+				</contact>
+			</sensor>
+<!--
 			<sensor:contact name="${name}_thumb_2_contact_sensor">
 				<geom>${name}_thumb_2_link_geom</geom>
 				<updateRate>100.0</updateRate>
@@ -105,12 +139,19 @@
 					<interface:bumper name="${name}_thumb_2_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
+-->
 			<material>Schunk/LightGrey</material>
 			<turnGravityOff>false</turnGravityOff>
 		</gazebo>
 
 		<gazebo reference="${name}_thumb_3_link">
 			<selfCollide>true</selfCollide>
+			<sensor name='${name}_thumb_3_contact_sensor' type='contact'>
+				<contact>
+					<collision>${name}_thumb_3_link_geom</collision>
+				</contact>
+			</sensor>			
+<!--
 			<sensor:contact name="${name}_thumb_3_contact_sensor">
 				<geom>${name}_thumb_3_link_geom</geom>
 				<updateRate>100.0</updateRate>
@@ -122,6 +163,7 @@
 					<interface:bumper name="${name}_thumb_3_bumper_iface" />
 				</controller:gazebo_ros_bumper>
 			</sensor:contact>
+-->
 			<material>Schunk/LightGrey</material>
 		</gazebo>
 
