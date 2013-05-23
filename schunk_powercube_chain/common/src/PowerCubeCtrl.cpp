@@ -372,53 +372,8 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
       return false;
     }
 
-  /// Set angle offsets to hardware
-  for (int i = 0; i < DOF; i++)
-  {
-	std::cout << "set offset for module" << i << std::endl;
-    pthread_mutex_lock(&m_mutex);
-    // ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
-    pthread_mutex_unlock(&m_mutex);
-
-		if (ret!=0) 
-		{		// 2. chance
-				pthread_mutex_lock(&m_mutex);
-     		//ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
-    		pthread_mutex_unlock(&m_mutex);
-				if (ret!=0)
-				{return false;}
-		}
-  }
-
-  /// Set limits to hardware
-	//TODO: add safty limit for hardware, that modules don't reach limits
-  for (int i = 0; i < DOF; i++)
-  {
-    pthread_mutex_lock(&m_mutex);
-    //ret = PCube_setMinPos(m_DeviceHandle, ModulIDs[i], LowerLimits[i]);
-    pthread_mutex_unlock(&m_mutex);
-		if (ret!=0)
-		{return false;}
-
-    pthread_mutex_lock(&m_mutex);
-    //ret = PCube_setMaxPos(m_DeviceHandle, ModulIDs[i], UpperLimits[i]);
-    pthread_mutex_unlock(&m_mutex);
-		if (ret!=0)
-		{return false;}
-  }
-
-  /// Set max velocity to hardware
-  setMaxVelocity(MaxVel);
-	
-  /// Set max acceleration to hardware 
-	setMaxAcceleration(MaxAcc);
-
-  /// set synchronous or asynchronous movements
-  setSyncMotion();
-
   // All modules initialized successfully
   m_pc_status = PC_CTRL_OK;
-
   return true;
 }
 
