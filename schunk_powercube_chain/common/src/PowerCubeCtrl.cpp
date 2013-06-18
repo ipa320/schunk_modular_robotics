@@ -216,7 +216,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			else if ((ret != 0) && (reset_try == (max_tries-1)))
 			{
 				std::ostringstream errorMsg;
-      	errorMsg << "Could not reset module " << i << " during init. Errorcode during reset: " << ret << " Try to init once more.";
+      	errorMsg << "Could not reset module " << ModulIDs.at(i) << " during init. Errorcode during reset: " << ret << " Try to init once more.";
       	m_ErrorMessage = errorMsg.str();
 				return false;
 			}
@@ -544,6 +544,10 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 	std::vector<double> UpperLimits = m_params->GetUpperLimits();
 	std::vector<double> maxVels = m_params->GetMaxVel();
 	
+	/// getting offsets	
+	std::vector<double> Offsets = m_params->GetOffsets();
+ 
+
 	int ret; 		// temp return value holder
 	float pos; 	// temp position variable for PCube_move.. cmds 
 
@@ -579,7 +583,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 		ROS_DEBUG("delta_pos[%i]: %f target_time: %f velocitiy[%i]: %f",i ,delta_pos[i], target_time, i, velocities[i]);
  
 		// calculate target position   
-		target_pos_horizon[i] = m_positions[i] + delta_pos_horizon[i];
+		target_pos_horizon[i] = m_positions[i] + delta_pos_horizon[i]+Offsets[i];
 		ROS_DEBUG("target_pos[%i]: %f m_position[%i]: %f",i ,target_pos[i], i, m_positions[i]);
 	}
 
@@ -841,22 +845,6 @@ bool PowerCubeCtrl::Recover()
 	
   usleep(500000);
 
-	/// Set angle offsets to hardware
-  for (int i = 0; i < DOF; i++)
-  {
-    pthread_mutex_lock(&m_mutex);
-    ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
-    pthread_mutex_unlock(&m_mutex);
-
-		if (ret!=0) 
-		{		// 2. chance
-				pthread_mutex_lock(&m_mutex);
-     		ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
-    		pthread_mutex_unlock(&m_mutex);
-				if (ret!=0)
-				{return false;}
-		}
-  }
 
 	/// Set max velocity to hardware
   setMaxVelocity(MaxVel);
@@ -1116,6 +1104,9 @@ bool PowerCubeCtrl::updateStates()
   std::vector<std::string> ErrorMessages;
   std::ostringstream errorMsg;
 
+	std::vector<double> Offsets = m_params->GetOffsets();
+  
+
   unsigned char dio;
   float position;
   int ret = 0;
@@ -1141,7 +1132,7 @@ bool PowerCubeCtrl::updateStates()
 	  
 	  m_status[i] = state; 		
 	  m_dios[i] = dio;
-	  m_positions[i] = position;
+	  m_positions[i] = position+Offsets[i];
 	}	
       
     }
