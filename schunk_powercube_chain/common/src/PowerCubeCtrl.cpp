@@ -216,7 +216,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			else if ((ret != 0) && (reset_try == (max_tries-1)))
 			{
 				std::ostringstream errorMsg;
-      	errorMsg << "Could not reset module " << i << " during init. Errorcode during reset: " << ret << " Try to init once more.";
+      	errorMsg << "Could not reset module " << ModulIDs.at(i) << " during init. Errorcode during reset: " << ret << " Try to init once more.";
       	m_ErrorMessage = errorMsg.str();
 				return false;
 			}
@@ -785,6 +785,9 @@ bool PowerCubeCtrl::Recover()
 {	
   unsigned int DOF = m_params->GetDOF();
 	std::vector<int> ModulIDs = m_params->GetModuleIDs();
+  std::vector<double> MaxVel = m_params->GetMaxVel();
+  std::vector<double> MaxAcc = m_params->GetMaxAcc();
+  std::vector<double> Offsets = m_params->GetOffsets();
   
   std::vector<std::string> errorMessages;
   PC_CTRL_STATUS status;
