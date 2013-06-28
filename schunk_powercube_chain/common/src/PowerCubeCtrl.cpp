@@ -785,9 +785,6 @@ bool PowerCubeCtrl::Recover()
 {	
   unsigned int DOF = m_params->GetDOF();
 	std::vector<int> ModulIDs = m_params->GetModuleIDs();
-  std::vector<double> MaxVel = m_params->GetMaxVel();
-  std::vector<double> MaxAcc = m_params->GetMaxAcc();
-  std::vector<double> Offsets = m_params->GetOffsets();
   
   std::vector<std::string> errorMessages;
   PC_CTRL_STATUS status;
@@ -840,32 +837,6 @@ bool PowerCubeCtrl::Recover()
   }
 	
   usleep(500000);
-
-	/// Set angle offsets to hardware
-  for (int i = 0; i < DOF; i++)
-  {
-    pthread_mutex_lock(&m_mutex);
-    ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
-    pthread_mutex_unlock(&m_mutex);
-
-		if (ret!=0) 
-		{		// 2. chance
-				pthread_mutex_lock(&m_mutex);
-     		ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
-    		pthread_mutex_unlock(&m_mutex);
-				if (ret!=0)
-				{return false;}
-		}
-  }
-
-	/// Set max velocity to hardware
-  setMaxVelocity(MaxVel);
-	
-  /// Set max acceleration to hardware
-	setMaxAcceleration(MaxAcc);
-	
-  /// set synchronous or asynchronous movements
-  setSyncMotion();
 
   // modules should be recovered now
   m_pc_status = PC_CTRL_OK;	
