@@ -1,68 +1,77 @@
-cmake_minimum_required(VERSION 2.4.6)
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+# http://ros.org/doc/groovy/api/catkin/html/user_guide/supposed.html
+cmake_minimum_required(VERSION 2.8.3)
+project(schunk_sdh)
 
-# Set the build type.  Options are:
-#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
-#  Debug          : w/ debug symbols, w/o optimization
-#  Release        : w/o debug symbols, w/ optimization
-#  RelWithDebInfo : w/ debug symbols, w/ optimization
-#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
-#set(ROS_BUILD_TYPE RelWithDebInfo)
 
-rosbuild_init()
-rosbuild_add_boost_directories()
+find_package(catkin REQUIRED COMPONENTS roscpp urdf actionlib libntcan libpcan message_generation sensor_msgs trajectory_msgs cob_srvs control_msgs diagnostic_msgs brics_actuator)
 
-#set the default path for built executables to the "bin" directory
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/ros/bin)
-#set the default path for built libraries to the "lib" directory
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/ros/lib)
+#######################################
+## Declare ROS messages and services ##
+#######################################
 
-#uncomment if you have defined messages
-rosbuild_genmsg()
-#uncomment if you have defined services
-#rosbuild_gensrv()
+add_message_files(
+  DIRECTORY msg
+  FILES
+    TactileMatrix.msg 
+    TactileSensor.msg
+)
 
-#common commands for building c++ executables and libraries
-#rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
-#target_link_libraries(${PROJECT_NAME} another_library)
-#rosbuild_add_boost_directories()
-#rosbuild_link_boost(${PROJECT_NAME} thread)
-#rosbuild_add_executable(example examples/example.cpp)
-#target_link_libraries(example ${PROJECT_NAME})
+## Generate added messages and services with any dependencies listed here
+generate_messages(
+  DEPENDENCIES trajectory_msgs sensor_msgs std_msgs control_msgs
+)
 
-# add include search paths
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/common/include)
 
-rosbuild_add_executable(${PROJECT_NAME} ros/src/sdh.cpp )
-#rosbuild_add_executable(${PROJECT_NAME} ros/src/${PROJECT_NAME}.cpp ros/src/sdhWrapper.cpp)
-#rosbuild_add_executable(${PROJECT_NAME}_demo ros/src/${PROJECT_NAME}_demo.cpp ros/src/dsaboost.cpp)
-#rosbuild_add_executable(${PROJECT_NAME}_driver ros/src/${PROJECT_NAME}_driver.cpp ros/src/dsaboost.cpp)
+###################################
+## catkin specific configuration ##
+###################################
+catkin_package(
+    DEPENDS roscpp urdf sensor_msgs trajectory_msgs actionlib cob_srvs control_msgs libntcan libpcan diagnostic_msgs brics_actuator
+    CATKIN_DEPENDS message_runtime
+    INCLUDE_DIRS # TODO include
+    LIBRARIES # TODO
+)
 
-rosbuild_add_compile_flags(${PROJECT_NAME} -DOSNAME_LINUX)
-#rosbuild_add_compile_flags(${PROJECT_NAME}_demo -DOSNAME_LINUX)
-#rosbuild_add_compile_flags(${PROJECT_NAME}_driver -DOSNAME_LINUX)
+###########
+## Build ##
+###########
+include_directories(common/include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
-rosbuild_add_compile_flags(${PROJECT_NAME} -DWITH_ESD_CAN)
+add_executable(${PROJECT_NAME} ros/src/sdh.cpp )
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX -DWITH_ESD_CAN")
 
-rosbuild_link_boost(${PROJECT_NAME} thread)
-#rosbuild_add_compile_flags(${PROJECT_NAME} -DWITH_PEAK_CAN)
-#rosbuild_add_compile_flags(${PROJECT_NAME}_driver -DWITH_PEAK_CAN)
+#add_executable(${PROJECT_NAME} ros/src/${PROJECT_NAME}.cpp ros/src/sdhWrapper.cpp)
+#add_executable(${PROJECT_NAME}_demo ros/src/${PROJECT_NAME}_demo.cpp ros/src/dsaboost.cpp)
+#add_executable(${PROJECT_NAME}_driver ros/src/${PROJECT_NAME}_driver.cpp ros/src/dsaboost.cpp)
 
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 #target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan)
-target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)
+target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so)
 #target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)
 #target_link_libraries(${PROJECT_NAME}_driver ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)
-#${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so pcan)
 
 # SDH only
-rosbuild_add_executable(sdh_only ros/src/sdh_only.cpp )
-rosbuild_add_compile_flags(sdh_only -DOSNAME_LINUX)
-rosbuild_add_compile_flags(sdh_only -DWITH_ESD_CAN)
-rosbuild_link_boost(sdh_only thread)
-target_link_libraries(sdh_only ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)
+#add_executable(sdh_only ros/src/sdh_only.cpp )
+#target_link_libraries(sdh_only ${Boost_LIBRARIES})
+#target_link_libraries(sdh_only ${catkin_LIBRARIES})
+#target_link_libraries(sdh_only ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so)
+#set_target_properties(sdh_only PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX -DWITH_ESD_CAN")
 
 # DSA only
-rosbuild_add_executable(dsa_only ros/src/dsa_only.cpp )
-rosbuild_add_compile_flags(dsa_only -DOSNAME_LINUX)
-#rosbuild_link_boost(dsa_only thread)
-target_link_libraries(dsa_only ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)
+#add_executable(dsa_only ros/src/dsa_only.cpp )
+#target_link_libraries(dsa_only ${catkin_LIBRARIES})
+#target_link_libraries(dsa_only ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so)
+#set_target_properties(dsa_only PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX")
+
+
+#############
+## Install ##
+#############
+
+## Mark executables and/or libraries for installation
+install(TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+

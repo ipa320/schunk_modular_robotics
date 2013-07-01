@@ -74,7 +74,7 @@
 #include <sensor_msgs/JointState.h>
 //#include <pr2_controllers_msgs/JointTrajectoryAction.h>
 #include <control_msgs/FollowJointTrajectoryAction.h>
-#include <pr2_controllers_msgs/JointTrajectoryControllerState.h>
+#include <control_msgs/JointTrajectoryControllerState.h>
 #include <schunk_sdh/TactileSensor.h>
 #include <schunk_sdh/TactileMatrix.h>
 #include <brics_actuator/JointVelocities.h>
@@ -198,7 +198,7 @@ class SdhNode
 
 			// implementation of topics to publish
 			topicPub_JointState_ = nh_.advertise<sensor_msgs::JointState>("/joint_states", 1);
-			topicPub_ControllerState_ = nh_.advertise<pr2_controllers_msgs::JointTrajectoryControllerState>("state", 1);
+			topicPub_ControllerState_ = nh_.advertise<control_msgs::JointTrajectoryControllerState>("state", 1);
 			topicPub_TactileSensor_ = nh_.advertise<schunk_sdh::TactileSensor>("tactile_data", 1);
 
 			// pointer to sdh
@@ -725,7 +725,7 @@ class SdhNode
 			
 			
 			// publish controller state message
-			pr2_controllers_msgs::JointTrajectoryControllerState controllermsg;
+			control_msgs::JointTrajectoryControllerState controllermsg;
 			controllermsg.header.stamp = time;
 			controllermsg.joint_names.resize(DOF_);
 			controllermsg.desired.positions.resize(DOF_);
