@@ -194,7 +194,8 @@ class DsaNode
 			nh_.param("polling", polling_, false);
 			nh_.param("use_rle", use_rle_, true);
 			nh_.param("diag_frequency", diag_frequency, 5.0);
-			nh_.param("frequency", frequency_, 5.0);
+			frequency_ = 30.0;
+			if(polling_) nh_.param("poll_frequency", frequency_, 5.0);
 			nh_.param("publish_frequency", publish_frequency, 0.0);
 			
 			auto_publish_ = true;
@@ -203,7 +204,7 @@ class DsaNode
 			if(polling_){
 			    timer_dsa = nh_.createTimer(ros::Rate(frequency_).expectedCycleTime(),boost::bind(&DsaNode::pollDsa,  this));
  			}else{
-			    timer_dsa = nh_.createTimer(ros::Rate(frequency_).expectedCycleTime(),boost::bind(&DsaNode::readDsaFrame,  this));
+			    timer_dsa = nh_.createTimer(ros::Rate(frequency_*2.0).expectedCycleTime(),boost::bind(&DsaNode::readDsaFrame,  this));
 			    if(publish_frequency > 0.0){
 				auto_publish_ = false;
 				timer_publish = nh_.createTimer(ros::Rate(publish_frequency).expectedCycleTime(),boost::bind(&DsaNode::publishTactileData, this));
@@ -247,8 +248,8 @@ class DsaNode
 						dsa_ = new SDH::cDSA(0, dsadevicenum_, dsadevicestring_.c_str());
 						if(!polling_)
 						    dsa_->SetFramerate( frequency_, use_rle_ );
-                        else
-                            dsa_->SetFramerate( 0, use_rle_, false );
+                        			else
+                            			    dsa_->SetFramerate( 0, use_rle_ );
 						
 						ROS_INFO("Initialized RS232 for DSA Tactile Sensors on device %s",dsadevicestring_.c_str());
 						// ROS_INFO("Set sensitivity to 1.0");
