@@ -39,7 +39,7 @@ include_directories(common/include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 add_executable(${PROJECT_NAME} ros/src/sdh.cpp )
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX -DWITH_ESD_CAN")
-
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencpp)
 #add_executable(${PROJECT_NAME} ros/src/${PROJECT_NAME}.cpp ros/src/sdhWrapper.cpp)
 #add_executable(${PROJECT_NAME}_demo ros/src/${PROJECT_NAME}_demo.cpp ros/src/dsaboost.cpp)
 #add_executable(${PROJECT_NAME}_driver ros/src/${PROJECT_NAME}_driver.cpp ros/src/dsaboost.cpp)
@@ -56,12 +56,13 @@ target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/common/lib/libSDHLib
 add_executable(sdh_only ros/src/sdh_only.cpp )
 target_link_libraries(sdh_only ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so ${catkin_LIBRARIES})
 set_target_properties(sdh_only PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX -DWITH_ESD_CAN")
+add_dependencies(sdh_only ${PROJECT_NAME}_gencpp)
 
 # DSA only
 add_executable(dsa_only ros/src/dsa_only.cpp )
 target_link_libraries(dsa_only ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so ${catkin_LIBRARIES})
 set_target_properties(dsa_only PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX")
-
+add_dependencies(dsa_only ${PROJECT_NAME}_gencpp)
 
 #############
 ## Install ##
