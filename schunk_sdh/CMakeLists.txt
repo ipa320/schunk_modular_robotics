@@ -35,6 +35,23 @@ catkin_package(
 ###########
 ## Build ##
 ###########
+
+if(“${CMAKE_SYSTEM_PROCESSOR}” STREQUAL “x86_64”)
+  message(STATUS "++++++++++++++++++++++++++ DETECTED 64 bit +++++++++++++++++++++++++++++++++++")
+  add_custom_command(
+    OUTPUT ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so 
+    COMMAND /bin/ln -s ${PROJECT_SOURCE_DIR}/common/lib/x86_64/libSDHLibrary-CPP.so ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so
+    DEPENDS ${PROJECT_SOURCE_DIR}/common/lib/x86_64/libSDHLibrary-CPP.so
+    )
+else(“${CMAKE_SYSTEM_PROCESSOR}” STREQUAL “x86_64”)
+  message(STATUS "++++++++++++++++++++++++++ DETECTED 32 bit +++++++++++++++++++++++++++++++++++")
+  add_custom_command(
+    OUTPUT ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so
+    COMMAND /bin/ln -s ${PROJECT_SOURCE_DIR}/common/lib/i686/libSDHLibrary-CPP.so ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so
+    DEPENDS ${PROJECT_SOURCE_DIR}/common/lib/i686/libSDHLibrary-CPP.so
+    )
+endif(“${CMAKE_SYSTEM_PROCESSOR}” STREQUAL “x86_64”)
+
 include_directories(common/include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 add_executable(${PROJECT_NAME} ros/src/sdh.cpp )
