@@ -37,6 +37,9 @@ catkin_package(
 ###########
 include_directories(common/include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
+add_library(SDHLibrary SHARED IMPORTED )
+set_property(TARGET SDHLibrary PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so)
+
 add_executable(${PROJECT_NAME} ros/src/sdh.cpp )
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX -DWITH_ESD_CAN")
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencpp)
@@ -48,19 +51,19 @@ add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencpp)
 #target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan)
 #message(STATUS "Linking ${catkin_LIBRARIES}")
 
-target_link_libraries(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so ${catkin_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} SDHLibrary ${catkin_LIBRARIES})
 #target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)
 #target_link_libraries(${PROJECT_NAME}_driver ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.a ntcan pcan)
 
 # SDH only
 add_executable(sdh_only ros/src/sdh_only.cpp )
-target_link_libraries(sdh_only ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so ${catkin_LIBRARIES})
+target_link_libraries(sdh_only SDHLibrary ${catkin_LIBRARIES})
 set_target_properties(sdh_only PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX -DWITH_ESD_CAN")
 add_dependencies(sdh_only ${PROJECT_NAME}_gencpp)
 
 # DSA only
 add_executable(dsa_only ros/src/dsa_only.cpp )
-target_link_libraries(dsa_only ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so ${catkin_LIBRARIES})
+target_link_libraries(dsa_only SDHLibrary ${catkin_LIBRARIES})
 set_target_properties(dsa_only PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX")
 add_dependencies(dsa_only ${PROJECT_NAME}_gencpp)
 
