@@ -71,7 +71,7 @@
 // ROS message includes
 #include <sensor_msgs/JointState.h>
 #include <trajectory_msgs/JointTrajectory.h>
-#include <pr2_controllers_msgs/JointTrajectoryControllerState.h>
+#include <control_msgs/JointTrajectoryControllerState.h>
 #include <diagnostic_msgs/DiagnosticArray.h>
 #include <brics_actuator/JointPositions.h>
 #include <brics_actuator/JointVelocities.h>
@@ -137,7 +137,7 @@ public:
 
     /// implementation of topics to publish
     topicPub_JointState_ = n_.advertise<sensor_msgs::JointState> ("/joint_states", 1);
-    topicPub_ControllerState_ = n_.advertise<pr2_controllers_msgs::JointTrajectoryControllerState> ("state", 1);
+    topicPub_ControllerState_ = n_.advertise<control_msgs::JointTrajectoryControllerState> ("state", 1);
     topicPub_OperationMode_ = n_.advertise<std_msgs::String> ("current_operationmode", 1);
     topicPub_Diagnostic_ = n_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
 
@@ -634,7 +634,7 @@ public:
 		  joint_state_msg.velocity = pc_ctrl_->getVelocities();
 		  joint_state_msg.effort.resize(pc_params_->GetDOF());
 
-		  pr2_controllers_msgs::JointTrajectoryControllerState controller_state_msg;
+		  control_msgs::JointTrajectoryControllerState controller_state_msg;
 		  controller_state_msg.header.stamp = joint_state_msg.header.stamp;
 		  controller_state_msg.joint_names = pc_params_->GetJointNames();
 		  controller_state_msg.actual.positions = pc_ctrl_->getPositions();

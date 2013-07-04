@@ -1,31 +1,46 @@
-cmake_minimum_required(VERSION 2.4.6)
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+# http://ros.org/doc/groovy/api/catkin/html/user_guide/supposed.html
+cmake_minimum_required(VERSION 2.8.3)
+project(schunk_libm5api)
 
-# Set the build type.  Options are:
-#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
-#  Debug          : w/ debug symbols, w/o optimization
-#  Release        : w/o debug symbols, w/ optimization
-#  RelWithDebInfo : w/ debug symbols, w/ optimization
-#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
-#set(ROS_BUILD_TYPE RelWithDebInfo)
 
-rosbuild_init()
+find_package(catkin REQUIRED COMPONENTS libpcan libntcan)
 
-#set the default path for built executables to the "bin" directory
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-#set the default path for built libraries to the "lib" directory
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
-#uncomment if you have defined messages
-#rosbuild_genmsg()
-#uncomment if you have defined services
-#rosbuild_gensrv()
+###################################
+## catkin specific configuration ##
+###################################
+# TODO: fill in what other packages will need to use this package
+## DEPENDS: system dependencies of this project that dependent projects also need
+## CATKIN_DEPENDS: catkin_packages dependent projects also need
+## INCLUDE_DIRS: 
+## LIBRARIES: libraries you create in this project that dependent projects also need
+catkin_package(
+    DEPENDS libpcan libntcan
+    CATKIN_DEPENDS # TODO
+    INCLUDE_DIRS include
+    LIBRARIES m5api
+)
 
+###########
+## Build ##
+###########
+
+# add include search paths
+include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 #common commands for building c++ executables and libraries
-rosbuild_add_library(m5api src/Device/Device.cpp  src/Device/ProtocolDevice.cpp src/Device/ESDDevice.cpp src/Device/PCanDevice.cpp src/Device/ProtocolMessage.cpp  src/Device/RS232Device.cpp  src/Util/Random.cpp  src/Util/Message.cpp src/Util/StopWatch.cpp src/Util/IOFunctions.cpp  src/Util/Thread.cpp  src/M5apiw32/m5apiw32.cpp)
-rosbuild_add_compile_flags(m5api -D__LINUX__ -DUSE_PCAN -DUSE_ESD)
-#target_link_libraries(${PROJECT_NAME} another_library)
-#rosbuild_add_boost_directories()
-#rosbuild_link_boost(${PROJECT_NAME} thread)
-#rosbuild_add_executable(example examples/example.cpp)
-#target_link_libraries(example ${PROJECT_NAME})
+add_library(m5api src/Device/Device.cpp  src/Device/ProtocolDevice.cpp src/Device/ESDDevice.cpp src/Device/PCanDevice.cpp src/Device/ProtocolMessage.cpp  src/Device/RS232Device.cpp  src/Util/Random.cpp  src/Util/Message.cpp src/Util/StopWatch.cpp src/Util/IOFunctions.cpp  src/Util/Thread.cpp  src/M5apiw32/m5apiw32.cpp)
+set_target_properties(m5api PROPERTIES COMPILE_FLAGS "-D__LINUX__ -DUSE_PCAN -DUSE_ESD")
+target_link_libraries(m5api ${catkin_LIBRARIES})
+
+
+
+#############
+## Install ##
+#############
+
+## Mark executables and/or libraries for installation
+install(TARGETS m5api
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
