@@ -45,7 +45,7 @@ endif(“${CMAKE_SYSTEM_PROCESSOR}” STREQUAL “x86_64”)
 
 add_custom_target(
     copy_SDHLIB ALL 
-    COMMAND /bin/ln -s ${PROJECT_SOURCE_DIR}/common/lib/${MYARCH}/libSDHLibrary-CPP.so ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so
+    COMMAND /bin/ln -sf ${PROJECT_SOURCE_DIR}/common/lib/${MYARCH}/libSDHLibrary-CPP.so ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so
     DEPENDS ${PROJECT_SOURCE_DIR}/common/lib/${MYARCH}/libSDHLibrary-CPP.so
     )
 
