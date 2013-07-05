@@ -98,7 +98,12 @@ catkin_package(
     CATKIN_DEPENDS 
 )
 
-foreach(dir meshes gazebo materials robots documents urdf)
+foreach(dir meshes urdf)
    install(DIRECTORY ${dir}/ 
+      DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${dir})
+endforeach(dir)
+
+foreach(dir materials)
+   install(DIRECTORY Media/${dir}/ 
       DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${dir})
 endforeach(dir)
