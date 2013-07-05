@@ -19,5 +19,6 @@
   <depend stack="ros" />
   <depend stack="ros_comm" /> <!-- rostest, rospy, roscpp -->
   <depend stack="simulator_gazebo" /> <!-- gazebo_plugins -->
+  <depend stack="gazebo_plugins" /> <!-- gazebo_plugins -->
 
 </stack>
