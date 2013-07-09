@@ -75,8 +75,6 @@
 //#include <pr2_controllers_msgs/JointTrajectoryAction.h>
 #include <control_msgs/FollowJointTrajectoryAction.h>
 #include <pr2_controllers_msgs/JointTrajectoryControllerState.h>
-#include <schunk_sdh/TactileSensor.h>
-#include <schunk_sdh/TactileMatrix.h>
 #include <brics_actuator/JointVelocities.h>
 #include <brics_actuator/JointValue.h>
 
@@ -89,7 +87,6 @@
 
 // external includes
 #include <schunk_sdh/sdh.h>
-#include <schunk_sdh/dsa.h>
 
 /*!
 * \brief Implementation of ROS node for sdh.
@@ -105,7 +102,6 @@ class SdhNode
 		// declaration of topics to publish
 		ros::Publisher topicPub_JointState_;
 		ros::Publisher topicPub_ControllerState_;
-		ros::Publisher topicPub_TactileSensor_;
 		ros::Publisher topicPub_Diagnostics_;
 		
 		// topic subscribers
@@ -128,19 +124,15 @@ class SdhNode
 
 		// other variables
 		SDH::cSDH *sdh_;
-		SDH::cDSA *dsa_;
 		std::vector<SDH::cSDH::eAxisState> state_;
 
 		std::string sdhdevicetype_;
 		std::string sdhdevicestring_;
 		int sdhdevicenum_;
-		std::string dsadevicestring_;
-		int dsadevicenum_;
 		int baudrate_, id_read_, id_write_;
 		double timeout_;
 
 		bool isInitialized_;
-		bool isDSAInitialized_;
 		bool isError_;
 		int DOF_;
 		double pi_;
@@ -178,8 +170,6 @@ class SdhNode
 		*/
 		~SdhNode() 
 		{
-			if(isDSAInitialized_)
-				dsa_->Close();
 			if(isInitialized_)
 				sdh_->Close();
 			delete sdh_;
@@ -193,13 +183,11 @@ class SdhNode
 		{
 			// initialize member variables
 			isInitialized_ = false;
-			isDSAInitialized_ = false;
 			hasNewGoal_ = false;
 
 			// implementation of topics to publish
 			topicPub_JointState_ = nh_.advertise<sensor_msgs::JointState>("/joint_states", 1);
 			topicPub_ControllerState_ = nh_.advertise<pr2_controllers_msgs::JointTrajectoryControllerState>("state", 1);
-			topicPub_TactileSensor_ = nh_.advertise<schunk_sdh::TactileSensor>("tactile_data", 1);
 
 			// pointer to sdh
 			sdh_ = new SDH::cSDH(false, false, 0); //(_use_radians=false, bool _use_fahrenheit=false, int _debug_level=0)
@@ -217,9 +205,6 @@ class SdhNode
 			nh_.param("sdhdevicetype", sdhdevicetype_, std::string("PCAN"));
 			nh_.param("sdhdevicestring", sdhdevicestring_, std::string("/dev/pcan0"));
 			nh_.param("sdhdevicenum", sdhdevicenum_, 0);
-			
-			nh_.param("dsadevicestring", dsadevicestring_, std::string(""));
-			nh_.param("dsadevicenum", dsadevicenum_, 0);
 			
 			nh_.param("baudrate", baudrate_, 1000000);
 			nh_.param("timeout", timeout_, (double)0.04);
@@ -481,30 +466,6 @@ class SdhNode
 					res.error_message.data = e->what();
 					delete e;
 					return true;
-				}
-				
-				//Init tactile data
-				if(!dsadevicestring_.empty())  {
-					try
-					{
-						dsa_ = new SDH::cDSA(0, dsadevicenum_, dsadevicestring_.c_str());
-						//dsa_->SetFramerate( 0, true, false );
-						dsa_->SetFramerate( 1, true );
-						ROS_INFO("Initialized RS232 for DSA Tactile Sensors on device %s",dsadevicestring_.c_str());
-						// ROS_INFO("Set sensitivity to 1.0");
-						// for(int i=0; i<6; i++)
-						// 	dsa_->SetMatrixSensitivity(i, 1.0);
-						isDSAInitialized_ = true;
-					}
-					catch (SDH::cSDHLibraryException* e)
-					{
-						isDSAInitialized_ = false;
-						ROS_ERROR("An exception was caught: %s", e->what());
-						res.success.data = false;
-						res.error_message.data = e->what();
-						delete e;
-						return true;
-					}
 				}
 			}
 			else
@@ -791,10 +752,7 @@ class SdhNode
 	      {
 	        diagnostics.status[0].level = 0;
 	        diagnostics.status[0].name = nh_.getNamespace(); //"schunk_powercube_chain";
-	        if(isDSAInitialized_)
-	        	diagnostics.status[0].message = "sdh with tactile sensing initialized and running";
-	        else
-	        	diagnostics.status[0].message = "sdh initialized and running, tactile sensors not connected";	
+	        diagnostics.status[0].message = "sdh initialized and running";	
 	      }
 	      else
 	      {
@@ -807,56 +765,6 @@ class SdhNode
 	    topicPub_Diagnostics_.publish(diagnostics);
 
 	}
-
-	/*!
-	* \brief Main routine to update dsa.
-	*
-	* Reads out current values.
-	*/
-	void updateDsa()
-	{
-                static const int dsa_reorder[6] = { 2 ,3, 4, 5, 0 , 1 }; // t1,t2,f11,f12,f21,f22
-		ROS_DEBUG("updateTactileData");
-
-		if(isDSAInitialized_)
-		{
-			// read tactile data
-			for(int i=0; i<7; i++)
-			{
-				try
-				{
-					//dsa_->SetFramerate( 0, true, true );
-					dsa_->UpdateFrame();
-				}
-				catch (SDH::cSDHLibraryException* e)
-				{
-					ROS_ERROR("An exception was caught: %s", e->what());
-					delete e;
-				}
-			}
-
-			schunk_sdh::TactileSensor msg;
-			msg.header.stamp = ros::Time::now();
-			int m, x, y;
-			msg.tactile_matrix.resize(dsa_->GetSensorInfo().nb_matrices);
-			for ( int i = 0; i < dsa_->GetSensorInfo().nb_matrices; i++ )
-			{
-				m = dsa_reorder[i];                                  
-				schunk_sdh::TactileMatrix &tm = msg.tactile_matrix[i];
-				tm.matrix_id = i;
-				tm.cells_x = dsa_->GetMatrixInfo( m ).cells_x;
-				tm.cells_y = dsa_->GetMatrixInfo( m ).cells_y;
-				tm.tactile_array.resize(tm.cells_x * tm.cells_y);
-				for ( y = 0; y < tm.cells_y; y++ )
-				{
-					for ( x = 0; x < tm.cells_x; x++ )
-						tm.tactile_array[tm.cells_x*y + x] = dsa_->GetTexel( m, x, y );
-				}
-			}
-			//publish matrix
-			topicPub_TactileSensor_.publish(msg);
-		}
-	}	 
 }; //SdhNode
 
 /*!
@@ -892,9 +800,6 @@ int main(int argc, char** argv)
 	{
 		// publish JointState
 		sdh_node.updateSdh();
-		
-		// publish TactileData
-		sdh_node.updateDsa();
 		
 		// sleep and waiting for messages, callbacks
 		ros::spinOnce();

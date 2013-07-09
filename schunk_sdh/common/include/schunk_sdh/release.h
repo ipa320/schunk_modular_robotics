@@ -23,9 +23,9 @@
 
     \subsection sdhlibrary_cpp_release_h_details SVN related, detailed file specific information:
       $LastChangedBy: Osswald2 $
-      $LastChangedDate: 2011-05-10 13:55:42 +0200 (Di, 10 Mai 2011) $
+      $LastChangedDate: 2013-02-04 15:52:19 +0100 (Mo, 04 Feb 2013) $
       \par SVN file revision:
-        $Id: release.h 6819 2011-05-10 11:55:42Z Osswald2 $
+        $Id: release.h 9738 2013-02-04 14:52:19Z Osswald2 $
 
   \subsection sdhlibrary_cpp_release_h_changelog Changelog of this file:
       \include release.h.log
@@ -50,6 +50,12 @@
  */
 #define PROJECT_NAME "SDHLibrary-CPP"
 
+/*!
+    \anchor firmware_release_recommended_sdhlibrary_cpp
+    The recommended release of the firmware of an SDH used by this library
+ */
+#define FIRMWARE_RELEASE_RECOMMENDED "0.0.3.1"
+
 //! Release name of the whole software project (a.k.a. as the \e "version" of the project).
 /*!
     \anchor project_release_sdhlibrary_cpp
@@ -61,7 +67,21 @@
 
     From newest to oldest the releases have the following names and features:
 
-    - \b 0.0.2.3:
+    - \b 0.0.2.6: 2013-02-04
+      - first version with recommended firmware 0.0.3.1 with ethernet TCP/IP support
+
+    - \b 0.0.2.5: 2012-05-08
+      - bugfixes 1153: Bug: Speicherzugriffsprobleme in dsa.cpp https://192.168.101.101/mechatronik/show_bug.cgi?id=1153
+        - fixed possible memory corruption issues according to a bug report from Fraunhofer IFF. Thanks.
+
+    - \b 0.0.2.4: 2012-02-18
+      - added bug description for 1020: <a href="https://192.168.101.101/mechatronik/show_bug.cgi?id=1020">bug 1020 velocity control with acceleration ramp stops other axes when only a single one is addressed</a>
+      - Enhancement <a href="https://192.168.101.101/mechatronik/show_bug.cgi?id=1088">Bug 1088: Task: Implement functions to check compatibility of SDH firmware</a>
+        - added SDH::cSDH::CheckFirmwareRelease() and SDH::cSDH::GetFirmwareReleaseRecommended() to be able to
+          check the actual versus the recommended SDH firmware release.
+          Needed for the new SDH driver for ROS, see <a href="http://www.ros.org/doc/api/cob_sdh/html/index.html">http://www.ros.org/doc/api/cob_sdh/html/index.html</a>
+
+    - \b 0.0.2.3: 2011-05-11
       - working <a href="https://192.168.101.101/mechatronik/show_bug.cgi?id=1012">Bug 1012: Bug: cannot communicate with SDH via PEAK-CAN on Linux</a>
         => testing compliance of SDHLibrary with PEAK CAN driver v7.1 for Linux
         - cannot be confirmed as a bug
@@ -78,7 +98,7 @@
         (Can be enabled in Makefile-settings, see WITH_ESD_CAN, WITH_PEAK_CAN, HAVE_BOOST)
 
     - \b 0.0.2.1: 2011-03-09
-      - fixed <a href="https://192.168.101.101/mechatronik/show_bug.cgi?id=844">Bug 844: Bug: Korean windows cannot handle specific unit characters like ° and ²</a>
+      - fixed <a href="https://192.168.101.101/mechatronik/show_bug.cgi?id=844">Bug 844: Bug: Korean windows cannot handle specific unit characters like ï¿½ and ï¿½</a>
         The non ASCII string litearals for degrees and squared were replaced by ASCII literals
       - added <a href="https://192.168.101.101/mechatronik/show_bug.cgi?id=996">Bug 996: Task: Version numbering of DSACON32m firmware has changed since 2011-02-15</a>
         software version numbers for DSACON32m are reported correctly for the new firmwares
@@ -453,16 +473,16 @@
       - As release name/number of the project within the generated documentation.
       - As part of the name of the generated install directory and pdf files.
  */
-#define PROJECT_RELEASE "0.0.2.3"
+#define PROJECT_RELEASE "0.0.2.6"
 
 //! Date of the release of the software project.
 /*!
     \anchor project_date_sdhlibrary_cpp
     The date of the release of the project.
 */
-#define PROJECT_DATE "2011-05-11"
+#define PROJECT_DATE "2013-02-04"
 
-#define PROJECT_COPYRIGHT "(c) SCHUNK GmbH & Co. KG, 2007-2011"
+#define PROJECT_COPYRIGHT "(c) SCHUNK GmbH & Co. KG, 2007-2013"
 
 #endif
 //======================================================================

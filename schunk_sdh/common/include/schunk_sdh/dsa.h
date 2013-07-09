@@ -17,9 +17,9 @@
 
     \subsection sdhlibrary_cpp_dsa_h_details SVN related, detailed file specific information:
       $LastChangedBy: Osswald2 $
-      $LastChangedDate: 2011-03-09 11:55:11 +0100 (Mi, 09 Mrz 2011) $
+      $LastChangedDate: 2013-01-21 17:11:57 +0100 (Mon, 21 Jan 2013) $
       \par SVN file revision:
-        $Id: dsa.h 6526 2011-03-09 10:55:11Z Osswald2 $
+        $Id: dsa.h 9648 2013-01-21 16:11:57Z Osswald2 $
 
   \subsection sdhlibrary_cpp_dsa_h_changelog Changelog of this file:
       \include dsa.h.log
@@ -228,7 +228,7 @@ class VCC_EXPORT cDSA
         - You can get a reference to the #sTactileSensorFrame object with the
           #GetFrame() function.
         - The object must be updated manually (for now)
-          - by setting an appropriat framerate with #SetFramerate() once
+          - by setting an appropriate framerate with #SetFramerate() once
           - by calling #UpdateFrame() periodically
         -
     */
@@ -236,7 +236,7 @@ class VCC_EXPORT cDSA
     {
         UInt32  timestamp;  //!< the timestamp of the frame. Use #GetAgeOfFrame() to set this into relation with the time of the PC.
         UInt8   flags;      //!< internal data
-        tTexel* texel;      //!< an 2D array of tTexel elements. Use #GetTexel() for easy access to specific individuall elements.
+        tTexel* texel;      //!< an 2D array of tTexel elements. Use #GetTexel() for easy access to specific individual elements.
 
         //! constructor
         sTactileSensorFrame( void )
@@ -332,7 +332,7 @@ class VCC_EXPORT cDSA
 
 
     void WriteCommandWithPayload( UInt8 command, UInt8* payload, UInt16 payload_len )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
     inline void WriteCommand( UInt8 command )
     {
@@ -351,34 +351,34 @@ class VCC_EXPORT cDSA
         - if sent, the CRC checksum is read and the data is checked. For invalid data an exception is thrown
     */
     void ReadResponse( sResponse* response, UInt8 command_id )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
     /*!
         Read and parse a controller info response from the remote DSA
     */
     void ReadControllerInfo( sControllerInfo* _controller_info )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
 
     /*!
         Read and parse a sensor info response from the remote DSA
     */
     void ReadSensorInfo( sSensorInfo* _sensor_info )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
 
     /*!
         Read and parse a matrix info response from the remote DSA
     */
     void ReadMatrixInfo( sMatrixInfo* _matrix_info  )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
 
     /*!
         read and parse a full frame response from remote DSA
     */
     void ReadFrame( sTactileSensorFrame* frame_p  )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
 
     /*!
@@ -386,7 +386,7 @@ class VCC_EXPORT cDSA
         Read and parse the response from the remote DSACON32m.
     */
     void QueryControllerInfo( sControllerInfo* _controller_info  )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
 
     /*!
@@ -394,7 +394,7 @@ class VCC_EXPORT cDSA
         Read and parse the response from the remote DSACON32m.
     */
     void QuerySensorInfo( sSensorInfo* _sensor_info )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
 
     /*!
@@ -402,14 +402,14 @@ class VCC_EXPORT cDSA
         Read and parse the response from the remote DSACON32m.
     */
     void QueryMatrixInfo( sMatrixInfo* _matrix_info, int matrix_no )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
 
     /*!
       Query all matrix infos
     */
     void QueryMatrixInfos( void )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
 
     /*!
@@ -485,11 +485,11 @@ class VCC_EXPORT cDSA
 
     //! (Re-)open connection to DSACON32m controller, this is called by the constructor automatically, but is still usefull to call after a call to Close()
     void Open(void)
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
     //! Set the framerate of the remote DSACON32m controller to 0 and close connection to it.
     void Close(void)
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
 
     /*!
@@ -521,7 +521,7 @@ class VCC_EXPORT cDSA
      *  <br><b>=> Resolved in SDHLibrary-C++ v0.0.2.1 with workaround for older DSACON32m firmwares</b>
      */
     void SetFramerate( UInt16 framerate, bool do_RLE=true, bool do_data_acquisition=true )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
     /*!
      * Set the \a framerate for querying full frames.
@@ -536,7 +536,7 @@ class VCC_EXPORT cDSA
      * @param ignore_exceptions   - flag, if true then exceptions are ignored in case of error. After \a retries tries the function just returns even in case of an error
      */
     void SetFramerateRetries( UInt16 framerate, bool do_RLE=true, bool do_data_acquisition=true, unsigned int retries=0, bool ignore_exceptions=false )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
 
     /*!
@@ -554,7 +554,7 @@ class VCC_EXPORT cDSA
         <br><b>=> Resolved in DSACON32m firmware R268</b>
     */
     sSensitivityInfo GetMatrixSensitivity( int matrix_no )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
 
     /*!
@@ -578,7 +578,7 @@ class VCC_EXPORT cDSA
                                bool do_all_matrices=false,
                                bool do_reset=false,
                                bool do_persistent=false )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
 
     /*!
@@ -602,7 +602,7 @@ class VCC_EXPORT cDSA
                              bool do_all_matrices=false,
                              bool do_reset=false,
                              bool do_persistent=false )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
     /*!
         Send command to get matrix threshold. Returns threshold of matrix no \a matrix_no.
@@ -614,7 +614,7 @@ class VCC_EXPORT cDSA
         \remark Getting the matrix threshold is only possible if the DSACON32m firmware is R268 or above.
     */
     UInt16 GetMatrixThreshold( int matrix_no )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
     /*!
         Return texel value at column \a x row \a y of matrix \a m of the last frame
@@ -646,7 +646,7 @@ class VCC_EXPORT cDSA
     double VoltageToPressure( double voltage );
 
     void ReadAndCheckErrorResponse( char const* msg, UInt8 command_id )
-    throw (cDSAException*);
+    throw (cDSAException*, cSDHErrorCommunication*);
 
 
  public:

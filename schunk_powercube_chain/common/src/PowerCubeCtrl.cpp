@@ -202,9 +202,9 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 	/// reset all modules of the chain
 	int max_tries = 3; 
 	for (int i = 0; i < DOF; i++)
-	{  
-		for (int reset_try = 0; reset_try < max_tries; i++)
-		{
+	{  	
+		for (int reset_try = 0; reset_try < max_tries; reset_try++)
+		{	
 			pthread_mutex_lock(&m_mutex);
 			ret =  PCube_resetModule(m_DeviceHandle, ModulIDs.at(i));
 			pthread_mutex_unlock(&m_mutex);
@@ -216,21 +216,19 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			else if ((ret != 0) && (reset_try == (max_tries-1)))
 			{
 				std::ostringstream errorMsg;
-      	errorMsg << "Could not reset module " << i << " during init. Try to init once more.";
+      	errorMsg << "Could not reset module " << ModulIDs.at(i) << " during init. Errorcode during reset: " << ret << " Try to init once more.";
       	m_ErrorMessage = errorMsg.str();
 				return false;
 			}
 			else
 			{
 				// little break
-				usleep(1000000); 
+				usleep(1500000); 
 			}
 			
 		}
 	}
-
-  /// make sure m_IdModules is clear of Elements:
-  ModulIDs.clear();
+	std::cout << "number of moduleIDs" << ModulIDs.size() << std::endl;
 
   /// check number of modules connected to the bus
   pthread_mutex_lock(&m_mutex);
@@ -374,52 +372,8 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
       return false;
     }
 
-  /// Set angle offsets to hardware
-  for (int i = 0; i < DOF; i++)
-  {
-    pthread_mutex_lock(&m_mutex);
-    ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
-    pthread_mutex_unlock(&m_mutex);
-
-		if (ret!=0) 
-		{		// 2. chance
-				pthread_mutex_lock(&m_mutex);
-     		ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
-    		pthread_mutex_unlock(&m_mutex);
-				if (ret!=0)
-				{return false;}
-		}
-  }
-
-  /// Set limits to hardware
-	//TODO: add safty limit for hardware, that modules don't reach limits
-  for (int i = 0; i < DOF; i++)
-  {
-    pthread_mutex_lock(&m_mutex);
-    //ret = PCube_setMinPos(m_DeviceHandle, ModulIDs[i], LowerLimits[i]);
-    pthread_mutex_unlock(&m_mutex);
-		if (ret!=0)
-		{return false;}
-
-    pthread_mutex_lock(&m_mutex);
-    //ret = PCube_setMaxPos(m_DeviceHandle, ModulIDs[i], UpperLimits[i]);
-    pthread_mutex_unlock(&m_mutex);
-		if (ret!=0)
-		{return false;}
-  }
-
-  /// Set max velocity to hardware
-  setMaxVelocity(MaxVel);
-	
-  /// Set max acceleration to hardware 
-	setMaxAcceleration(MaxAcc);
-
-  /// set synchronous or asynchronous movements
-  setSyncMotion();
-
   // All modules initialized successfully
   m_pc_status = PC_CTRL_OK;
-
   return true;
 }
 
@@ -444,105 +398,6 @@ bool PowerCubeCtrl::Close()
     {
       return false;
     }
-}
-
-/// ToDo: Check comments
-/*!
- * \brief Move joints synchronous
- *
- * Adjusting velocity of all joints to reach the final angules at the same time
- */
-bool PowerCubeCtrl::MoveJointSpaceSync(const std::vector<double>& target)
-{
-  PCTRL_CHECK_INITIALIZED();
-  unsigned int DOF = m_params->GetDOF();
-
-  std::vector<std::string> errorMessages;
-  PC_CTRL_STATUS status;
-  getStatus(status, errorMessages);
-  if ((status != PC_CTRL_OK))
-    {
-      m_ErrorMessage.assign("");
-      for (unsigned int i = 0; i < DOF; i++)
-	{
-	  m_ErrorMessage.append(errorMessages[i]);
-	}
-      return false;
-    }
-
-  std::vector<double> vel(DOF);
-  std::vector<double> acc(DOF);
-
-  double TG = 0;
-
-  try
-    {
-      /// calculate which joint takes the longest time to reach goal
-      std::vector<double> times(DOF);
-      for (unsigned int i = 0; i < DOF; i++)
-	{
-	  RampCommand rm(m_positions[i], m_velocities[i], target[i], m_params->GetMaxAcc()[i],
-			 m_params->GetMaxVel()[i]);
-	  times[i] = rm.getTotalTime();
-	}
-
-      /// determine the joint index that has the greatest value for time
-      int furthest = 0;
-      double max = times[0];
-      for (unsigned int i = 1; i < DOF; i++)
-	{
-	  if (times[i] > max)
-	    {
-	      max = times[i];
-	      furthest = i;
-	    }
-	}
-
-      RampCommand rm_furthest(m_positions[furthest], m_velocities[furthest], target[furthest],
-			      m_params->GetMaxAcc()[furthest], m_params->GetMaxVel()[furthest]);
-
-      double T1 = rm_furthest.T1();
-      double T2 = rm_furthest.T2();
-      double T3 = rm_furthest.T3();
-
-      /// total time:
-      TG = T1 + T2 + T3;
-
-      /// calculate velocity and acceleration for all joints:
-      acc[furthest] = m_params->GetMaxAcc()[furthest];
-      vel[furthest] = m_params->GetMaxVel()[furthest];
-      for (unsigned int i = 0; i < DOF; i++)
-	{
-	  if (int(i) != furthest)
-	    {
-	      double a;
-	      double v;
-	      RampCommand::calculateAV(m_positions[i], m_velocities[i], target[i], TG, T3, m_params->GetMaxAcc()[i],
-				       m_params->GetMaxVel()[i], a, v);
-
-	      acc[i] = a;
-	      vel[i] = v;
-	    }
-	}
-    }
-  catch (...)
-    {
-      return false;
-    }
-
-  /// Send motion commands to hardware
-  for (unsigned int i = 0; i < DOF; i++)
-    {
-      pthread_mutex_lock(&m_mutex);
-      PCube_moveRamp(m_DeviceHandle, m_params->GetModuleIDs()[i], target[i], fabs(vel[i]), fabs(acc[i]));
-      pthread_mutex_unlock(&m_mutex);
-    }
-
-  pthread_mutex_lock(&m_mutex);
-  PCube_startMotionAll(m_DeviceHandle);
-  pthread_mutex_unlock(&m_mutex);
-
-  return true;
 }
 
 /*
@@ -589,6 +444,9 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 	std::vector<double> LowerLimits = m_params->GetLowerLimits();
 	std::vector<double> UpperLimits = m_params->GetUpperLimits();
 	std::vector<double> maxVels = m_params->GetMaxVel();
+
+	/// getting offsets
+	std::vector<double> Offsets = m_params->GetOffsets();
 	
 	int ret; 		// temp return value holder
 	float pos; 	// temp position variable for PCube_move.. cmds 
@@ -625,7 +483,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 		ROS_DEBUG("delta_pos[%i]: %f target_time: %f velocitiy[%i]: %f",i ,delta_pos[i], target_time, i, velocities[i]);
  
 		// calculate target position   
-		target_pos_horizon[i] = m_positions[i] + delta_pos_horizon[i];
+		target_pos_horizon[i] = m_positions[i] + delta_pos_horizon[i] - Offsets[i];
 		ROS_DEBUG("target_pos[%i]: %f m_position[%i]: %f",i ,target_pos[i], i, m_positions[i]);
 	}
 
@@ -654,7 +512,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
       /// check position limits
  			// TODO: add second limit "safty limit" 
 			// if target position is outer limits and the command velocity is in in direction away from working range, skip command
-      if ((target_pos[i] < LowerLimits[i]) && (velocities[i] < 0))
+      if ((target_pos[i] < LowerLimits[i]+Offsets[i]) && (velocities[i] < 0))
 			{	
 				ROS_INFO("Skipping command: %f Target position exceeds lower limit (%f).", target_pos[i], LowerLimits[i]);		
 				// target position is set to actual position and velocity to Null. So only movement in the non limit direction is possible.
@@ -667,7 +525,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 			} 
 			
 			// if target position is outer limits and the command velocity is in in direction away from working range, skip command
-			if ((target_pos[i] > UpperLimits[i]) && (velocities[i] > 0))
+			if ((target_pos[i] > UpperLimits[i]+Offsets[i]) && (velocities[i] > 0))
 			{	
 				ROS_INFO("Skipping command: %f Target position exceeds upper limit (%f).", target_pos[i], UpperLimits[i]);		
 				// target position is set to actual position. So only movement in the non limit direction is possible.
@@ -730,7 +588,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 		}
 		
 		// !!! Position in pos is position before moveStep movement, to get the expected position after the movement (required as input to the next moveStep command) we add the delta position (cmd_pos) !!!
-		m_positions[i] = (double)pos + delta_pos[i];
+		m_positions[i] = (double)pos + delta_pos[i] + Offsets[i];
 		
 		pos_temp[i] = (double)pos;
 		//ROS_INFO("After cmd (%X) :m_positions[%i] %f = pos: %f + delta_pos[%i]: %f",m_status[i], i, m_positions[i], pos, i, delta_pos[i]);
@@ -886,32 +744,6 @@ bool PowerCubeCtrl::Recover()
   }
 	
   usleep(500000);
-
-	/// Set angle offsets to hardware
-  for (int i = 0; i < DOF; i++)
-  {
-    pthread_mutex_lock(&m_mutex);
-    ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
-    pthread_mutex_unlock(&m_mutex);
-
-		if (ret!=0) 
-		{		// 2. chance
-				pthread_mutex_lock(&m_mutex);
-     		ret = PCube_setHomeOffset(m_DeviceHandle, ModulIDs[i], Offsets[i]);
-    		pthread_mutex_unlock(&m_mutex);
-				if (ret!=0)
-				{return false;}
-		}
-  }
-
-	/// Set max velocity to hardware
-  setMaxVelocity(MaxVel);
-	
-  /// Set max acceleration to hardware
-	setMaxAcceleration(MaxAcc);
-	
-  /// set synchronous or asynchronous movements
-  setSyncMotion();
 
   // modules should be recovered now
   m_pc_status = PC_CTRL_OK;	
@@ -1160,6 +992,7 @@ bool PowerCubeCtrl::updateStates()
   unsigned long state;
   PC_CTRL_STATUS pc_status = PC_CTRL_ERR; 
   std::vector<std::string> ErrorMessages;
+  std::vector<double> Offsets = m_params->GetOffsets();
   std::ostringstream errorMsg;
 
   unsigned char dio;
@@ -1187,7 +1020,7 @@ bool PowerCubeCtrl::updateStates()
 	  
 	  m_status[i] = state; 		
 	  m_dios[i] = dio;
-	  m_positions[i] = position;
+	  m_positions[i] = position + Offsets[i];
 	}	
       
     }
@@ -1363,6 +1196,9 @@ bool PowerCubeCtrl::doHoming()
 	std::vector<double> LowerLimits = m_params->GetLowerLimits();
 	std::vector<double> UpperLimits = m_params->GetUpperLimits();
 
+	/// getting offsets
+	std::vector<double> Offsets = m_params->GetOffsets();
+
   /// wait until all modules are homed
   double max_homing_time = 15.0; // seconds   
   double homing_time = 999.0;	// set to 0 if any module is homed
@@ -1381,10 +1217,10 @@ bool PowerCubeCtrl::doHoming()
 	pthread_mutex_unlock(&m_mutex);
 		
 	// check and init m_position variable for trajectory controller
-	if ((position > UpperLimits[i]) || (position < LowerLimits[i]))
+	if ((position > UpperLimits[i] + Offsets[i]) || (position < LowerLimits[i] + Offsets[i]))
 	{	
 		std::ostringstream errorMsg;
-		errorMsg << "Module " << ModuleIDs[i] << " has position " << position << " that is outside limits (" << UpperLimits[i] << " <-> " << LowerLimits[i] << std::endl; 
+		errorMsg << "Module " << ModuleIDs[i] << " has position " << position << " that is outside limits (" << UpperLimits[i] + Offsets[i] << " <-> " << LowerLimits[i] + Offsets[i] << std::endl; 
 		if ((m_ModuleTypes.at(i)=="PW") || (m_ModuleTypes.at(i) == "other"))
 		{	std::cout << "Position error for PW-Module. Init is aborted. Try to reboot the robot." << std::endl;
 			m_ErrorMessage = errorMsg.str(); 
@@ -1404,7 +1240,7 @@ bool PowerCubeCtrl::doHoming()
 	}
 	else
 	{
-		m_positions[i] = position; 
+		m_positions[i] = position + Offsets[i]; 
 	}
 
 	// check module type before homing (PRL-Modules need not to be homed by ROS)
