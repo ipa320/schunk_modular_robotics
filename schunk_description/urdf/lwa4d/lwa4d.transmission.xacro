@@ -5,7 +5,7 @@
        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
        xmlns:xacro="http://ros.org/wiki/xacro">
 
-	<xacro:macro name="schunk_powerball_transmission" params="name">
+	<xacro:macro name="schunk_lwa_transmission" params="name">
 
 		<transmission name="${name}_1_trans" type="pr2_mechanism_model/SimpleTransmission">
 			<actuator name="${name}_1_motor"/>
@@ -43,6 +43,11 @@
 			<mechanicalReduction>1</mechanicalReduction>
 		</transmission>
 
+		<transmission name="${name}_7_trans" type="pr2_mechanism_model/SimpleTransmission">
+			<actuator name="${name}_7_motor"/>
+			<joint name="${name}_7_joint"/>
+			<mechanicalReduction>1</mechanicalReduction>
+		</transmission>
 
 	</xacro:macro>
 
