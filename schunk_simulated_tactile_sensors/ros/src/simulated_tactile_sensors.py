@@ -3,7 +3,7 @@ import roslib; roslib.load_manifest('schunk_simulated_tactile_sensors')
 import rospy
 import math
 from schunk_sdh.msg import *
-from gazebo_plugins.msg import *
+from gazebo_msgs.msg import *
 from geometry_msgs.msg import *
 
 
@@ -36,7 +36,7 @@ class GazeboTactilePad():
 	'''
 	Update the pad with the Gazebo contact information.
 	
-	:param states: gazebo_plugins.msg.ContactsState
+	:param states: gazebo_msgs.msg.ContactsState
 	'''
 	def contact_callback(self, states):
 		matrix = self.create_empty_force_matrix()
@@ -51,7 +51,7 @@ class GazeboTactilePad():
 	Update the provided matrix with the contact information from the Gazebo
 	simulator.
 	
-	:param states: gazebo_plugins.msg.ContactsState
+	:param states: gazebo_msgs.msg.ContactsState
 	:param matrix: Float[]
 	'''
 	def update(self, states, matrix):

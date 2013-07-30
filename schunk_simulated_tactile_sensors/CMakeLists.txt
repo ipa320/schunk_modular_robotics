@@ -15,3 +15,11 @@ catkin_package(
 # rostest
 #rosbuild_add_roslaunch_check(ros/launch)## Generate added messages and services with any dependencies listed here
 
+## Mark cpp header files for installation
+install(DIRECTORY ros/launch/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/ros/launch
+)
+
+install(PROGRAMS ros/src/simulated_tactile_sensors.py
+  DESTINATION ${CATKIN_PACKAGE_PYTHON_DESTINATION}
+)
