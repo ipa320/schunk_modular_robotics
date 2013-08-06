@@ -4,10 +4,10 @@
        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
        xmlns:xacro="http://ros.org/wiki/xacro">
 
-	<include filename="$(find schunk_description)/urdf/powerball/powerball.gazebo.xacro" />
-	<include filename="$(find schunk_description)/urdf/powerball/powerball.transmission.xacro" />
+	<include filename="$(find schunk_description)/urdf/lwa4p/lwa4p.gazebo.xacro" />
+	<include filename="$(find schunk_description)/urdf/lwa4p/lwa4p.transmission.xacro" />
 
-	<xacro:macro name="schunk_powerball" params="parent name *origin">
+	<xacro:macro name="schunk_lwa4p" params="parent name *origin">
 
 		<!-- joint between base_link and arm_0_link -->
 		<joint name="${name}_0_joint" type="fixed" >
@@ -26,7 +26,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/arm_0_link.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa4p/arm_0_link.stl" />
 				</geometry>
 				<material name="Schunk/LightGrey" />
 			</visual>
@@ -34,7 +34,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/arm_0_link.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa4p/arm_0_link.stl" />
 				</geometry>
 			</collision>
 		</link>
@@ -61,7 +61,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/arm_1_link.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa4p/arm_1_link.stl" />
 				</geometry>
 				<material name="Schunk/Blue" />
 			</visual>
@@ -69,7 +69,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/arm_1_link.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa4p/arm_1_link.stl" />
 				</geometry>
 			</collision>
 		</link>
@@ -96,7 +96,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/arm_2_link.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa4p/arm_2_link.stl" />
 				</geometry>
 				<material name="Schunk/LightGrey" />
 			</visual>
@@ -104,7 +104,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/arm_2_link.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa4p/arm_2_link.stl" />
 				</geometry>
 			</collision>
 		</link>
@@ -131,7 +131,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/arm_3_link.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa4p/arm_3_link.stl" />
 				</geometry>
 				<material name="Schunk/Blue" />
 			</visual>
@@ -139,7 +139,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/arm_3_link.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa4p/arm_3_link.stl" />
 				</geometry>
 			</collision>
 		</link>	
@@ -166,7 +166,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/arm_4_link.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa4p/arm_4_link.stl" />
 				</geometry>
 				<material name="Schunk/LightGrey" />
 			</visual>
@@ -174,7 +174,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/arm_4_link.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa4p/arm_4_link.stl" />
 				</geometry>
 			</collision>
 		</link>
@@ -201,7 +201,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/arm_5_link.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa4p/arm_5_link.stl" />
 				</geometry>
 				<material name="Schunk/Blue" />
 			</visual>
@@ -209,7 +209,7 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/arm_5_link.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa4p/arm_5_link.stl" />
 				</geometry>
 			</collision>
 		</link>
@@ -236,7 +236,7 @@
 			<visual>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/arm_6_link.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa4p/arm_6_link.stl" />
 				</geometry>
 				<material name="Schunk/LightGrey" />
 			</visual>
@@ -244,15 +244,15 @@
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
-					<mesh filename="package://schunk_description/meshes/powerball/arm_6_link.stl" />
+					<mesh filename="package://schunk_description/meshes/lwa4p/arm_6_link.stl" />
 				</geometry>
 			</collision>
 		</link>
 
 
 		<!-- extensions -->
-		<xacro:schunk_powerball_gazebo name="${name}" />
-		<xacro:schunk_powerball_transmission name="${name}" />
+		<xacro:schunk_lwa4p_gazebo name="${name}" />
+		<xacro:schunk_lwa4p_transmission name="${name}" />
 
 	</xacro:macro>
 
