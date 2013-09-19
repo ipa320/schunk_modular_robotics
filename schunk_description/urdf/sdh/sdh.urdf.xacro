@@ -4,8 +4,8 @@
        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
        xmlns:xacro="http://ros.org/wiki/xacro">
 
-	<include filename="$(find schunk_description)/urdf/sdh/sdh.gazebo.xacro" />
-	<include filename="$(find schunk_description)/urdf/sdh/sdh.transmission.xacro" />
+	<xacro:include filename="$(find schunk_description)/urdf/sdh/sdh.gazebo.xacro" />
+	<xacro:include filename="$(find schunk_description)/urdf/sdh/sdh.transmission.xacro" />
 
 	<xacro:macro name="schunk_sdh" params="parent name *origin">
 
