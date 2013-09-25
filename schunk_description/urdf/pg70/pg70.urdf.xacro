@@ -25,7 +25,7 @@
 			</inertial>
 			
 			<visual>
-				<origin xyz="0.04 0 0" rpy="0 0 0" />
+				<origin xyz="0 0 0.0465" rpy="0 0 0" />
 				<geometry>
 					<box size="0.08 0.10 0.093"/>
 				</geometry>
@@ -33,7 +33,7 @@
 			</visual>
 			
 			<collision>
-				<origin xyz="0.04 0 0" rpy="0 0 0" />
+				<origin xyz="0 0 0.0465" rpy="0 0 0" />
 				<geometry>
 					<box size="0.08 0.10 0.093"/>
 				</geometry>
@@ -43,12 +43,12 @@
 		<!-- finger1 -->
 		<!-- joint between pg70_palm_link and pg70_finger_1_link -->
 		<joint name="${name}_finger_1_joint" type="prismatic">
-			<origin xyz="0.0 0.03 0.06" rpy="0 0 0" />
+			<origin xyz="0.0 0.03 0.093" rpy="0 0 0" />
 			<parent link="${name}_palm_link"/>
 			<child link="${name}_finger_1_link"/>
 			<axis xyz="0 1 0" />
 			<dynamics damping="1" />
-			<limit effort="100" lower="0" upper="1.570796327" velocity="5"/>
+			<limit effort="100" lower="0" upper="0.034" velocity="5"/>
 		</joint>
 
 		<link name="${name}_finger_1_link">
@@ -59,7 +59,7 @@
 			</inertial>
 			
 			<visual>
-				<origin xyz="0 0 0" rpy="0 0 0" />
+				<origin xyz="0 0 0.03" rpy="0 0 0" />
 				<geometry>
 					<box size="0.03 0.01 0.06"/>
 				</geometry>
@@ -67,7 +67,7 @@
 			</visual>
 			
 			<collision>
-				<origin xyz="0 0 0" rpy="0 0 0" />
+				<origin xyz="0 0 0.03" rpy="0 0 0" />
 				<geometry>
 					<box size="0.03 0.01 0.06"/>
 				</geometry>
@@ -78,12 +78,12 @@
 		<!-- joint between pg70_palm_link and pg70_finger_2_link -->
 		<joint name="${name}_finger_2_joint" type="prismatic">
 			<mimic joint="${name}_finger_1_joint" multiplier="1" offset="0"/>
-			<origin xyz="0.0 -0.03 0.06" rpy="0 0 0" />
+			<origin xyz="0.0 -0.03 0.093" rpy="0 0 0" />
 			<parent link="${name}_palm_link"/>
 			<child link="${name}_finger_2_link"/>
 			<axis xyz="0 -1 0" />
 			<dynamics damping="1" />
-			<limit effort="100" lower="0" upper="1.570796327" velocity="5"/>
+			<limit effort="100" lower="0" upper="0.034" velocity="5"/>
 		</joint>
 
 		<link name="${name}_finger_2_link">
@@ -94,7 +94,7 @@
 			</inertial>
 			
 			<visual>
-				<origin xyz="0 0 0" rpy="0 0 0" />
+				<origin xyz="0 0 0.03" rpy="0 0 0" />
 				<geometry>
 					<box size="0.03 0.01 0.06"/>
 				</geometry>
@@ -102,7 +102,7 @@
 			</visual>
 			
 			<collision>
-				<origin xyz="0 0 0" rpy="0 0 0" />
+				<origin xyz="0 0 0.03" rpy="0 0 0" />
 				<geometry>
 					<box size="0.03 0.01 0.06"/>
 				</geometry>
