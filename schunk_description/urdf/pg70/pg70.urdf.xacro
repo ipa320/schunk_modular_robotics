@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+
+	<include filename="$(find schunk_description)/urdf/materials.urdf.xacro" />
+	<include filename="$(find schunk_description)/urdf/pg70/pg70.gazebo.xacro" />
+	<include filename="$(find schunk_description)/urdf/pg70/pg70.transmission.xacro" />
+
+	<xacro:macro name="schunk_pg70" params="parent name *origin">
+
+		<!-- joint between arm_7_link and pg70_palm_link -->
+		<joint name="${name}_palm_joint" type="fixed" >
+			<insert_block name="origin" />
+			<parent link="${parent}" />
+			<child link="${name}_palm_link" />
+		</joint>
+
+		<link name="${name}_palm_link">
+			<inertial>
+				<origin xyz="0 0 0" rpy="0 0 0"/>
+				<mass value="1.0"/>
+				<inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+			</inertial>
+			
+			<visual>
+				<origin xyz="0 0 0.0465" rpy="0 0 0" />
+				<geometry>
+					<box size="0.08 0.10 0.093"/>
+				</geometry>
+				<material name="Schunk/LightGrey" />
+			</visual>
+			
+			<collision>
+				<origin xyz="0 0 0.0465" rpy="0 0 0" />
+				<geometry>
+					<box size="0.075 0.095 0.085"/>
+				</geometry>
+			</collision>
+		</link>
+
+		<!-- finger1 -->
+		<!-- joint between pg70_palm_link and pg70_finger_1_link -->
+		<joint name="${name}_finger_joint" type="prismatic">
+			<origin xyz="0.0 0.03 0.093" rpy="0 0 0" />
+			<parent link="${name}_palm_link"/>
+			<child link="${name}_finger_1_link"/>
+			<axis xyz="0 1 0" />
+			<dynamics damping="1" />
+			<limit effort="100" lower="0" upper="0.034" velocity="5"/>
+		</joint>
+
+		<link name="${name}_finger_1_link">
+			<inertial>
+				<origin xyz="0 0 0" rpy="0 0 0"/>
+				<mass value="0.1"/>
+				<inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+			</inertial>
+			
+			<visual>
+				<origin xyz="0 0 0.03" rpy="0 0 0" />
+				<geometry>
+					<box size="0.03 0.01 0.060"/>
+				</geometry>
+				<material name="Schunk/LightGrey" />
+			</visual>
+			
+			<collision>
+				<origin xyz="0 0 0.03" rpy="0 0 0" />
+				<geometry>
+					<box size="0.025 0.005 0.055"/>
+				</geometry>
+			</collision>
+		</link>
+
+		<!-- finger2 -->
+		<!-- joint between pg70_palm_link and pg70_finger_2_link -->
+		<joint name="${name}_finger_mimic_joint" type="prismatic">
+			<!--mimic joint="${name}_finger_joint" multiplier="1" offset="0"/-->
+			<origin xyz="0.0 -0.03 0.093" rpy="0 0 3.14" />
+			<parent link="${name}_palm_link"/>
+			<child link="${name}_finger_2_link"/>
+			<axis xyz="0 1 0" />
+			<dynamics damping="1" />
+			<limit effort="100" lower="0" upper="0.034" velocity="5"/>
+		</joint>
+
+		<link name="${name}_finger_2_link">
+			<inertial>
+				<origin xyz="0 0 0" rpy="0 0 0"/>
+				<mass value="0.1"/>
+				<inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+			</inertial>
+			
+			<visual>
+				<origin xyz="0 0 0.03" rpy="0 0 0" />
+				<geometry>
+					<box size="0.03 0.01 0.059"/>
+				</geometry>
+				<material name="Schunk/LightGrey" />
+			</visual>
+			
+			<collision>
+				<origin xyz="0 0 0.03" rpy="0 0 0" />
+				<geometry>
+					<box size="0.025 0.005 0.055"/>
+				</geometry>
+			</collision>
+		</link>
+
+		<!-- extensions -->
+		<xacro:schunk_pg70_gazebo name="${name}" />
+		<xacro:schunk_pg70_transmission name="${name}" />
+
+	</xacro:macro>
+
+</robot>
