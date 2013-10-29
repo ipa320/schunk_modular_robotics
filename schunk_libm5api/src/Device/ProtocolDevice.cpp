@@ -2694,7 +2694,7 @@ int CProtocolDevice::getCanOpenRawAbsEnc(int iModuleId, short* piValue)
 		bRecieved = true;
 		if(clRead.m_uiMessageId != MSGID_MP55_RECV + iModuleId)
 		{
-			printf("getCanOpenRawAbsEnc: received CAN-ID %x, expected %x \n", clRead.m_uiMessageId, 0x580 + iModuleId);
+			printf("getCanOpenRawAbsEnc: received CAN-ID %lu, expected %x \n", clRead.m_uiMessageId, 0x580 + iModuleId);
 			bRecieved = false;
 		}
 	}
