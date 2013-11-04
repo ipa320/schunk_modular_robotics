@@ -21,6 +21,7 @@
   <build_depend>actionlib</build_depend>
   <build_depend>cob_srvs</build_depend>
   <build_depend>control_msgs</build_depend>
+  <build_depend>libusb</build_depend>
   <build_depend>libntcan</build_depend>
   <build_depend>libpcan</build_depend>
   <build_depend>diagnostic_msgs</build_depend>
@@ -33,6 +34,7 @@
   <run_depend>actionlib</run_depend>
   <run_depend>cob_srvs</run_depend>
   <run_depend>control_msgs</run_depend>
+  <run_depend>libusb</run_depend>
   <run_depend>libntcan</run_depend>
   <run_depend>libpcan</run_depend>
   <run_depend>diagnostic_msgs</run_depend>
