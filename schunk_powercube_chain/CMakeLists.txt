@@ -5,6 +5,13 @@ project(schunk_powercube_chain)
 find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs urdf diagnostic_updater rostest schunk_libm5api libntcan libpcan cob_srvs brics_actuator diagnostic_msgs)
 
 
+if(CMAKE_COMPILER_IS_GNUCXX)
+  add_definitions(-std=gnu++0x)
+else()
+  add_definitions(-std=c++0x)
+endif()
+
+
 ###################################
 ## catkin specific configuration ##
 ###################################
