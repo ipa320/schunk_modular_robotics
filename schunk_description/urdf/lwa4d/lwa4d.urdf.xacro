@@ -60,7 +60,7 @@ n
 			</inertial>
 			
 			<visual>
-				<origin xyz="0 0 -0.15" rpy="0 0 ${M_PI}" />
+				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_1_link.stl" />
 				</geometry>
@@ -68,7 +68,7 @@ n
 			</visual>
 			
 			<collision>
-				<origin xyz="0 0 -0.15" rpy="0 0 ${M_PI}" />
+				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_1_link.stl" />
 				</geometry>
@@ -95,7 +95,7 @@ n
 			</inertial>
 			
 			<visual>
-				<origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
+				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_2_link.stl" />
 				</geometry>
@@ -103,7 +103,7 @@ n
 			</visual>
 			
 			<collision>
-				<origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
+				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_2_link.stl"/>
 				</geometry>
@@ -130,7 +130,7 @@ n
 			</inertial>
 			
 			<visual>
-				<origin xyz="0 0 -0.328" rpy="0 0 ${M_PI}" />
+				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_3_link.stl" />
 				</geometry>
@@ -138,7 +138,7 @@ n
 			</visual>
 			
 			<collision>
-				<origin xyz="0 0 -0.328" rpy="0 0 ${M_PI}" />
+				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_3_link.stl"/>
 				</geometry>
@@ -165,7 +165,7 @@ n
 			</inertial>
 			
 			<visual>
-				<origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
+				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_4_link.stl" />
 				</geometry>
@@ -173,7 +173,7 @@ n
 			</visual>
 			
 			<collision>
-				<origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
+				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_4_link.stl"/>
 				</geometry>
@@ -200,7 +200,7 @@ n
 			</inertial>
 			
 			<visual>
-				<origin xyz="0 0 -0.323" rpy="0 0 ${M_PI}" />
+				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_5_link.stl" />
 				</geometry>
@@ -208,7 +208,7 @@ n
 			</visual>
 			
 			<collision>
-				<origin xyz="0 0 -0.323" rpy="0 0 ${M_PI}" />
+				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_5_link.stl"/>
 				</geometry>
@@ -235,7 +235,7 @@ n
 			</inertial>
 			
 			<visual>
-				<origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
+				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_6_link.stl" />
 				</geometry>
@@ -243,7 +243,7 @@ n
 			</visual>
 			
 			<collision>
-				<origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
+				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_6_link.stl"/>
 				</geometry>
@@ -270,7 +270,7 @@ n
 			</inertial>
 			
 			<visual>
-				<origin xyz="0 0 0.075" rpy="0 ${M_PI} 0" />
+				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_7_link.stl" />
 				</geometry>
@@ -278,7 +278,7 @@ n
 			</visual>
 			
 			<collision>
-				<origin xyz="0 0 0.075" rpy="0 ${M_PI} 0" />
+				<origin xyz="0 0 0" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_7_link.stl"/>
 				</geometry>
