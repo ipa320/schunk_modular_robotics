@@ -8,7 +8,7 @@
 	<include filename="$(find schunk_description)/urdf/lwa4p_extended/lwa4p_extended.transmission.xacro" />
 
 		
-	<xacro:macro name="schunk_lwa4p_extended" params="parent name *origin arm_2_ref arm_3_ref arm_4_ref arm_5_ref arm_6_ref arm_7_ref arm_8_ref">
+	<xacro:macro name="schunk_lwa4p_extended" params="parent name *origin arm_1_ref arm_2_ref arm_3_ref arm_4_ref arm_5_ref arm_6_ref arm_7_ref">
 
 
 		<!-- joint between base_link and lwa4p_extended_connector_link -->
@@ -27,6 +27,7 @@
 			<parent link="${name}_base_link" />
 			<child link="${name}_1_link" />
 			<axis xyz="0 0 1"/>
+			<calibration rising="${arm_1_ref}"/>
 			<dynamics damping="10" />
 			<limit effort="370" velocity="2.0" lower="-6.2831853" upper="6.2831853"/>
 			<safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-6.2831853 + 0.01}" soft_upper_limit="${6.2831853 - 0.01}" />
@@ -36,7 +37,7 @@
 
 		<!-- joint between arm_1_link and arm_2_link -->	
 		<joint name="${name}_2_joint" type="revolute">
-			<origin xyz="0 0 0" rpy="1.5708 0 0"/> <!--z=91,5+?-->
+			<origin xyz="0 0 0.0915" rpy="1.5708 0 0"/> 
 			<parent link="${name}_1_link"/>
 			<child link="${name}_2_link"/>
 			<axis xyz="0 0 1"/>
