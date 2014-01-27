@@ -4,7 +4,7 @@
   <xacro:include filename="$(find schunk_description)/urdf/lwa/lwa.gazebo.xacro" />
   <xacro:include filename="$(find schunk_description)/urdf/lwa/lwa.transmission.xacro" />
 
-  <xacro:macro name="schunk_lwa" params="parent name *origin">
+  <xacro:macro name="schunk_lwa4d" params="parent name *origin">
 
     <!-- joint between base_link and arm_0_link -->
     <joint name="${name}_0_joint" type="fixed" >
@@ -38,7 +38,7 @@
 
     <!-- joint between arm_0_link and arm_1_link -->
     <joint name="${name}_1_joint" type="revolute">
-      <origin xyz="0 0 -0.250" rpy="0 0 3.1415926"/>
+      <origin xyz="0 0 0.1" rpy="0 -${M_PI} 0"/>
       <parent link="${name}_0_link"/>
       <child link="${name}_1_link"/>
       <axis xyz="0 0 1"/>
@@ -59,7 +59,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa/lwa1.stl" />
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_1_link.stl" />
         </geometry>
         <material name="Schunk/DarkGolden" />
       </visual>
@@ -67,14 +67,14 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa/lwa1.stl" />
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_1_link.stl" />
         </geometry>
       </collision>
     </link>
 
     <!-- joint between arm_1_link and arm_2_link -->  
     <joint name="${name}_2_joint" type="revolute">
-      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <origin xyz="0 0 -0.18" rpy="-${M_PI/2} 0 0"/>
       <parent link="${name}_1_link"/>
       <child link="${name}_2_link"/>
       <axis xyz="0 0 1"/>
@@ -95,7 +95,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa/lwa2.stl" />
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_2_link.stl" />
         </geometry>
         <material name="Schunk/DarkGolden" />
       </visual>
@@ -103,14 +103,14 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa/lwa2.stl"/>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_2_link.stl" />
         </geometry>
       </collision>
     </link>
 
     <!-- joint between arm_2_link and arm_3_link -->  
     <joint name="${name}_3_joint" type="revolute">
-      <origin xyz="0 -0.408 0" rpy="-1.5708 0 0"/>
+      <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
       <parent link="${name}_2_link"/>
       <child link="${name}_3_link"/>
       <axis xyz="0 0 1"/>
@@ -131,7 +131,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa/lwa3.stl" />
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_3_link.stl" />
         </geometry>
         <material name="Schunk/DarkGolden" />
       </visual>
@@ -139,14 +139,14 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa/lwa3.stl"/>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_3_link.stl" />
         </geometry>
       </collision>
     </link>  
 
     <!-- joint between arm_3_link and arm_4_link -->
     <joint name="${name}_4_joint" type="revolute">
-      <origin xyz="0 0 0" rpy="1.5708 0 0" />
+      <origin xyz="0 0 -0.328" rpy="-${M_PI/2} 0 0"/>
       <parent link="${name}_3_link"/>
       <child link="${name}_4_link"/>
       <axis xyz="0 0 1" />
@@ -167,7 +167,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa/lwa4.stl" />
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_4_link.stl" />
         </geometry>
         <material name="Schunk/DarkGolden" />
       </visual>
@@ -175,14 +175,14 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa/lwa4.stl"/>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_4_link.stl" />
         </geometry>
       </collision>
     </link>
 
     <!-- joint between arm_4_link and arm_5_link -->
     <joint name="${name}_5_joint" type="revolute">
-      <origin xyz="0 -0.3165 0" rpy="-1.5708 0 0" />
+      <origin xyz="0 0 0" rpy="${M_PI/2} 0 0" />
       <parent link="${name}_4_link"/>
       <child link="${name}_5_link"/>
       <axis xyz="0 0 1" />
@@ -202,7 +202,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa/lwa5.stl" />
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_5_link.stl" />
         </geometry>
         <material name="Schunk/DarkGolden" />
       </visual>
@@ -210,14 +210,14 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa/lwa5.stl"/>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_5_link.stl" />
         </geometry>
       </collision>
     </link>
 
     <!-- joint between arm_5_link and arm_6_link -->
     <joint name="${name}_6_joint" type="revolute">
-      <origin xyz="0 0 0" rpy="1.5708 0 0" />
+      <origin xyz="0 0 -0.323" rpy="${M_PI/2} 0 0" />
       <parent link="${name}_5_link"/>
       <child link="${name}_6_link"/>
       <axis xyz="0 0 1" />
@@ -237,7 +237,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa/lwa6.stl" />
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_6_link.stl" />
         </geometry>
         <material name="Schunk/DarkGolden" />
       </visual>
@@ -245,14 +245,14 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa/lwa6.stl"/>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_6_link.stl" />
         </geometry>
       </collision>
     </link>
 
     <!-- joint between arm_6_link and arm_7_link -->
     <joint name="${name}_7_joint" type="revolute">
-      <origin xyz="0 -0.1927 0" rpy="-1.5708 0 0" />
+      <origin xyz="0 -0.075 0" rpy="-${M_PI/2} 0 0" />
       <parent link="${name}_6_link"/>
       <child link="${name}_7_link"/>
       <axis xyz="0 0 1" />
@@ -272,7 +272,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa/lwa7.stl" />
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_7_link.stl" />
         </geometry>
         <material name="Schunk/DarkGolden" />
       </visual>
@@ -280,14 +280,14 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa/lwa7.stl"/>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_7_link.stl" />
         </geometry>
       </collision>
     </link>
 
     <!-- extensions -->
-    <xacro:schunk_lwa_gazebo name="${name}" />
-    <xacro:schunk_lwa_transmission name="${name}" />
+    <xacro:schunk_lwa4d_gazebo name="${name}" />
+    <xacro:schunk_lwa4d_transmission name="${name}" />
 
   </xacro:macro>
 

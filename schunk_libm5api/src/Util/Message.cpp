@@ -72,7 +72,7 @@ CMessage::CMessage() : m_bDebug(g_bDebug), m_bDebugFile(g_bDebugFile), m_iDebugL
 	m_acClassName[0] = 0;
 }
 
-CMessage::CMessage(char* pcClassName, int iDebuglevel, bool bDebug, bool bDebugFile) : m_bDebug(bDebug), m_bDebugFile(bDebugFile), m_iDebugLevel(iDebuglevel)
+CMessage::CMessage(const char* pcClassName, int iDebuglevel, bool bDebug, bool bDebugFile) : m_bDebug(bDebug), m_bDebugFile(bDebugFile), m_iDebugLevel(iDebuglevel)
 {
 	strncpy(m_acClassName ,pcClassName, 50);
 }
@@ -118,7 +118,7 @@ int CMessage::getDebugLevel() const
 //                                                                            ;
 // ========================================================================== ;
 
-int CMessage::initMessage(char* pcClassName, int iDebuglevel, bool bDebug, bool bDebugFile)
+int CMessage::initMessage(const char* pcClassName, int iDebuglevel, bool bDebug, bool bDebugFile)
 {
 	strncpy(m_acClassName, pcClassName, 50);
 	m_bDebug = bDebug;

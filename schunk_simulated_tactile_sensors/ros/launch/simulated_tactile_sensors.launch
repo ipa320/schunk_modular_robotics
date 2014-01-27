@@ -21,12 +21,12 @@
 		<remap from="tactile_data" to="/dsa_controller/tactile_data" />
 		
 		<!-- Remap the bumper subscriptions to the simulation -->
-		<remap from="finger_12/state" to="/sdh_finger_12_bumper/state" />
-		<remap from="finger_13/state" to="/sdh_finger_13_bumper/state" />
-		<remap from="thumb_2/state" to="/sdh_thumb_2_bumper/state" />
-		<remap from="thumb_3/state" to="/sdh_thumb_3_bumper/state" />
-		<remap from="finger_22/state" to="/sdh_finger_22_bumper/state" />
-		<remap from="finger_23/state" to="/sdh_finger_23_bumper/state" />
+		<remap from="finger_12/state" to="/sdh_finger_12_bumper" />
+		<remap from="finger_13/state" to="/sdh_finger_13_bumper" />
+		<remap from="thumb_2/state" to="/sdh_thumb_2_bumper" />
+		<remap from="thumb_3/state" to="/sdh_thumb_3_bumper" />
+		<remap from="finger_22/state" to="/sdh_finger_22_bumper" />
+		<remap from="finger_23/state" to="/sdh_finger_23_bumper" />
 	</node>
 
 </launch>
