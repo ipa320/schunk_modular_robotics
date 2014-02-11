@@ -252,7 +252,7 @@ n
 
 		<!-- joint between arm_6_link and arm_7_link -->
 		<joint name="${name}_7_joint" type="revolute">
-			<origin xyz="0 -0.075 0" rpy="-${M_PI/2} 0 0" />
+			<origin xyz="0 -0.075 0" rpy="${M_PI/2} 0 0" />
 			<parent link="${name}_6_link"/>
 			<child link="${name}_7_link"/>
 			<axis xyz="0 0 1" />
@@ -270,7 +270,7 @@ n
 			</inertial>
 			
 			<visual>
-				<origin xyz="0 0 0" rpy="0 0 0" />
+				<origin xyz="0 0 -0.075" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_7_link.stl" />
 				</geometry>
@@ -278,7 +278,7 @@ n
 			</visual>
 			
 			<collision>
-				<origin xyz="0 0 0" rpy="0 0 0" />
+				<origin xyz="0 0 -0.075" rpy="0 0 0" />
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4d/arm_7_link.stl"/>
 				</geometry>
