@@ -284,27 +284,7 @@ n
 				</geometry>
 			</collision>
 		</link>
-		<!--<joint name="${name}_gripper_joint" type="fixed">
-   			 <origin rpy="0 0 0" xyz="0 0 0.06"/>
-   				 <parent link="${name}_7_link"/>
-  				  <child link="${name}_gripper"/>
- 		 </joint>
-		<link name="${name}_gripper">
-  		  <visual>
-     			 <origin rpy="0 0 0" xyz="0 0 0" />
-     			 <geometry>
-     				   <mesh filename="package://schunk_description/meshes/lwa4d/arm_gripper.stl" />
-     			 </geometry>
-     			<material name="Schunk/LightGrey" />
-   		 </visual>
 
-   		 <collision>
-    			  <origin xyz="0 0 0" rpy="0 0 0" />
-    			  <geometry>
-    			    <mesh filename="package://schunk_description/meshes/lwa4d/arm_gripper.stl" />
-    			  </geometry>
-   		 </collision>
-	       </link>-->
 		<!-- extensions -->
 		<xacro:schunk_lwa4d_gazebo name="${name}" />
 		<xacro:schunk_lwa4d_transmission name="${name}" />

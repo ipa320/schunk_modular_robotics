@@ -46,11 +46,6 @@
 			<material value="Schunk/LightGrey" />
 			<turnGravityOff>false</turnGravityOff>
 		</gazebo>
-		<!--<gazebo reference="${name}_gripper">
-			<material value="Schunk/LightGrey" />
-			<turnGravityOff>false</turnGravityOff>
-		</gazebo>
-                -->
 
 	</xacro:macro>
 
