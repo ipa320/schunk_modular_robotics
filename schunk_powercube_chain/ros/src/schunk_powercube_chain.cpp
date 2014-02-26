@@ -616,7 +616,7 @@ public:
    * \brief Publishes the state of the powercube_chain as ros messages.
    *
    * Published to "/joint_states" as "sensor_msgs/JointState"
-   * Published to "state" as "pr2_controllers_msgs/JointTrajectoryState"
+   * Published to "state" as "control_msgs/JointTrajectoryControllerState"
    */
   void publishState(bool update=true)
   {
