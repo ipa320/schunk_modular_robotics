@@ -14,7 +14,7 @@
 		</gazebo>
 
 		<gazebo reference="${name}_1_link">
-			<material value="Schunk/Blue" />
+			<material value="Schunk/LightGrey" />
 			<turnGravityOff>false</turnGravityOff>
 			<selfCollide>true</selfCollide>
 		</gazebo>
@@ -26,7 +26,7 @@
 		</gazebo>
 
 		<gazebo reference="${name}_3_link">
-			<material value="Schunk/Blue" />
+			<material value="Schunk/LightGrey" />
 			<turnGravityOff>false</turnGravityOff>
 			<selfCollide>true</selfCollide>
 		</gazebo>
@@ -38,7 +38,7 @@
 		</gazebo>
 
 		<gazebo reference="${name}_5_link">
-			<material value="Schunk/Blue" />
+			<material value="Schunk/LightGrey" />
 			<turnGravityOff>false</turnGravityOff>
 			<selfCollide>true</selfCollide>
 		</gazebo>
