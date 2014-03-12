@@ -3,7 +3,6 @@
 
   <xacro:macro name="schunk_lwa4p_transmission" params="name">
 
-
     <transmission name="${name}_1_trans">
       <type>transmission_interface/SimpleTransmission</type>
       <joint name="${name}_1_joint"/>
