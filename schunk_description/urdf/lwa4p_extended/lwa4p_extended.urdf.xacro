@@ -70,7 +70,7 @@
 				<geometry>
 					<mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link.stl" />
 				</geometry>
-				<material name="Schunk/Blue" />
+				<material name="Schunk/LightGrey" />
 			</visual>
 			<collision>
 				<origin xyz="0 0 0" rpy="0 0 0" />
@@ -99,6 +99,24 @@
 				<mass value="0.1"/>
 				<inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
 			</inertial>
+			<inertial>
+				<origin xyz="0 0 0" rpy="0 0 0"/>
+				<mass value="0.1"/>
+				<inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+			</inertial>
+		<visual>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<geometry>
+					<mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_2_link.stl" />
+				</geometry>
+				<material name="Schunk/LightGrey" />
+			</visual>
+			<collision>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<geometry>
+					<mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_2_link.stl" />
+				</geometry>
+			</collision>
 		</link>
 
 		<!-- joint between arm_3_link and arm_4_link -->
@@ -119,6 +137,19 @@
 				<mass value="0.1"/>
 				<inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
 			</inertial>
+			<visual>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<geometry>
+					<mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_3_link.stl" />
+				</geometry>
+				<material name="Schunk/LightGrey" />
+			</visual>
+			<collision>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<geometry>
+					<mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_3_link.stl" />
+				</geometry>
+			</collision>
 		</link>
 
 		<!-- joint between arm_4_link and arm_5_link -->
@@ -139,6 +170,19 @@
 				<mass value="0.1"/>
 				<inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
 			</inertial>
+			<visual>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<geometry>
+					<mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_4_link.stl" />
+				</geometry>
+				<material name="Schunk/LightGrey" />
+			</visual>
+			<collision>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<geometry>
+					<mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_4_link.stl" />
+				</geometry>
+			</collision>
 		</link>
 
 		<!-- joint between arm_5_link and arm_6_link -->
@@ -159,6 +203,19 @@
 				<mass value="0.1"/>
 				<inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
 			</inertial>
+			<visual>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<geometry>
+					<mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_5_link.stl" />
+				</geometry>
+				<material name="Schunk/LightGrey" />
+			</visual>
+			<collision>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<geometry>
+					<mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_5_link.stl" />
+				</geometry>
+			</collision>
 		</link>
 
 		<!-- joint between arm_6_link and arm_7_link -->
