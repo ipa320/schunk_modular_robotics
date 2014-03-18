@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:include filename="$(find schunk_description)/urdf/lwa/lwa.gazebo.xacro" />
-  <xacro:include filename="$(find schunk_description)/urdf/lwa/lwa.transmission.xacro" />
+  <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.gazebo.xacro" />
+  <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.transmission.xacro" />
 
   <xacro:macro name="schunk_lwa4d" params="parent name *origin">
 
@@ -25,7 +25,7 @@
         <geometry>
           <cylinder radius="0.045" length="0.08"/>
         </geometry>
-        <material name="Schunk/DarkGolden" />
+        <material name="Schunk/Black" />
       </visual>
 
       <collision>
@@ -38,7 +38,7 @@
 
     <!-- joint between arm_0_link and arm_1_link -->
     <joint name="${name}_1_joint" type="revolute">
-      <origin xyz="0 0 0.1" rpy="0 -${M_PI} 0"/>
+      <origin xyz="0 0 0.15" rpy="0 -${M_PI} 0"/>
       <parent link="${name}_0_link"/>
       <child link="${name}_1_link"/>
       <axis xyz="0 0 1"/>
@@ -57,15 +57,15 @@
       </inertial>
       
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 -0.15" rpy="0 0 ${M_PI}" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4d/arm_1_link.stl" />
         </geometry>
-        <material name="Schunk/DarkGolden" />
+        <material name="Schunk/LightGrey" />
       </visual>
       
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 -0.15" rpy="0 0 ${M_PI}" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4d/arm_1_link.stl" />
         </geometry>
@@ -74,7 +74,7 @@
 
     <!-- joint between arm_1_link and arm_2_link -->  
     <joint name="${name}_2_joint" type="revolute">
-      <origin xyz="0 0 -0.18" rpy="-${M_PI/2} 0 0"/>
+      <origin xyz="0 0 -0.15" rpy="-${M_PI/2} 0 0"/>
       <parent link="${name}_1_link"/>
       <child link="${name}_2_link"/>
       <axis xyz="0 0 1"/>
@@ -87,21 +87,20 @@
     <link name="${name}_2_link">
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0"/>
-        <!--mass value="5.734939"/-->
         <mass value="2.0"/>
         <inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.03" />
       </inertial>
       
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4d/arm_2_link.stl" />
         </geometry>
-        <material name="Schunk/DarkGolden" />
+        <material name="Schunk/Black" />
       </visual>
       
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4d/arm_2_link.stl" />
         </geometry>
@@ -123,21 +122,20 @@
     <link name="${name}_3_link">
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0"/>
-        <!--mass value="4.214668"/-->
         <mass value="2.0"/>
         <inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.03" />
       </inertial>
       
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 -0.328" rpy="0 0 ${M_PI}" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4d/arm_3_link.stl" />
         </geometry>
-        <material name="Schunk/DarkGolden" />
+        <material name="Schunk/LightGrey" />
       </visual>
       
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 -0.328" rpy="0 0 ${M_PI}" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4d/arm_3_link.stl" />
         </geometry>
@@ -159,21 +157,20 @@
     <link name="${name}_4_link">
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0"/>
-        <!--mass value="3.669819"/-->
         <mass value="2.0"/>
         <inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.03" />
       </inertial>
       
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4d/arm_4_link.stl" />
         </geometry>
-        <material name="Schunk/DarkGolden" />
+        <material name="Schunk/Black" />
       </visual>
       
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4d/arm_4_link.stl" />
         </geometry>
@@ -200,15 +197,15 @@
       </inertial>
       
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 -0.323" rpy="0 0 ${M_PI}" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4d/arm_5_link.stl" />
         </geometry>
-        <material name="Schunk/DarkGolden" />
+        <material name="Schunk/LightGrey" />
       </visual>
       
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 -0.323" rpy="0 0 ${M_PI}" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4d/arm_5_link.stl" />
         </geometry>
@@ -235,15 +232,15 @@
       </inertial>
       
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4d/arm_6_link.stl" />
         </geometry>
-        <material name="Schunk/DarkGolden" />
+        <material name="Schunk/Black" />
       </visual>
       
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4d/arm_6_link.stl" />
         </geometry>
@@ -270,15 +267,15 @@
       </inertial>
       
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 -0.075" rpy="0 0 0" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4d/arm_7_link.stl" />
         </geometry>
-        <material name="Schunk/DarkGolden" />
+        <material name="Schunk/LightGrey" />
       </visual>
       
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 -0.075" rpy="0 0 0" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4d/arm_7_link.stl" />
         </geometry>
