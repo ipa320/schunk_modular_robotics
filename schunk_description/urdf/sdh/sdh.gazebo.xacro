@@ -52,7 +52,11 @@
 
     <gazebo reference="${name}_finger_21_link">
       <material>Schunk/LightGrey</material>
-      <turnGravityOff>false</turnGravityOff>
+      <turnGravityOff>true</turnGravityOff>
+      <mu1 value="500" />
+      <mu2 value="500" />
+      <kp value="1000000.0" />
+      <kd value="1.0" />
     </gazebo>
   
     <gazebo reference="${name}_finger_22_link">
@@ -133,6 +137,14 @@
       </sensor>      
       <material>Schunk/LightGrey</material>
     </gazebo>
+
+    <gazebo reference="${name}_finger_21_joint">
+      <stopKd value='1.0' />
+      <stopKp value='10000000' />
+      <fudgeFactor value='1.0' />
+      <provideFeedback value="true"/>
+    </gazebo>
+
 
   </xacro:macro>
 
