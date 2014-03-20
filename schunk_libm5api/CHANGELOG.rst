@@ -2,8 +2,8 @@
 Changelog for package schunk_libm5api
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.1 (2014-03-20)
+------------------
 * use const char* instead of char* to get rid of some compiler warnings
 * output long unsigned correctly
 * Initial catkinization. Still a linking error in sdh lib.

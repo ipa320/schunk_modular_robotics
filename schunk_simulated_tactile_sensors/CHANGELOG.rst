@@ -2,8 +2,8 @@
 Changelog for package schunk_simulated_tactile_sensors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.1 (2014-03-20)
+------------------
 * Adapted topics for simulated tactile sensors.
 * installation stuff
 * changed to new gazebo_msgs
