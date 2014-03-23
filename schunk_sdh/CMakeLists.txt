@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(schunk_sdh)
 
 
-find_package(catkin REQUIRED COMPONENTS roscpp urdf actionlib libntcan libpcan message_generation sensor_msgs trajectory_msgs cob_srvs control_msgs diagnostic_msgs brics_actuator)
+find_package(catkin REQUIRED COMPONENTS roscpp urdf actionlib libntcan libpcan message_generation std_msgs sensor_msgs trajectory_msgs cob_srvs control_msgs diagnostic_msgs brics_actuator)
 
 #######################################
 ## Declare ROS messages and services ##
@@ -26,8 +26,8 @@ generate_messages(
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-    DEPENDS roscpp urdf sensor_msgs trajectory_msgs actionlib cob_srvs control_msgs libntcan libpcan diagnostic_msgs brics_actuator
-    CATKIN_DEPENDS message_runtime
+    CATKIN_DEPENDS roscpp message_runtime urdf std_msgs sensor_msgs trajectory_msgs actionlib cob_srvs control_msgs libntcan libpcan diagnostic_msgs brics_actuator
+    DEPENDS #
     INCLUDE_DIRS # TODO include
     LIBRARIES # TODO
 )
@@ -93,3 +93,14 @@ install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+install(TARGETS sdh_only
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(TARGETS dsa_only
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
