@@ -82,6 +82,11 @@ target_link_libraries(dsa_only SDHLibrary ${catkin_LIBRARIES})
 set_target_properties(dsa_only PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX")
 add_dependencies(dsa_only ${PROJECT_NAME}_gencpp)
 
+install(DIRECTORY common/include/
+  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+)
+
+
 #############
 ## Install ##
 #############

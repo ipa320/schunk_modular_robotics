@@ -35,6 +35,13 @@ target_link_libraries(${PROJECT_NAME} m5api)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-D__LINUX__ -DUSE_ESD")
 
+install(DIRECTORY common/include/
+  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+)
+
+install(DIRECTORY orocos/include/
+  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+)
 
 
 #############
