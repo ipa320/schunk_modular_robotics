@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(schunk_libm5api)
 
 
-find_package(catkin REQUIRED COMPONENTS libpcan libntcan)
+find_package(catkin REQUIRED COMPONENTS libpcan libntcan roslib)
 
 
 ###################################
@@ -15,8 +15,8 @@ find_package(catkin REQUIRED COMPONENTS libpcan libntcan)
 ## INCLUDE_DIRS: 
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 catkin_package(
-    DEPENDS libpcan libntcan
-    CATKIN_DEPENDS # TODO
+    DEPENDS
+    CATKIN_DEPENDS libpcan libntcan roslib
     INCLUDE_DIRS include
     LIBRARIES m5api
 )
@@ -37,10 +37,17 @@ target_link_libraries(m5api ${catkin_LIBRARIES})
 #############
 ## Install ##
 #############
+install(FILES include/schunk_libm5api/m5apiw32.h
+  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+)  
 
 ## Mark executables and/or libraries for installation
 install(TARGETS m5api
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY include
+  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
 )
