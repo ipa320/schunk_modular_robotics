@@ -2,8 +2,8 @@
 Changelog for package schunk_simulated_tactile_sensors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.2 (2014-03-27)
+------------------
 * add dep to rostest
 * Contributors: Florian Weisshardt
 
