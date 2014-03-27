@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(schunk_sdh)
 
 
-find_package(catkin REQUIRED COMPONENTS roscpp urdf actionlib libntcan libpcan message_generation sensor_msgs trajectory_msgs cob_srvs control_msgs diagnostic_msgs brics_actuator)
+find_package(catkin REQUIRED COMPONENTS roscpp urdf actionlib libntcan libpcan message_generation std_msgs sensor_msgs trajectory_msgs cob_srvs control_msgs diagnostic_msgs brics_actuator)
 
 #######################################
 ## Declare ROS messages and services ##
@@ -26,8 +26,8 @@ generate_messages(
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-    DEPENDS roscpp urdf sensor_msgs trajectory_msgs actionlib cob_srvs control_msgs libntcan libpcan diagnostic_msgs brics_actuator
-    CATKIN_DEPENDS message_runtime
+    CATKIN_DEPENDS roscpp message_runtime urdf std_msgs sensor_msgs trajectory_msgs actionlib cob_srvs control_msgs libntcan libpcan diagnostic_msgs brics_actuator
+    DEPENDS #
     INCLUDE_DIRS # TODO include
     LIBRARIES # TODO
 )
@@ -35,13 +35,19 @@ catkin_package(
 ###########
 ## Build ##
 ###########
-if(“${CMAKE_SYSTEM_PROCESSOR}” STREQUAL “x86_64”)
-  message(STATUS "++++++++++++++++++++++++++ DETECTED 64 bit +++++++++++++++++++++++++++++++++++")
-  set(MYARCH "x86_64")
-else(“${CMAKE_SYSTEM_PROCESSOR}” STREQUAL “x86_64”)
-  message(STATUS "++++++++++++++++++++++++++ DETECTED 32 bit +++++++++++++++++++++++++++++++++++")
-  set(MYARCH "i686")
-endif(“${CMAKE_SYSTEM_PROCESSOR}” STREQUAL “x86_64”)
+FIND_PROGRAM(CMAKE_DPKG dpkg /bin /usr/bin /usr/local/bin )
+IF(CMAKE_DPKG)
+  EXEC_PROGRAM(dpkg ARGS --print-architecture OUTPUT_VARIABLE CMAKE_DPKG_ARCH)
+  IF(CMAKE_DPKG_ARCH MATCHES "amd64")
+    message(STATUS "++++++++++++++++++++++++++ DETECTED 64 bit +++++++++++++++++++++++++++++++++++")
+    set(MYARCH "x86_64")
+  ELSE(CMAKE_DPKG_ARCH MATCHES "amd64")
+    message(STATUS "++++++++++++++++++++++++++ DETECTED 32 bit +++++++++++++++++++++++++++++++++++")
+    set(MYARCH "i686")
+  ENDIF(CMAKE_DPKG_ARCH MATCHES "amd64")
+ENDIF(CMAKE_DPKG)
+
+
 
 add_custom_target(
     copy_SDHLIB ALL 
@@ -82,11 +88,6 @@ target_link_libraries(dsa_only SDHLibrary ${catkin_LIBRARIES})
 set_target_properties(dsa_only PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX")
 add_dependencies(dsa_only ${PROJECT_NAME}_gencpp)
 
-install(DIRECTORY common/include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
-)
-
-
 #############
 ## Install ##
 #############
@@ -98,7 +99,28 @@ install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(DIRECTORY ros/
-    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/ros
+install(TARGETS sdh_only
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(TARGETS dsa_only
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+#install(TARGETS SDHLibrary-CPP
+#  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+#)
+
+## Mark cpp header files for installation
+install(DIRECTORY common/include/${PROJECT_NAME}/
+   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+   FILES_MATCHING PATTERN "*.h"
+   PATTERN ".svn" EXCLUDE
 )
 
