@@ -2,6 +2,14 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'hydro_dev' into hydro_release_candidate
+* install tags
+* Merge branch 'hydro_dev' of github.com:ipa320/schunk_modular_robotics into hydro_dev
+* some catkin_lint
+* Contributors: Florian Weisshardt, ipa-fxm
+
 0.5.2 (2014-03-27)
 ------------------
 

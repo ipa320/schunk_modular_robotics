@@ -2,6 +2,14 @@
 Changelog for package schunk_powercube_chain
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* install tags
+* merge with ipa320
+* merge with ipa320
+* some catkin_lint
+* Contributors: Felix, ipa-fxm
+
 0.5.2 (2014-03-27)
 ------------------
 * add dep to rostest

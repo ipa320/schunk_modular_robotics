@@ -2,6 +2,12 @@
 Changelog for package schunk_libm5api
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* install tags for header files
+* install tags
+* Contributors: ipa-fxm
+
 0.5.2 (2014-03-27)
 ------------------
 
