@@ -2,6 +2,9 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.5.1 (2014-03-20)
 ------------------
 * removed a lot of code related to packages not available in hydro anymore
