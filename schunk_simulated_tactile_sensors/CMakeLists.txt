@@ -21,5 +21,5 @@ install(DIRECTORY ros/launch/
 )
 
 install(PROGRAMS ros/src/simulated_tactile_sensors.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}/ros/src
 )

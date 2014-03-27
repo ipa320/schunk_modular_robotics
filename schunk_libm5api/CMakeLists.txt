@@ -37,9 +37,13 @@ target_link_libraries(m5api ${catkin_LIBRARIES})
 #############
 ## Install ##
 #############
-install(FILES include/schunk_libm5api/m5apiw32.h
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
-)  
+## Mark cpp header files for installation
+install(DIRECTORY include/${PROJECT_NAME}/
+   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+   FILES_MATCHING PATTERN "*.h"
+   PATTERN ".svn" EXCLUDE
+)
+
 
 ## Mark executables and/or libraries for installation
 install(TARGETS m5api
