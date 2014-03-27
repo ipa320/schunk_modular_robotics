@@ -2,8 +2,8 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.3 (2014-03-27)
+------------------
 * Merge branch 'hydro_dev' into hydro_release_candidate
 * install tags
 * Merge branch 'hydro_dev' of github.com:ipa320/schunk_modular_robotics into hydro_dev
