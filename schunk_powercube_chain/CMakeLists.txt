@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(schunk_powercube_chain)
 
-find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs urdf diagnostic_updater rostest schunk_libm5api libntcan libpcan cob_srvs brics_actuator diagnostic_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs urdf diagnostic_updater schunk_libm5api libntcan libpcan cob_srvs brics_actuator diagnostic_msgs)
 
 
 if(CMAKE_COMPILER_IS_GNUCXX)
@@ -16,8 +16,8 @@ endif()
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-    DEPENDS sensor_msgs urdf diagnostic_updater schunk_libm5api libntcan libpcan cob_srvs brics_actuator diagnostic_msgs
-    CATKIN_DEPENDS # TODO
+    CATKIN_DEPENDS sensor_msgs urdf diagnostic_updater schunk_libm5api libntcan libpcan cob_srvs brics_actuator diagnostic_msgs
+    DEPENDS # TODO
     INCLUDE_DIRS common/include
     LIBRARIES # TODO
 )
@@ -47,10 +47,16 @@ install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(DIRECTORY common/include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+## Mark cpp header files for installation
+install(DIRECTORY common/include/${PROJECT_NAME}/
+   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+   FILES_MATCHING PATTERN "*.h"
+   PATTERN ".svn" EXCLUDE
 )
 
-install(DIRECTORY orocos/include/
-  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+install(DIRECTORY orocos/include/${PROJECT_NAME}/
+   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+   FILES_MATCHING PATTERN "*.h"
+   PATTERN ".svn" EXCLUDE
 )
+
