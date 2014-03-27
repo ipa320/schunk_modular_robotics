@@ -35,13 +35,19 @@ catkin_package(
 ###########
 ## Build ##
 ###########
-if(“${CMAKE_SYSTEM_PROCESSOR}” STREQUAL “x86_64”)
-  message(STATUS "++++++++++++++++++++++++++ DETECTED 64 bit +++++++++++++++++++++++++++++++++++")
-  set(MYARCH "x86_64")
-else(“${CMAKE_SYSTEM_PROCESSOR}” STREQUAL “x86_64”)
-  message(STATUS "++++++++++++++++++++++++++ DETECTED 32 bit +++++++++++++++++++++++++++++++++++")
-  set(MYARCH "i686")
-endif(“${CMAKE_SYSTEM_PROCESSOR}” STREQUAL “x86_64”)
+FIND_PROGRAM(CMAKE_DPKG dpkg /bin /usr/bin /usr/local/bin )
+IF(CMAKE_DPKG)
+  EXEC_PROGRAM(dpkg ARGS --print-architecture OUTPUT_VARIABLE CMAKE_DPKG_ARCH)
+  IF(CMAKE_DPKG_ARCH MATCHES "amd64")
+    message(STATUS "++++++++++++++++++++++++++ DETECTED 64 bit +++++++++++++++++++++++++++++++++++")
+    set(MYARCH "x86_64")
+  ELSE(CMAKE_DPKG_ARCH MATCHES "amd64")
+    message(STATUS "++++++++++++++++++++++++++ DETECTED 32 bit +++++++++++++++++++++++++++++++++++")
+    set(MYARCH "i686")
+  ENDIF(CMAKE_DPKG_ARCH MATCHES "amd64")
+ENDIF(CMAKE_DPKG)
+
+
 
 add_custom_target(
     copy_SDHLIB ALL 
