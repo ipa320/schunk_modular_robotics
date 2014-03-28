@@ -26,6 +26,7 @@
   <build_depend>cob_srvs</build_depend>
   <build_depend>brics_actuator</build_depend>
   <build_depend>diagnostic_msgs</build_depend>
+  <build_depend>control_msgs</build_depend>
   <build_depend>rostest</build_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>urdf</run_depend>
@@ -36,9 +37,10 @@
   <run_depend>cob_srvs</run_depend>
   <run_depend>brics_actuator</run_depend>
   <run_depend>diagnostic_msgs</run_depend>
+  <run_depend>control_msgs</run_depend>
   <build_depend>rostest</build_depend>
- 
- <export>
+
+  <export>
     <cpp cflags="-I${prefix}/common/include"/>
   </export>
 </package>
