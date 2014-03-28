@@ -2,6 +2,9 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.5.3 (2014-03-27)
 ------------------
 * Merge branch 'hydro_dev' into hydro_release_candidate
