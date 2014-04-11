@@ -5,8 +5,8 @@ project(schunk_simulated_tactile_sensors)
 find_package(catkin REQUIRED COMPONENTS rospy schunk_sdh geometry_msgs)
 
 catkin_package(
-    DEPENDS rospy schunk_sdh geometry_msgs
-    CATKIN_DEPENDS # TODO
+    CATKIN_DEPENDS rospy schunk_sdh geometry_msgs
+    DEPENDS # TODO
     INCLUDE_DIRS # TODO include
     LIBRARIES # TODO
 )
@@ -21,5 +21,5 @@ install(DIRECTORY ros/launch/
 )
 
 install(PROGRAMS ros/src/simulated_tactile_sensors.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}/ros/src
 )

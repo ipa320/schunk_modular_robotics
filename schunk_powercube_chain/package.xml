@@ -9,7 +9,7 @@
 
   <license>LGPL</license>
 
-  <url type="website">http://ros.org/wiki/cob_powercube_chain</url>
+  <url type="website">http://ros.org/wiki/schunk_powercube_chain</url>
   <!-- <url type="bugtracker"></url> -->
 
   <maintainer email="fmw@ipa.fhg.de">Florian Weisshardt</maintainer>
@@ -26,6 +26,8 @@
   <build_depend>cob_srvs</build_depend>
   <build_depend>brics_actuator</build_depend>
   <build_depend>diagnostic_msgs</build_depend>
+  <build_depend>control_msgs</build_depend>
+  <build_depend>rostest</build_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>urdf</run_depend>
   <run_depend>diagnostic_updater</run_depend>
@@ -35,7 +37,9 @@
   <run_depend>cob_srvs</run_depend>
   <run_depend>brics_actuator</run_depend>
   <run_depend>diagnostic_msgs</run_depend>
-  
+  <run_depend>control_msgs</run_depend>
+  <build_depend>rostest</build_depend>
+
   <export>
     <cpp cflags="-I${prefix}/common/include"/>
   </export>
