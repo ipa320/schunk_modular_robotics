@@ -10,6 +10,7 @@
 
   <maintainer email="mdl@ipa.fhg.de">Mathias Luedtke</maintainer>
   <author email="mdl@ipa.fhg.de">Mathias Luedtke</author>
+  <author email="fmw@ipa.fhg.de">Florian Weisshardt</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 
