@@ -512,7 +512,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
       /// check position limits
  			// TODO: add second limit "safty limit" 
 			// if target position is outer limits and the command velocity is in in direction away from working range, skip command
-      if ((target_pos[i] < LowerLimits[i]+Offsets[i]) && (velocities[i] < 0))
+      if ((target_pos[i]+Offsets[i] < LowerLimits[i]+Offsets[i]) && (velocities[i] < 0))
 			{	
 				ROS_INFO("Skipping command: %f Target position exceeds lower limit (%f).", target_pos[i], LowerLimits[i]);		
 				// target position is set to actual position and velocity to Null. So only movement in the non limit direction is possible.
@@ -525,7 +525,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 			} 
 			
 			// if target position is outer limits and the command velocity is in in direction away from working range, skip command
-			if ((target_pos[i] > UpperLimits[i]+Offsets[i]) && (velocities[i] > 0))
+			if ((target_pos[i]+Offsets[i] > UpperLimits[i]+Offsets[i]) && (velocities[i] > 0))
 			{	
 				ROS_INFO("Skipping command: %f Target position exceeds upper limit (%f).", target_pos[i], UpperLimits[i]);		
 				// target position is set to actual position. So only movement in the non limit direction is possible.
