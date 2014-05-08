@@ -1349,6 +1349,22 @@ bool PowerCubeCtrl::doHoming()
 }
 
 /*!
+ * \brief Map an external position to an internal position.
+ */
+double PowerCubeCtrl::mapToInternalPosition(double external_pos, double offset)
+{
+  return external_pos - offset;
+}
+
+/*!
+ * \brief Map an internal position to an external position.
+ */
+double PowerCubeCtrl::mapToExternalPosition(double internal_pos, double offset)
+{
+  return internal_pos + offset;
+}
+
+/*!
  * \brief Setup errors for diagnostics
  */
 bool m_TranslateError2Diagnosics(std::ostringstream* errorMsg)
