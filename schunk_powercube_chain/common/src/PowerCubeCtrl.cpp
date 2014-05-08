@@ -483,7 +483,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 		ROS_DEBUG("delta_pos[%i]: %f target_time: %f velocitiy[%i]: %f",i ,delta_pos[i], target_time, i, velocities[i]);
  
 		// calculate target position   
-		target_pos_horizon[i] = m_positions[i] + delta_pos_horizon[i] - Offsets[i];
+		target_pos_horizon[i] = mapToInternalPosition(m_positions[i], Offsets[i]) + delta_pos_horizon[i];
 		ROS_DEBUG("target_pos[%i]: %f m_position[%i]: %f",i ,target_pos[i], i, m_positions[i]);
 	}
 
@@ -512,9 +512,9 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
       /// check position limits
  			// TODO: add second limit "safty limit" 
 			// if target position is outer limits and the command velocity is in in direction away from working range, skip command
-      if ((target_pos[i] < LowerLimits[i]+Offsets[i]) && (velocities[i] < 0))
+      if ((target_pos[i] < mapToInternalPosition(LowerLimits[i], Offsets[i])) && (velocities[i] < 0))
 			{	
-				ROS_INFO("Skipping command: %f Target position exceeds lower limit (%f).", target_pos[i], LowerLimits[i]);		
+				ROS_INFO("Skipping command: %f Target position exceeds lower limit (%f).", target_pos[i], mapToInternalPosition(LowerLimits[i], Offsets[i]));
 				// target position is set to actual position and velocity to Null. So only movement in the non limit direction is possible.
 	
 				pthread_mutex_lock(&m_mutex);
@@ -525,9 +525,9 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 			} 
 			
 			// if target position is outer limits and the command velocity is in in direction away from working range, skip command
-			if ((target_pos[i] > UpperLimits[i]+Offsets[i]) && (velocities[i] > 0))
+			if ((target_pos[i] > mapToInternalPosition(UpperLimits[i], Offsets[i])) && (velocities[i] > 0))
 			{	
-				ROS_INFO("Skipping command: %f Target position exceeds upper limit (%f).", target_pos[i], UpperLimits[i]);		
+				ROS_INFO("Skipping command: %f Target position exceeds upper limit (%f).", target_pos[i], mapToInternalPosition(UpperLimits[i], Offsets[i]));
 				// target position is set to actual position. So only movement in the non limit direction is possible.
 				
 				pthread_mutex_lock(&m_mutex);
@@ -582,13 +582,13 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 		if (ret != 0)
 		{
 			ROS_DEBUG("Com Error: %i", ret); 		  
-			pos = m_positions[i];
+			pos = mapToInternalPosition(m_positions[i], Offsets[i]);
 			//m_pc_status = PC_CTRL_ERR;
 			//TODO: add error msg for diagnostics if error occours often
 		}
 		
 		// !!! Position in pos is position before moveStep movement, to get the expected position after the movement (required as input to the next moveStep command) we add the delta position (cmd_pos) !!!
-		m_positions[i] = (double)pos + delta_pos[i] + Offsets[i];
+		m_positions[i] = mapToExternalPosition((double)pos, Offsets[i]) + delta_pos[i];
 		
 		pos_temp[i] = (double)pos;
 		//ROS_INFO("After cmd (%X) :m_positions[%i] %f = pos: %f + delta_pos[%i]: %f",m_status[i], i, m_positions[i], pos, i, delta_pos[i]);
@@ -1020,7 +1020,7 @@ bool PowerCubeCtrl::updateStates()
 	  
 	  m_status[i] = state; 		
 	  m_dios[i] = dio;
-	  m_positions[i] = position + Offsets[i];
+	  m_positions[i] = mapToExternalPosition(position, Offsets[i]);
 	}	
       
     }
@@ -1217,10 +1217,10 @@ bool PowerCubeCtrl::doHoming()
 	pthread_mutex_unlock(&m_mutex);
 		
 	// check and init m_position variable for trajectory controller
-	if ((position > UpperLimits[i] + Offsets[i]) || (position < LowerLimits[i] + Offsets[i]))
+	if ((position > mapToInternalPosition(UpperLimits[i], Offsets[i])) || (position < mapToInternalPosition(LowerLimits[i], Offsets[i])))
 	{	
 		std::ostringstream errorMsg;
-		errorMsg << "Module " << ModuleIDs[i] << " has position " << position << " that is outside limits (" << UpperLimits[i] + Offsets[i] << " <-> " << LowerLimits[i] + Offsets[i] << std::endl; 
+		errorMsg << "Module " << ModuleIDs[i] << " has position " << position << " that is outside limits (" << mapToInternalPosition(UpperLimits[i], Offsets[i]) << " <-> " << mapToInternalPosition(LowerLimits[i], Offsets[i]) << std::endl;
 		if ((m_ModuleTypes.at(i)=="PW") || (m_ModuleTypes.at(i) == "other"))
 		{	std::cout << "Position error for PW-Module. Init is aborted. Try to reboot the robot." << std::endl;
 			m_ErrorMessage = errorMsg.str(); 
@@ -1240,7 +1240,7 @@ bool PowerCubeCtrl::doHoming()
 	}
 	else
 	{
-		m_positions[i] = position + Offsets[i]; 
+		m_positions[i] = mapToExternalPosition(position, Offsets[i]);
 	}
 
 	// check module type before homing (PRL-Modules need not to be homed by ROS)
