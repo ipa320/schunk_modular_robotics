@@ -2,6 +2,18 @@
 Changelog for package schunk_libm5api
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.5.4 (2014-03-28)
+------------------
+
+0.5.3 (2014-03-27)
+------------------
+* install tags for header files
+* install tags
+* Contributors: ipa-fxm
+
+0.5.2 (2014-03-27)
+------------------
+
 0.5.1 (2014-03-20)
 ------------------
 * use const char* instead of char* to get rid of some compiler warnings

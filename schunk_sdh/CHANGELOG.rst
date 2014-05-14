@@ -2,6 +2,26 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.5.4 (2014-03-28)
+------------------
+
+0.5.3 (2014-03-27)
+------------------
+* Merge branch 'hydro_dev' into hydro_release_candidate
+* Update package.xml
+* Merge branch 'hydro_dev' into hydro_release_candidate
+* Merge pull request `#74 <https://github.com/ipa320/schunk_modular_robotics/issues/74>`_ from ipa-fxm/hydro_dev
+  install_tags
+* find architecture using dpkg
+* Update package.xml
+* install tags
+* Merge branch 'hydro_dev' of github.com:ipa320/schunk_modular_robotics into hydro_dev
+* some catkin_lint
+* Contributors: Florian Weisshardt, ipa-fxm
+
+0.5.2 (2014-03-27)
+------------------
+
 0.5.1 (2014-03-20)
 ------------------
 * removed a lot of code related to packages not available in hydro anymore

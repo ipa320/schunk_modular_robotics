@@ -2,6 +2,26 @@
 Changelog for package schunk_powercube_chain
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.5.4 (2014-03-28)
+------------------
+* Merge branch 'hydro_dev' into hydro_release_candidate
+* merge
+* added missing dependency
+* Contributors: Florian Weisshardt, ipa-fxm
+
+0.5.3 (2014-03-27)
+------------------
+* install tags
+* merge with ipa320
+* merge with ipa320
+* some catkin_lint
+* Contributors: Felix, ipa-fxm
+
+0.5.2 (2014-03-27)
+------------------
+* add dep to rostest
+* Contributors: Florian Weisshardt
+
 0.5.1 (2014-03-20)
 ------------------
 * removed a lot of code related to packages not available in hydro anymore
