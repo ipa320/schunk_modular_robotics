@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(schunk_powercube_chain)
 
-find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs urdf diagnostic_updater schunk_libm5api libntcan libpcan cob_srvs brics_actuator diagnostic_msgs control_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs urdf schunk_libm5api libntcan libpcan cob_srvs brics_actuator diagnostic_msgs control_msgs)
 
 
 if(CMAKE_COMPILER_IS_GNUCXX)
@@ -16,7 +16,7 @@ endif()
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-    CATKIN_DEPENDS sensor_msgs urdf diagnostic_updater schunk_libm5api libntcan libpcan cob_srvs brics_actuator diagnostic_msgs control_msgs
+    CATKIN_DEPENDS sensor_msgs urdf schunk_libm5api libntcan libpcan cob_srvs brics_actuator diagnostic_msgs control_msgs
     DEPENDS # TODO
     INCLUDE_DIRS common/include
     LIBRARIES # TODO
