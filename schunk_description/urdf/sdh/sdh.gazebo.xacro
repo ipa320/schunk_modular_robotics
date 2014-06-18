@@ -13,7 +13,7 @@
       <turnGravityOff>false</turnGravityOff>
     </gazebo>
   
-    <gazebo reference="${name}_finger_12_link">
+    <!--gazebo reference="${name}_finger_12_link">
       <selfCollide>true</selfCollide>
       <sensor name='${name}_finger_12_contact_sensor' type='contact'>
         <always_on>true</always_on>
@@ -30,9 +30,9 @@
       </sensor>
       <material>Schunk/LightGrey</material>
       <turnGravityOff>false</turnGravityOff>
-    </gazebo>
+    </gazebo-->
 
-    <gazebo reference="${name}_finger_13_link">
+    <!--gazebo reference="${name}_finger_13_link">
       <selfCollide>true</selfCollide>  
       <sensor name='${name}_finger_13_contact_sensor' type='contact'>
         <always_on>true</always_on>
@@ -48,7 +48,7 @@
         </plugin>
       </sensor>
       <material>Schunk/LightGrey</material>
-    </gazebo>
+    </gazebo-->
 
     <gazebo reference="${name}_finger_21_link">
       <material>Schunk/LightGrey</material>
@@ -59,7 +59,7 @@
       <kd value="1.0" />
     </gazebo>
   
-    <gazebo reference="${name}_finger_22_link">
+    <!--gazebo reference="${name}_finger_22_link">
       <selfCollide>true</selfCollide>    
       <sensor name='${name}_finger_22_contact_sensor' type='contact'>
         <always_on>true</always_on>
@@ -76,9 +76,9 @@
       </sensor>
       <material>Schunk/LightGrey</material>
       <turnGravityOff>false</turnGravityOff>
-    </gazebo>
+    </gazebo-->
 
-    <gazebo reference="${name}_finger_23_link">
+    <!--gazebo reference="${name}_finger_23_link">
       <selfCollide>true</selfCollide>
       <sensor name='${name}_finger_23_contact_sensor' type='contact'>
         <always_on>true</always_on>
@@ -94,14 +94,14 @@
         </plugin>
       </sensor>
       <material>Schunk/LightGrey</material>
-    </gazebo>
+    </gazebo-->
 
     <gazebo reference="${name}_thumb_1_link">
       <material>Schunk/LightGrey</material>
       <turnGravityOff>false</turnGravityOff>
     </gazebo>
 
-    <gazebo reference="${name}_thumb_2_link">
+    <!--gazebo reference="${name}_thumb_2_link">
       <selfCollide>true</selfCollide>
       <sensor name='${name}_thumb_2_contact_sensor' type='contact'>
         <always_on>true</always_on>
@@ -118,9 +118,9 @@
       </sensor>
       <material>Schunk/LightGrey</material>
       <turnGravityOff>false</turnGravityOff>
-    </gazebo>
+    </gazebo-->
 
-    <gazebo reference="${name}_thumb_3_link">
+    <!--gazebo reference="${name}_thumb_3_link">
       <selfCollide>true</selfCollide>
       <sensor name='${name}_thumb_3_contact_sensor' type='contact'>
         <always_on>true</always_on>
@@ -136,7 +136,7 @@
         </plugin>
       </sensor>      
       <material>Schunk/LightGrey</material>
-    </gazebo>
+    </gazebo-->
 
     <gazebo reference="${name}_finger_21_joint">
       <stopKd value='1.0' />

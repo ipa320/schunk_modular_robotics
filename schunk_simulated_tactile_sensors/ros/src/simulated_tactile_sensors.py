@@ -216,7 +216,7 @@ class GazeboVirtualTactileSensor():
 		self.pads.append(GazeboTactilePad("finger_22/state", 0.0865, 0.03))
 		self.pads.append(GazeboTactilePad("finger_23/state", 0.0675, 0.03))
 		
-		self.pub = rospy.Publisher("tactile_data", TactileSensor)
+		self.pub = rospy.Publisher("tactile_data", TactileSensor, queue_size=1)
 		rospy.loginfo("'tactile_data' topic advertized")
 
 
