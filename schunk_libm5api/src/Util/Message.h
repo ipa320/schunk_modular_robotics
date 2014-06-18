@@ -100,7 +100,7 @@ public:
 
 		// default constructor
 		CMessage(void);	
-		CMessage(char* pcClassName, int iDebugLevel = 0, bool bDebug = true, bool bDebugFile = false);	
+		CMessage(const char* pcClassName, int iDebugLevel = 0, bool bDebug = true, bool bDebugFile = false);	
 		// copy constructor
 		CMessage(const CMessage& clMessage);
 		// destructor
@@ -117,7 +117,7 @@ public:
 
 	// ---- modify functions -------------------------------------------------- ;
 	
-		int initMessage(char* pcClassName, int iDebuglevel = 0, bool bDebug = true, bool bDebugFile = false);
+		int initMessage(const char* pcClassName, int iDebuglevel = 0, bool bDebug = true, bool bDebugFile = false);
 
 		void setInitTime(void);
 		void setDebug(bool bFlag);

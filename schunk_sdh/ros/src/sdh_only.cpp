@@ -72,9 +72,8 @@
 #include <std_msgs/Float32MultiArray.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <sensor_msgs/JointState.h>
-//#include <pr2_controllers_msgs/JointTrajectoryAction.h>
 #include <control_msgs/FollowJointTrajectoryAction.h>
-#include <pr2_controllers_msgs/JointTrajectoryControllerState.h>
+#include <control_msgs/JointTrajectoryControllerState.h>
 #include <brics_actuator/JointVelocities.h>
 #include <brics_actuator/JointValue.h>
 
@@ -115,7 +114,6 @@ class SdhNode
 		ros::ServiceServer srvServer_SetOperationMode_;
 
 		// actionlib server
-		//actionlib::SimpleActionServer<pr2_controllers_msgs::JointTrajectoryAction> as_;
 		actionlib::SimpleActionServer<control_msgs::FollowJointTrajectoryAction> as_;
 		std::string action_name_;
 
@@ -187,7 +185,7 @@ class SdhNode
 
 			// implementation of topics to publish
 			topicPub_JointState_ = nh_.advertise<sensor_msgs::JointState>("/joint_states", 1);
-			topicPub_ControllerState_ = nh_.advertise<pr2_controllers_msgs::JointTrajectoryControllerState>("state", 1);
+			topicPub_ControllerState_ = nh_.advertise<control_msgs::JointTrajectoryControllerState>("state", 1);
 
 			// pointer to sdh
 			sdh_ = new SDH::cSDH(false, false, 0); //(_use_radians=false, bool _use_fahrenheit=false, int _debug_level=0)
@@ -253,7 +251,6 @@ class SdhNode
 		* Set the current goal to aborted after receiving a new goal and write new goal to a member variable. Wait for the goal to finish and set actionlib status to succeeded.
 		* \param goal JointTrajectoryGoal
 		*/
-		//void executeCB(const pr2_controllers_msgs::JointTrajectoryGoalConstPtr &goal)
 		void executeCB(const control_msgs::FollowJointTrajectoryGoalConstPtr &goal)
 		{			
 			ROS_INFO("sdh: executeCB");
@@ -278,16 +275,21 @@ class SdhNode
 			}
 			while (hasNewGoal_ == true ) usleep(10000);
 
-			// \todo TODO: use joint_names for assigning values
+			std::map<std::string,int> dict;
+			for (int idx=0; idx<goal->trajectory.joint_names.size(); idx++)
+			{
+				dict[goal->trajectory.joint_names[idx]] = idx;
+			}
+
 			targetAngles_.resize(DOF_);
-			targetAngles_[0] = goal->trajectory.points[0].positions[0]*180.0/pi_; // sdh_knuckle_joint
-			targetAngles_[1] = goal->trajectory.points[0].positions[5]*180.0/pi_; // sdh_finger22_joint
-			targetAngles_[2] = goal->trajectory.points[0].positions[6]*180.0/pi_; // sdh_finger23_joint
-			targetAngles_[3] = goal->trajectory.points[0].positions[1]*180.0/pi_; // sdh_thumb2_joint
-			targetAngles_[4] = goal->trajectory.points[0].positions[2]*180.0/pi_; // sdh_thumb3_joint
-			targetAngles_[5] = goal->trajectory.points[0].positions[3]*180.0/pi_; // sdh_finger12_joint
-			targetAngles_[6] = goal->trajectory.points[0].positions[4]*180.0/pi_; // sdh_finger13_joint
-			ROS_INFO("received new position goal: [['sdh_knuckle_joint', 'sdh_thumb_2_joint', 'sdh_thumb_3_joint', 'sdh_finger_12_joint', 'sdh_finger_13_joint', 'sdh_finger_22_joint', 'sdh_finger_23_joint']] = [%f,%f,%f,%f,%f,%f,%f]",goal->trajectory.points[0].positions[0],goal->trajectory.points[0].positions[1],goal->trajectory.points[0].positions[2],goal->trajectory.points[0].positions[3],goal->trajectory.points[0].positions[4],goal->trajectory.points[0].positions[5],goal->trajectory.points[0].positions[6]);
+			targetAngles_[0] = goal->trajectory.points[0].positions[dict["sdh_knuckle_joint"]]*180.0/pi_; // sdh_knuckle_joint
+			targetAngles_[1] = goal->trajectory.points[0].positions[dict["sdh_finger_22_joint"]]*180.0/pi_; // sdh_finger22_joint
+			targetAngles_[2] = goal->trajectory.points[0].positions[dict["sdh_finger_23_joint"]]*180.0/pi_; // sdh_finger23_joint
+			targetAngles_[3] = goal->trajectory.points[0].positions[dict["sdh_thumb_2_joint"]]*180.0/pi_; // sdh_thumb2_joint
+			targetAngles_[4] = goal->trajectory.points[0].positions[dict["sdh_thumb_3_joint"]]*180.0/pi_; // sdh_thumb3_joint
+			targetAngles_[5] = goal->trajectory.points[0].positions[dict["sdh_finger_12_joint"]]*180.0/pi_; // sdh_finger12_joint
+			targetAngles_[6] = goal->trajectory.points[0].positions[dict["sdh_finger_13_joint"]]*180.0/pi_; // sdh_finger13_joint
+			ROS_INFO("received position goal: [['sdh_knuckle_joint', 'sdh_thumb_2_joint', 'sdh_thumb_3_joint', 'sdh_finger_12_joint', 'sdh_finger_13_joint', 'sdh_finger_22_joint', 'sdh_finger_23_joint']] = [%f,%f,%f,%f,%f,%f,%f]",goal->trajectory.points[0].positions[dict["sdh_knuckle_joint"]],goal->trajectory.points[0].positions[dict["sdh_thumb_2_joint"]],goal->trajectory.points[0].positions[dict["sdh_thumb_3_joint"]],goal->trajectory.points[0].positions[dict["sdh_finger_12_joint"]],goal->trajectory.points[0].positions[dict["sdh_finger_13_joint"]],goal->trajectory.points[0].positions[dict["sdh_finger_22_joint"]],goal->trajectory.points[0].positions[dict["sdh_finger_23_joint"]]);
 		
 			hasNewGoal_ = true;
 			
@@ -686,7 +688,7 @@ class SdhNode
 			
 			
 			// publish controller state message
-			pr2_controllers_msgs::JointTrajectoryControllerState controllermsg;
+			control_msgs::JointTrajectoryControllerState controllermsg;
 			controllermsg.header.stamp = time;
 			controllermsg.joint_names.resize(DOF_);
 			controllermsg.desired.positions.resize(DOF_);

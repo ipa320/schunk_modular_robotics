@@ -1,7 +1,7 @@
 <package>
-  <description brief="schunk_simulated_tactile_sensors">
-
-     This package provides simulated tactile sensors for the Schunk Dextrous
+  <name>schunk_simulated_tactile_sensors</name>
+  <version>0.5.4</version>
+  <description>This package provides simulated tactile sensors for the Schunk Dextrous
      Hand (SDH) which is mounted on the Care-O-bot arm. The node subscribes to
      the Gazebo bumper topics of the SDH. It transforms the Gazebo feedback to
      the "tactile_data" topic to provide the same tactile sensor interface as
@@ -43,17 +43,28 @@
      
      The simulated bumper must obtain the collision data in the link that the
      sensor is attached to. This is achieved by setting the "frameName" property
-     in the gazebo_ros_bumper controller.
+     in the gazebo_ros_bumper controller.</description>
+  <!-- <maintainer>Sven Schneider</maintainer> -->
 
-  </description>
-  <author>Sven Schneider</author>
   <license>LGPL</license>
-  <review status="unreviewed" notes=""/>
-  <url>http://ros.org/wiki/schunk_simulated_tactile_sensors</url>
-  
-  <depend package="rospy"/>
-  <depend package="schunk_sdh"/>
-  <depend package="gazebo_plugins"/>
-  <depend package="geometry_msgs"/>
 
+  <url type="website">http://ros.org/wiki/schunk_simulated_tactile_sensors</url>
+  <!-- <url type="bugtracker"></url> -->
+
+  <author>Sven Schneider</author>
+  <maintainer email="fmw@ipa.fhg.de">Florian Weisshardt</maintainer>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>rospy</build_depend>
+  <build_depend>schunk_sdh</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>rostest</build_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>schunk_sdh</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>rostest</run_depend>
+  <export>
+
+  </export>
 </package>

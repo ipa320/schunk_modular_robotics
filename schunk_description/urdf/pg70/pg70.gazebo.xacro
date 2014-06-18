@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="schunk_pg70_gazebo" params="name">
+
+    <gazebo reference="${name}_palm_link">
+      <material>Schunk/LightGrey</material>
+      <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+  
+    <gazebo reference="${name}_finger_1_link">
+      <material>Schunk/LightGrey</material>
+      <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+  
+    <gazebo reference="${name}_finger_2_link">
+      <material>Schunk/LightGrey</material>
+      <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+
+  </xacro:macro>
+
+</robot>

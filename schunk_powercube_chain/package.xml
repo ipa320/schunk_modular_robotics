@@ -1,0 +1,46 @@
+<package>
+  <name>schunk_powercube_chain</name>
+  <version>0.5.4</version>
+  <description>This packages provides a configurable driver of a chain 
+  of Schunk powercubes. The powercube chain is configured 
+  through parameters. Most users will not directly interact 
+  with this package but with the corresponding launch files 
+  in other packages, e.g. schunk_bringup, cob_bringup, ...</description>
+
+  <license>LGPL</license>
+
+  <url type="website">http://ros.org/wiki/schunk_powercube_chain</url>
+  <!-- <url type="bugtracker"></url> -->
+
+  <maintainer email="fmw@ipa.fhg.de">Florian Weisshardt</maintainer>
+  <author email="fmw@ipa.fhg.de">Florian Weisshardt</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>urdf</build_depend>
+  <build_depend>diagnostic_updater</build_depend>
+  <build_depend>schunk_libm5api</build_depend>
+  <build_depend>libntcan</build_depend>
+  <build_depend>libpcan</build_depend>
+  <build_depend>cob_srvs</build_depend>
+  <build_depend>brics_actuator</build_depend>
+  <build_depend>diagnostic_msgs</build_depend>
+  <build_depend>control_msgs</build_depend>
+  <build_depend>rostest</build_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>urdf</run_depend>
+  <run_depend>diagnostic_updater</run_depend>
+  <run_depend>schunk_libm5api</run_depend>
+  <run_depend>libntcan</run_depend>
+  <run_depend>libpcan</run_depend>
+  <run_depend>cob_srvs</run_depend>
+  <run_depend>brics_actuator</run_depend>
+  <run_depend>diagnostic_msgs</run_depend>
+  <run_depend>control_msgs</run_depend>
+  <build_depend>rostest</build_depend>
+
+  <export>
+    <cpp cflags="-I${prefix}/common/include"/>
+  </export>
+</package>

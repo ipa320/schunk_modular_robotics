@@ -6,7 +6,7 @@ material Schunk/LightGrey
 	{
 		pass
 		{
-			ambient 0.7 0.7 0.7 1
+			ambient 0.95 0.95 0.95 1
 			diffuse 0.1 0.1 0.1 1
 		}
 	}
@@ -56,7 +56,7 @@ material Schunk/Blue
 	{
 		pass
 		{
-			ambient 0.0 0.0 0.8 1.0  1.0
+			ambient 0.0 0.0 0.8 1.0
 			diffuse 0.1 0.1 0.1 1
 		}
 	}

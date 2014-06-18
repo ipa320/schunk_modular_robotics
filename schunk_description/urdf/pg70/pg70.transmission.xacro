@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="schunk_pg70_transmission" params="name">
+
+    <!-- finger1 -->
+    <transmission name="${name}_finger_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${name}_finger_joint"/>
+      <actuator name="${name}_finger_motor">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  
+    <!-- finger2 -->
+    <transmission name="${name}_finger_mimic_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${name}_finger_mimic_joint"/>
+      <actuator name="${name}_finger_mimic_motor">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+  </xacro:macro>
+
+</robot>
