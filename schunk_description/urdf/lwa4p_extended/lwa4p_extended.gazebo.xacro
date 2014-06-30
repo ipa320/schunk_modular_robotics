@@ -1,49 +1,137 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">	
   <xacro:macro name="schunk_lwa4p_extended_gazebo" params="name">
 
-    <gazebo reference="${name}_0_link">
-      <material value="Schunk/LightGrey" />
-      <turnGravityOff>false</turnGravityOff>
+    <!--
+      Gazebo tags example for links
+      <gazebo reference="name">
+        <material value="Schunk/LightGrey"/>      
+        <selfCollide>true</selfCollide>
+        <gravity>false</gravity>
+        <dampingFactor>1</dampingFactor> 
+        <maxVel>1.0</maxVel>      
+        <minDepth>0.0</minDepth> 
+        <mu1>1</mu1> 
+        <mu2>1</mu2> 
+        <fdir1>1 0 0</fdir1> 
+        <kp>1000000</kp> 
+        <kd>100</kd> 
+        <maxContacts>50</maxContacts> 
+        <laserRetro>1</laserRetro> 
+      </gazebo>
+    -->
+
+    <gazebo reference="${name}_base_link">
+      <material value="Schunk/LightGrey"/>      
       <selfCollide>true</selfCollide>
+      <!--gravity>false</gravity-->
+<!--
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+-->
     </gazebo>
 
     <gazebo reference="${name}_1_link">
-      <material value="Schunk/LightGrey" />
-      <turnGravityOff>false</turnGravityOff>
+      <material value="Schunk/LightGrey" />     
       <selfCollide>true</selfCollide>
+      <!--gravity>false</gravity-->
+<!--
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+-->
     </gazebo>
 
-    <gazebo reference="${name}_2_link">
-      <turnGravityOff>false</turnGravityOff>
+    <gazebo reference="${name}_2_link">		      
       <selfCollide>true</selfCollide>
+      <!--gravity>false</gravity-->
+<!--
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+-->
     </gazebo>
 
-    <gazebo reference="${name}_3_link">
-      <turnGravityOff>false</turnGravityOff>
+    <gazebo reference="${name}_3_link">      
       <selfCollide>true</selfCollide>
+      <!--gravity>false</gravity-->            
+<!--
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+-->
     </gazebo>
 
-    <gazebo reference="${name}_4_link">
-      <turnGravityOff>false</turnGravityOff>
+    <gazebo reference="${name}_4_link">      
       <selfCollide>true</selfCollide>
+      <!--gravity>false</gravity-->      
+<!--
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+-->
     </gazebo>
 
     <gazebo reference="${name}_5_link">
-      <turnGravityOff>false</turnGravityOff>
       <selfCollide>true</selfCollide>
+      <!--gravity>false</gravity-->
+<!--
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+-->
     </gazebo>
 
-    <gazebo reference="${name}_6_link">
-      <turnGravityOff>false</turnGravityOff>
+    <gazebo reference="${name}_6_link">      
       <selfCollide>true</selfCollide>
+      <!--gravity>false</gravity-->
+<!--
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+-->
     </gazebo>
 
     <gazebo reference="${name}_7_link">
-      <material value="Schunk/LightGrey" />
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <material value="Schunk/LightGrey" />      
+      <!--gravity>false</gravity-->
+<!--
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+-->
+    </gazebo>
+    
+    <!--
+    Gazebo tags example for joints
+    <gazebo reference="name">
+      <stopCfm>1</stopCfm>
+      <stopErp>1</stopErp>
+      <provideFeedback>1</provideFeedback>
+      <implicitSpringDamper>1</implicitSpringDamper>
+      <fudgeFactor>1</fudgeFactor>
+    </gazebo>
+    -->
+    
+    <gazebo reference="${name}_1_joint">
+      <implicitSpringDamper>true</implicitSpringDamper>
+    </gazebo>
+    
+    <gazebo reference="${name}_2_joint">
+      <implicitSpringDamper>true</implicitSpringDamper>
+    </gazebo>
+    
+    <gazebo reference="${name}_3_joint">
+      <implicitSpringDamper>true</implicitSpringDamper>
+    </gazebo>
+    
+    <gazebo reference="${name}_4_joint">
+      <implicitSpringDamper>true</implicitSpringDamper>
+    </gazebo>
+    
+    <gazebo reference="${name}_5_joint">
+      <implicitSpringDamper>true</implicitSpringDamper>
+    </gazebo>
+    
+    <gazebo reference="${name}_6_joint">
+      <implicitSpringDamper>true</implicitSpringDamper>
+    </gazebo>
+    
+    <gazebo reference="${name}_7_joint">		
+      <implicitSpringDamper>true</implicitSpringDamper>
     </gazebo>
     
   </xacro:macro>
