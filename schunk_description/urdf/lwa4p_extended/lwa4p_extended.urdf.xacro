@@ -35,15 +35,17 @@
     
     
     <!-- joint between arm_base_link and arm_1_link -->
-    <joint name="${name}_1_joint" type="revolute" >
+    <joint name="${name}_1_joint" type="fixed">
       <origin xyz="0 0 ${0.134+0.005}" rpy="0 0 0" /> 
       <parent link="${name}_base_link" />
       <child link="${name}_1_link" />
+<!--
       <axis xyz="0 0 1"/>
       <calibration rising="${arm_1_ref}"/>
       <dynamics damping="0" friction="0"/>
       <limit effort="81.5" velocity="0.42" lower="-6.2831853" upper="6.2831853"/>
       <safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-6.2831853 + 0.01}" soft_upper_limit="${6.2831853 - 0.01}" />
+-->
     </joint>
 
     <link name="${name}_1_link">
@@ -100,15 +102,17 @@
 
 
     <!-- joint between arm_2_link and arm_3_link -->  
-    <joint name="${name}_3_joint" type="revolute">
+    <joint name="${name}_3_joint" type="fixed">
       <origin xyz="0 0 0" rpy="-1.5708 0 0"/>
       <parent link="${name}_2_link"/>
       <child link="${name}_3_link"/>
+<!--
       <axis xyz="0 0 1"/>
       <calibration rising="${arm_3_ref}"/>
       <dynamics damping="0" friction="0"/>
       <limit effort="48" velocity="1.2566" lower="-6.2831853" upper="6.2831853"/>
       <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-6.2831853 + 0.01}" soft_upper_limit="${6.2831853 - 0.01}" />
+-->
     </joint>
 
     <link name="${name}_3_link">
@@ -137,15 +141,17 @@
     </link>
 
     <!-- joint between arm_3_link and arm_4_link -->
-    <joint name="${name}_4_joint" type="revolute">
+    <joint name="${name}_4_joint" type="fixed">
       <origin xyz="0 0 0.45360" rpy="1.5708 0 0" />
       <parent link="${name}_3_link"/>
       <child link="${name}_4_link"/>
+<!--
       <axis xyz="0 0 1" />
       <calibration rising="${arm_4_ref}"/>
       <dynamics damping="0" friction="0"/>
       <limit effort="48" velocity="1.2566" lower="-2.0943951" upper="2.0943951"/>     
       <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" />
+-->
     </joint>
 
     <link name="${name}_4_link">
@@ -169,15 +175,17 @@
     </link>
 
     <!-- joint between arm_4_link and arm_5_link -->
-    <joint name="${name}_5_joint" type="revolute">
+    <joint name="${name}_5_joint" type="fixed">
       <origin xyz="0 0 0" rpy="-1.5708 0 0" />
       <parent link="${name}_4_link"/>
       <child link="${name}_5_link"/>
+<!--
       <axis xyz="0 0 1" />
       <calibration rising="${arm_5_ref}"/>
       <dynamics damping="0" friction="0"/>
       <limit effort="48" velocity="1.2566" lower="-6.2831853" upper="6.2831853" />
       <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-6.2831853 + 0.01}" soft_upper_limit="${6.2831853 - 0.01}" />
+-->
     </joint>
 
     <link name="${name}_5_link">
@@ -201,15 +209,17 @@
     </link>
 
     <!-- joint between arm_5_link and arm_6_link -->
-    <joint name="${name}_6_joint" type="revolute">
+    <joint name="${name}_6_joint" type="fixed">
       <origin xyz="0 0 0.2986" rpy="1.5708 0 0" />
       <parent link="${name}_5_link"/>
       <child link="${name}_6_link"/>
+<!--
       <axis xyz="0 0 1" />
       <calibration rising="${arm_6_ref}"/>
       <dynamics damping="0" friction="0"/>
       <limit effort="15" velocity="1.2566" lower="-2.0943951" upper="2.0943951" />
       <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" />
+-->
     </joint>
 
     <link name="${name}_6_link">
@@ -233,15 +243,17 @@
     </link>
 
     <!-- joint between arm_6_link and arm_7_link -->
-    <joint name="${name}_7_joint" type="revolute">
+    <joint name="${name}_7_joint" type="fixed">
       <origin xyz="0 0 0" rpy="-1.5708 0 0" />
       <parent link="${name}_6_link"/>
       <child link="${name}_7_link"/>
+<!--
       <axis xyz="0 0 1" />
       <calibration rising="${arm_7_ref}"/>
       <dynamics damping="0" friction="0"/>
       <limit effort="15" velocity="1.2566" lower="-2.0943951" upper="2.0943951" />
       <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" />
+-->
     </joint>
 
     <link name="${name}_7_link">

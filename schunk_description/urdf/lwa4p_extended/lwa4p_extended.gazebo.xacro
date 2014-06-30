@@ -106,6 +106,7 @@
     </gazebo>
     -->
     
+<!--
     <gazebo reference="${name}_1_joint">
       <implicitSpringDamper>true</implicitSpringDamper>
     </gazebo>
@@ -133,6 +134,7 @@
     <gazebo reference="${name}_7_joint">		
       <implicitSpringDamper>true</implicitSpringDamper>
     </gazebo>
+-->
     
   </xacro:macro>
 
