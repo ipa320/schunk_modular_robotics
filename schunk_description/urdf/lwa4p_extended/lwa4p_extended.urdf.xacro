@@ -42,6 +42,18 @@
         <mass value="0.1"/>
         <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
       </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link.stl" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link.stl" />
+        </geometry>
+      </collision>
     </link>
 
     <!-- joint between arm_1_link and arm_2_link -->  
@@ -62,16 +74,16 @@
         <mass value="0.1"/>
         <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
       </inertial>
-    <visual>
+      <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link.dae" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_2_link.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link.dae" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_2_link.dae" />
         </geometry>
       </collision>
     </link>
@@ -100,16 +112,16 @@
         <mass value="0.1"/>
         <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
       </inertial>
-    <visual>
+      <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_2_link.dae" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_3_link.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_2_link.dae" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_3_link.dae" />
         </geometry>
       </collision>
     </link>
@@ -135,13 +147,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_3_link.dae" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_4_link.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_3_link.dae" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_4_link.dae" />
         </geometry>
       </collision>
     </link>
@@ -167,13 +179,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_4_link.dae" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_5_link.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_4_link.dae" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_5_link.dae" />
         </geometry>
       </collision>
     </link>
@@ -199,13 +211,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_5_link.dae" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_6_link.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_5_link.dae" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_6_link.dae" />
         </geometry>
       </collision>
     </link>
