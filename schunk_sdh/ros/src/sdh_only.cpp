@@ -244,6 +244,37 @@ class SdhNode
 			nh_.param("OperationMode", operationMode_, std::string("position"));
 			return true;
 		}
+		/*!
+		* \brief Switches operation mode if possible
+		*
+		* \param mode new mode
+		*/
+		bool switchOperationMode(const std::string &mode){
+			hasNewGoal_ = false;
+			sdh_->Stop();
+			
+			try{
+				if(mode == "position"){
+					sdh_->SetController(SDH::cSDH::eCT_POSE);
+				}else if(mode == "velocity"){
+					sdh_->SetController(SDH::cSDH::eCT_VELOCITY);
+				}else{
+					ROS_ERROR_STREAM("Operation mode '" << mode << "'  not supported");
+					return false;
+				}
+				sdh_->SetAxisEnable(sdh_->All, 1.0); // TODO: check if necessary
+			}
+			catch (SDH::cSDHLibraryException* e)
+			{
+				ROS_ERROR("An exception was caught: %s", e->what());
+				delete e;
+				return false;
+			}
+			
+			operationMode_ = mode;
+			return true;
+
+		}
 
 		/*!
 		* \brief Executes the callback from the actionlib
@@ -464,6 +495,11 @@ class SdhNode
 					delete e;
 					return true;
 				}
+				if(!switchOperationMode(operationMode_)){
+					res.success.data = false;
+					res.error_message.data = "Could not set operation mode to '" + operationMode_ + "'";
+					return true;
+				}
 			}
 			else
 			{
@@ -532,9 +568,7 @@ class SdhNode
 	{
 		hasNewGoal_ = false;
 		sdh_->Stop();
-		ROS_INFO("Set operation mode to [%s]", req.operation_mode.data.c_str());
-		operationMode_ = req.operation_mode.data;
-		res.success.data = true;
+		res.success.data = switchOperationMode(req.operation_mode.data);
 		if( operationMode_ == "position"){
 			sdh_->SetController(SDH::cSDH::eCT_POSE);
 		}else if( operationMode_ == "velocity"){
