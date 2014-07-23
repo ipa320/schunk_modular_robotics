@@ -2,25 +2,6 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">	
   <xacro:macro name="schunk_lwa4p_extended_gazebo" params="name">
 
-    <!--
-      Gazebo tags example for links
-      <gazebo reference="name">
-        <material value="Schunk/LightGrey"/>      
-        <selfCollide>true</selfCollide>
-        <gravity>false</gravity>
-        <dampingFactor>1</dampingFactor> 
-        <maxVel>1.0</maxVel>      
-        <minDepth>0.0</minDepth> 
-        <mu1>1</mu1> 
-        <mu2>1</mu2> 
-        <fdir1>1 0 0</fdir1> 
-        <kp>1000000</kp> 
-        <kd>100</kd> 
-        <maxContacts>50</maxContacts> 
-        <laserRetro>1</laserRetro> 
-      </gazebo>
-    -->
-
     <gazebo reference="${name}_base_link">
       <material value="Schunk/LightGrey"/>      
       <selfCollide>true</selfCollide>

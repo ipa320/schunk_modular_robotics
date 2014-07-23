@@ -43,8 +43,9 @@
       <axis xyz="0 0 1"/>
       <calibration rising="${arm_1_ref}"/>
       <dynamics damping="0" friction="0"/>
-      <limit effort="81.5" velocity="0.42" lower="-6.2831853" upper="6.2831853"/>
-      <safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-6.2831853 + 0.01}" soft_upper_limit="${6.2831853 - 0.01}" />
+      <!--limit effort="81.5" velocity="0.42" lower="-6.2831853" upper="6.2831853"/-->
+      <limit effort="81.5" velocity="0.42" lower="-${M_PI}" upper="${M_PI}"/>
+      <safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-M_PI + 0.01}" soft_upper_limit="${M_PI - 0.01}" />
     </joint>
 
     <!-- prl100 rototor + shoulder flansh --> 
@@ -63,7 +64,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link.stl" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link_reduced.stl" />
         </geometry>
       </collision>
     </link>
@@ -109,8 +110,9 @@
       <axis xyz="0 0 1"/>
       <calibration rising="${arm_3_ref}"/>
       <dynamics damping="0" friction="0"/>
-      <limit effort="48" velocity="1.2566" lower="-6.2831853" upper="6.2831853"/>
-      <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-6.2831853 + 0.01}" soft_upper_limit="${6.2831853 - 0.01}" />
+      <!--limit effort="48" velocity="1.2566" lower="-6.2831853" upper="6.2831853"/-->
+      <limit effort="48" velocity="1.2566" lower="-${M_PI}" upper="${M_PI}"/>
+      <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-M_PI + 0.01}" soft_upper_limit="${M_PI - 0.01}" />
     </joint>
 
     <link name="${name}_3_link">
@@ -133,7 +135,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_3_link.dae" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_3_link_reduced.stl" />
         </geometry>
       </collision>
     </link>
@@ -178,8 +180,9 @@
       <axis xyz="0 0 1" />
       <calibration rising="${arm_5_ref}"/>
       <dynamics damping="0" friction="0"/>
-      <limit effort="48" velocity="1.2566" lower="-6.2831853" upper="6.2831853" />
-      <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-6.2831853 + 0.01}" soft_upper_limit="${6.2831853 - 0.01}" />
+      <!--limit effort="48" velocity="1.2566" lower="-6.2831853" upper="6.2831853" /-->
+      <limit effort="48" velocity="1.2566" lower="-${M_PI}" upper="${M_PI}" />
+      <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-M_PI + 0.01}" soft_upper_limit="${M_PI - 0.01}" />
     </joint>
 
     <link name="${name}_5_link">
@@ -197,7 +200,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_5_link.dae" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_5_link_reduced.stl" />
         </geometry>
       </collision>
     </link>
