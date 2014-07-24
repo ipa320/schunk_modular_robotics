@@ -6,7 +6,7 @@
       <type>transmission_interface/SimpleTransmission</type>
       <joint name="${jname}_${number}_joint"/>
       <actuator name="${jname}_${number}_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <hardwareInterface>VelocityJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
