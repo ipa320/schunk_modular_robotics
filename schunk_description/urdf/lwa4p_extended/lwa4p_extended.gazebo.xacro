@@ -2,6 +2,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">	
   <xacro:macro name="schunk_lwa4p_extended_gazebo" params="name">
 
+<!--
     <gazebo reference="${name}_base_link">
       <material value="Schunk/LightGrey"/>      
       <selfCollide>true</selfCollide>
@@ -36,6 +37,7 @@
       <material value="Schunk/LightGrey" />    
       <selfCollide>true</selfCollide>  
     </gazebo>
+-->
     
   </xacro:macro>
 
