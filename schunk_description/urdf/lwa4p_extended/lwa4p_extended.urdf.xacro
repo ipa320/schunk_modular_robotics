@@ -45,13 +45,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link.stl" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link.stl" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link.dae" />
         </geometry>
       </collision>
     </link>
