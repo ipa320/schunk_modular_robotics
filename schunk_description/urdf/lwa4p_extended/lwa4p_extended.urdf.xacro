@@ -34,7 +34,6 @@
       </collision>
     </link>
     
-    
     <!-- joint between arm_base_link and arm_1_link -->
     <joint name="${name}_1_joint" type="revolute">
       <origin xyz="0 0 ${0.134+0.005}" rpy="0 0 0" /> 
@@ -83,7 +82,7 @@
 
     <link name="${name}_2_link">
       <inertial>
-        <origin xyz="0 0.018 0.018" rpy="0 0 0"/>
+        <origin xyz="0 0.018 -0.018" rpy="0 0 0"/>
         <mass value="3.9"/>
         <inertia ixx="0.009780" ixy="0.0" ixz="0.0" iyy="0.013300" iyz="0.0" izz="0.009780" />
       </inertial>
@@ -251,7 +250,7 @@
 
     <link name="${name}_7_link">
       <xacro:box_inertial x="0.01" y="0.01" z="0.01" mass="0.01">
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 0.1" rpy="0 0 0" />
       </xacro:box_inertial>
     </link>
 
