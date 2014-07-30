@@ -41,9 +41,10 @@
       <origin xyz="0.0 0.03 0.077" rpy="0 0 0" />
       <parent link="${name}_palm_link"/>
       <child link="${name}_finger_1_link"/>
+      <calibration rising="${pg70_finger_1_ref}"/>
       <axis xyz="0 1 0" />
       <dynamics damping="1" />
-      <limit effort="100" lower="0" upper="0.034" velocity="5"/>
+      <limit effort="100" lower="-0.1" upper="1.1" velocity="5"/>
     </joint>
 
     <link name="${name}_finger_1_link">
@@ -76,9 +77,10 @@
       <origin xyz="0.0 -0.03 0.077" rpy="0 0 3.14" />
       <parent link="${name}_palm_link"/>
       <child link="${name}_finger_2_link"/>
+      <calibration rising="${pg70_finger_2_ref}"/>
       <axis xyz="0 1 0" />
       <dynamics damping="1" />
-      <limit effort="100" lower="0" upper="0.034" velocity="5"/>
+      <limit effort="100" lower="-0.1" upper="1.1" velocity="5"/>
     </joint>
 
     <link name="${name}_finger_2_link">
