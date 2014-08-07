@@ -57,7 +57,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link.dae" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link.stl" />
         </geometry>
       </visual>
       <collision>
