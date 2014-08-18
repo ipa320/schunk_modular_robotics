@@ -1,70 +1,26 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+  <xacro:macro name="schunk_lwa4p_extended_SimpleTransmission" params="jname number">
+    <transmission name="${jname}_${number}_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${jname}_${number}_joint"/>
+      <actuator name="${jname}_${number}_motor">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+
   <xacro:macro name="schunk_lwa4p_extended_transmission" params="name">
 
-    <transmission name="${name}_1_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_1_joint"/>
-      <actuator name="${name}_1_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-  
-    <transmission name="${name}_2_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_2_joint"/>
-      <actuator name="${name}_2_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-  
-    <transmission name="${name}_3_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_3_joint"/>
-      <actuator name="${name}_3_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-  
-    <transmission name="${name}_4_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_4_joint"/>
-      <actuator name="${name}_4_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-  
-    <transmission name="${name}_5_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_5_joint"/>
-      <actuator name="${name}_5_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-  
-    <transmission name="${name}_6_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_6_joint"/>
-      <actuator name="${name}_6_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-
-    <transmission name="${name}_7_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_7_joint"/>
-      <actuator name="${name}_7_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
+    <xacro:schunk_lwa4p_extended_SimpleTransmission jname="${name}" number="1"></xacro:schunk_lwa4p_extended_SimpleTransmission>
+    <xacro:schunk_lwa4p_extended_SimpleTransmission jname="${name}" number="2"></xacro:schunk_lwa4p_extended_SimpleTransmission>
+    <xacro:schunk_lwa4p_extended_SimpleTransmission jname="${name}" number="3"></xacro:schunk_lwa4p_extended_SimpleTransmission>
+    <xacro:schunk_lwa4p_extended_SimpleTransmission jname="${name}" number="4"></xacro:schunk_lwa4p_extended_SimpleTransmission>
+    <xacro:schunk_lwa4p_extended_SimpleTransmission jname="${name}" number="5"></xacro:schunk_lwa4p_extended_SimpleTransmission>
+    <xacro:schunk_lwa4p_extended_SimpleTransmission jname="${name}" number="6"></xacro:schunk_lwa4p_extended_SimpleTransmission>
+    <xacro:schunk_lwa4p_extended_SimpleTransmission jname="${name}" number="7"></xacro:schunk_lwa4p_extended_SimpleTransmission>
 
   </xacro:macro>
 
