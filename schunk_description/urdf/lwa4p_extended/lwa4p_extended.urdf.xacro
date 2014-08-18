@@ -58,13 +58,13 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link.stl" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link.dae" />
         </geometry>
       </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link_reduced.stl" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_collision.stl" />
         </geometry>
       </collision>
     </link>
@@ -135,7 +135,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_3_link_reduced.stl" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_3_collision.stl" />
         </geometry>
       </collision>
     </link>
@@ -200,7 +200,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_5_link_reduced.stl" />
+          <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_5_collision.stl" />
         </geometry>
       </collision>
     </link>
