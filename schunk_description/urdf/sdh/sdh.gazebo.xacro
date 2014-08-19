@@ -4,17 +4,22 @@
   <xacro:macro name="schunk_sdh_gazebo" params="name">
 
     <gazebo reference="${name}_palm_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
-      <turnGravityOff>false</turnGravityOff>
     </gazebo>
   
     <gazebo reference="${name}_finger_11_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
-      <turnGravityOff>false</turnGravityOff>
     </gazebo>
   
-    <!--gazebo reference="${name}_finger_12_link">
-      <selfCollide>true</selfCollide>
+    <gazebo reference="${name}_finger_12_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <material>Schunk/LightGrey</material>
+<!--
       <sensor name='${name}_finger_12_contact_sensor' type='contact'>
         <always_on>true</always_on>
         <update_rate>100</update_rate>
@@ -28,12 +33,14 @@
           <bumperTopicName>${name}_finger_12_bumper</bumperTopicName>
         </plugin>
       </sensor>
-      <material>Schunk/LightGrey</material>
-      <turnGravityOff>false</turnGravityOff>
-    </gazebo-->
+-->
+    </gazebo>
 
-    <!--gazebo reference="${name}_finger_13_link">
-      <selfCollide>true</selfCollide>  
+    <gazebo reference="${name}_finger_13_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <material>Schunk/LightGrey</material>
+<!--
       <sensor name='${name}_finger_13_contact_sensor' type='contact'>
         <always_on>true</always_on>
         <update_rate>100</update_rate>        
@@ -47,20 +54,24 @@
           <bumperTopicName>${name}_finger_13_bumper</bumperTopicName>
         </plugin>
       </sensor>
-      <material>Schunk/LightGrey</material>
-    </gazebo-->
+-->
+    </gazebo>
 
     <gazebo reference="${name}_finger_21_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
-      <turnGravityOff>true</turnGravityOff>
-      <mu1 value="500" />
+      <!--mu1 value="500" />
       <mu2 value="500" />
       <kp value="1000000.0" />
-      <kd value="1.0" />
+      <kd value="1.0" /-->
     </gazebo>
   
-    <!--gazebo reference="${name}_finger_22_link">
-      <selfCollide>true</selfCollide>    
+    <gazebo reference="${name}_finger_22_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <material>Schunk/LightGrey</material>
+<!--
       <sensor name='${name}_finger_22_contact_sensor' type='contact'>
         <always_on>true</always_on>
         <update_rate>100</update_rate>        
@@ -74,12 +85,14 @@
           <bumperTopicName>${name}_finger_22_bumper</bumperTopicName>
         </plugin>
       </sensor>
-      <material>Schunk/LightGrey</material>
-      <turnGravityOff>false</turnGravityOff>
-    </gazebo-->
+-->
+    </gazebo>
 
-    <!--gazebo reference="${name}_finger_23_link">
-      <selfCollide>true</selfCollide>
+    <gazebo reference="${name}_finger_23_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <material>Schunk/LightGrey</material>
+<!--
       <sensor name='${name}_finger_23_contact_sensor' type='contact'>
         <always_on>true</always_on>
         <update_rate>100</update_rate>        
@@ -93,16 +106,20 @@
           <bumperTopicName>${name}_finger_23_bumper</bumperTopicName>
         </plugin>
       </sensor>
-      <material>Schunk/LightGrey</material>
-    </gazebo-->
-
-    <gazebo reference="${name}_thumb_1_link">
-      <material>Schunk/LightGrey</material>
-      <turnGravityOff>false</turnGravityOff>
+-->
     </gazebo>
 
-    <!--gazebo reference="${name}_thumb_2_link">
-      <selfCollide>true</selfCollide>
+    <gazebo reference="${name}_thumb_1_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <material>Schunk/LightGrey</material>
+    </gazebo>
+
+    <gazebo reference="${name}_thumb_2_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <material>Schunk/LightGrey</material>
+<!--
       <sensor name='${name}_thumb_2_contact_sensor' type='contact'>
         <always_on>true</always_on>
         <update_rate>100</update_rate>        
@@ -116,12 +133,14 @@
           <bumperTopicName>${name}_thumb_2_bumper</bumperTopicName>
         </plugin>        
       </sensor>
-      <material>Schunk/LightGrey</material>
-      <turnGravityOff>false</turnGravityOff>
-    </gazebo-->
+-->
+    </gazebo>
 
-    <!--gazebo reference="${name}_thumb_3_link">
-      <selfCollide>true</selfCollide>
+    <gazebo reference="${name}_thumb_3_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <material>Schunk/LightGrey</material>
+<!--
       <sensor name='${name}_thumb_3_contact_sensor' type='contact'>
         <always_on>true</always_on>
         <update_rate>100</update_rate>        
@@ -135,15 +154,15 @@
           <bumperTopicName>${name}_thumb_3_bumper</bumperTopicName>
         </plugin>
       </sensor>      
-      <material>Schunk/LightGrey</material>
-    </gazebo-->
+-->
+    </gazebo>
 
-    <gazebo reference="${name}_finger_21_joint">
+    <!--gazebo reference="${name}_finger_21_joint">
       <stopKd value='1.0' />
       <stopKp value='10000000' />
       <fudgeFactor value='1.0' />
       <provideFeedback value="true"/>
-    </gazebo>
+    </gazebo-->
 
 
   </xacro:macro>
