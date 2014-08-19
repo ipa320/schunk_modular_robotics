@@ -9,7 +9,6 @@
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
       <actuator name="${name}_knuckle_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
@@ -20,7 +19,6 @@
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
       <actuator name="${name}_knuckle_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
@@ -32,7 +30,6 @@
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
       <actuator name="${name}_finger_12_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
@@ -43,7 +40,6 @@
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
       <actuator name="${name}_finger_13_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
@@ -55,7 +51,6 @@
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
       <actuator name="${name}_finger_22_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
@@ -66,7 +61,6 @@
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
       <actuator name="${name}_finger_23_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
@@ -78,7 +72,6 @@
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>
       <actuator name="${name}_thumb_2_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
@@ -89,7 +82,6 @@
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </joint>    
       <actuator name="${name}_thumb_3_motor">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
