@@ -10,10 +10,10 @@
     <joint name="${name}_0_joint" type="fixed" >
       <insert_block name="origin" />
       <parent link="${parent}" />
-      <child link="${name}_0_link" />
+      <child link="${name}_base_link" />
     </joint>
 
-    <link name="${name}_0_link">
+    <link name="${name}_base_link">
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <mass value="1.0"/>
@@ -39,7 +39,7 @@
     <!-- joint between arm_0_link and arm_1_link -->
     <joint name="${name}_1_joint" type="revolute">
       <origin xyz="0 0 0.15" rpy="0 -${M_PI} 0"/>
-      <parent link="${name}_0_link"/>
+      <parent link="${name}_base_link"/>
       <child link="${name}_1_link"/>
       <axis xyz="0 0 1"/>
       <calibration rising="${arm_1_ref}"/>
