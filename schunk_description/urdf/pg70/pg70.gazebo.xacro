@@ -8,12 +8,12 @@
       <turnGravityOff>false</turnGravityOff>
     </gazebo>
   
-    <gazebo reference="${name}_finger_1_link">
+    <gazebo reference="${name}_finger_left_link">
       <material>Schunk/LightGrey</material>
       <turnGravityOff>false</turnGravityOff>
     </gazebo>
   
-    <gazebo reference="${name}_finger_2_link">
+    <gazebo reference="${name}_finger_right_link">
       <material>Schunk/LightGrey</material>
       <turnGravityOff>false</turnGravityOff>
     </gazebo>
