@@ -13,6 +13,11 @@
         </joint>
 
         <link name="${name}_gripper_link">
+                <inertial>
+                    <origin xyz="0 0 0" rpy="0 0 0"/>
+                    <mass value="1"/>
+                    <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+                </inertial>
                 <visual>
                     <geometry>
                         <mesh filename="package://schunk_description/meshes/pg70/pg70.dae" />
@@ -41,6 +46,11 @@
         </joint>
 
         <link name="${name}_finger_left_link">
+                <inertial>
+                    <origin xyz="0 0 0" rpy="0 0 0"/>
+                    <mass value="1"/>
+                    <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+                </inertial>
                 <visual>
                     <geometry>
                         <box size="0.03 0.01 0.01"/>
@@ -60,7 +70,7 @@
         </link>
 
         <joint name="${name}_finger_right_joint" type="prismatic" >
-                <mimic joint="${name}_gripper_left_joint" multiplier="1" offset="0"/>
+                <mimic joint="${name}_finger_left_joint" multiplier="1" offset="0"/>
                 <parent link="${name}_gripper_link" />
                 <child link="${name}_finger_right_link" />
                 <limit effort="100" lower="-0.001" upper="0.0345" velocity="2.0"/>
@@ -70,6 +80,11 @@
         </joint>
 
         <link name="${name}_finger_right_link">
+                <inertial>
+                    <origin xyz="0 0 0" rpy="0 0 0"/>
+                    <mass value="1"/>
+                    <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+                </inertial>
                 <visual>
                     <geometry>
                         <box size="0.03 0.01 0.01"/>
