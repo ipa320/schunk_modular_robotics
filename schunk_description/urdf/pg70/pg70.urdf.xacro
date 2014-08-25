@@ -6,108 +6,108 @@
 
   <xacro:macro name="schunk_pg70" params="parent name *origin">
 
-        <joint name="${name}_gripper_joint" type="fixed" >
-            <parent link="${parent}" />
-            <child link="${name}_gripper_link" />
-            <xacro:insert_block name="origin" />
-        </joint>
+    <joint name="${name}_gripper_joint" type="fixed" >
+      <parent link="${parent}" />
+      <child link="${name}_gripper_link" />
+      <xacro:insert_block name="origin" />
+    </joint>
 
-        <link name="${name}_gripper_link">
-                <inertial>
-                    <origin xyz="0 0 0" rpy="0 0 0"/>
-                    <mass value="1"/>
-                    <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
-                </inertial>
-                <visual>
-                    <geometry>
-                        <mesh filename="package://schunk_description/meshes/pg70/pg70.dae" />
-                    </geometry>
-                    <material name="blue">
-                        <color rgba="0 0 1 1"/>
-                    </material>
-                </visual>
-                <collision>
-                    <geometry>
-                        <mesh filename="package://schunk_description/meshes/pg70/pg70.dae" />
-                    </geometry>
-                    <material name="blue">
-                        <color rgba="0 0 1 1"/>
-                    </material>
-                </collision>
-        </link>
+    <link name="${name}_gripper_link">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="1"/>
+        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+      </inertial>
+      <visual>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/pg70/pg70.dae" />
+        </geometry>
+        <material name="blue">
+          <color rgba="0 0 1 1"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/pg70/pg70.dae" />
+        </geometry>
+        <material name="blue">
+          <color rgba="0 0 1 1"/>
+        </material>
+      </collision>
+    </link>
 
-        <joint name="${name}_finger_left_joint" type="prismatic" >
-                <parent link="${name}_gripper_link" />
-                <child link="${name}_finger_left_link" />
-                <limit effort="100" lower="-0.001" upper="0.0345" velocity="2.0"/>
-                <calibration rising="${pg70_finger_left_ref}"/>
-                <origin xyz="0 0.0105 0.0789" rpy="0 0 0"/>
-                <axis xyz="0 1 0" />
-        </joint>
+    <joint name="${name}_finger_left_joint" type="prismatic" >
+      <parent link="${name}_gripper_link" />
+      <child link="${name}_finger_left_link" />
+      <limit effort="100" lower="-0.001" upper="0.0345" velocity="2.0"/>
+      <calibration rising="${pg70_finger_left_ref}"/>
+      <origin xyz="0 0.0105 0.0789" rpy="0 0 0"/>
+      <axis xyz="0 1 0" />
+    </joint>
 
-        <link name="${name}_finger_left_link">
-                <inertial>
-                    <origin xyz="0 0 0" rpy="0 0 0"/>
-                    <mass value="1"/>
-                    <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
-                </inertial>
-                <visual>
-                    <geometry>
-                        <box size="0.03 0.01 0.01"/>
-                    </geometry>
-                    <material name="black">
-                        <color rgba="0 0 0 1"/>
-                    </material>
-                </visual>
-                <collision>
-                    <geometry>
-                        <box size="0.03 0.01 0.01"/>
-                    </geometry>
-                    <material name="black">
-                        <color rgba="0 0 0 1"/>
-                    </material>
-                </collision>
-        </link>
+    <link name="${name}_finger_left_link">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="1"/>
+        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+      </inertial>
+      <visual>
+        <geometry>
+          <box size="0.03 0.01 0.01"/>
+        </geometry>
+        <material name="black">
+          <color rgba="0 0 0 1"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="0.03 0.01 0.01"/>
+        </geometry>
+        <material name="black">
+          <color rgba="0 0 0 1"/>
+        </material>
+      </collision>
+    </link>
 
-        <joint name="${name}_finger_right_joint" type="prismatic" >
-                <mimic joint="${name}_finger_left_joint" multiplier="1" offset="0"/>
-                <parent link="${name}_gripper_link" />
-                <child link="${name}_finger_right_link" />
-                <limit effort="100" lower="-0.001" upper="0.0345" velocity="2.0"/>
-                <calibration rising="${pg70_finger_right_ref}"/>
-                <origin xyz="0 -0.0105 0.0789" rpy="-0 0 0"/>
-                <axis xyz="0 -1 0" />
-        </joint>
+    <joint name="${name}_finger_right_joint" type="prismatic" >
+      <mimic joint="${name}_finger_left_joint" multiplier="1" offset="0"/>
+      <parent link="${name}_gripper_link" />
+      <child link="${name}_finger_right_link" />
+      <limit effort="100" lower="-0.001" upper="0.0345" velocity="2.0"/>
+      <calibration rising="${pg70_finger_right_ref}"/>
+      <origin xyz="0 -0.0105 0.0789" rpy="-0 0 0"/>
+      <axis xyz="0 -1 0" />
+    </joint>
 
-        <link name="${name}_finger_right_link">
-                <inertial>
-                    <origin xyz="0 0 0" rpy="0 0 0"/>
-                    <mass value="1"/>
-                    <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
-                </inertial>
-                <visual>
-                    <geometry>
-                        <box size="0.03 0.01 0.01"/>
-                    </geometry>
-                    <material name="black">
-                        <color rgba="0 0 0 1"/>
-                    </material>
-                </visual>
-                <collision>
-                    <geometry>
-                        <box size="0.03 0.01 0.01"/>
-                    </geometry>
-                    <material name="black">
-                        <color rgba="0 0 0 1"/>
-                    </material>
-                </collision>
-        </link>
+    <link name="${name}_finger_right_link">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="1"/>
+        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+      </inertial>
+      <visual>
+        <geometry>
+          <box size="0.03 0.01 0.01"/>
+        </geometry>
+        <material name="black">
+          <color rgba="0 0 0 1"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="0.03 0.01 0.01"/>
+        </geometry>
+        <material name="black">
+          <color rgba="0 0 0 1"/>
+        </material>
+      </collision>
+    </link>
 
-    <!-- extensions -->
-    <xacro:schunk_pg70_gazebo name="${name}" />
-    <xacro:schunk_pg70_transmission name="${name}" />
+  <!-- extensions -->
+  <xacro:schunk_pg70_gazebo name="${name}" />
+  <xacro:schunk_pg70_transmission name="${name}" />
 
 
-    </xacro:macro>
+  </xacro:macro>
 </robot>
 
