@@ -6,7 +6,7 @@
     <!-- finger1 -->
     <transmission name="${name}_finger_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_finger_joint"/>
+      <joint name="${name}_finger_left_joint"/>
       <actuator name="${name}_finger_motor">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
@@ -16,7 +16,7 @@
     <!-- finger2 -->
     <transmission name="${name}_finger_mimic_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_finger_mimic_joint"/>
+      <joint name="${name}_finger_right_joint"/>
       <actuator name="${name}_finger_mimic_motor">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
