@@ -3,47 +3,45 @@
 
   <xacro:macro name="schunk_lwa4p_extended_gazebo" params="name">
 
-    <gazebo reference="${name}_0_link">
-      <material value="Schunk/LightGrey" />
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+    <gazebo reference="${name}_base_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
     </gazebo>
 
     <gazebo reference="${name}_1_link">
-      <material value="Schunk/LightGrey" />
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
     </gazebo>
 
     <gazebo reference="${name}_2_link">
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
     </gazebo>
 
     <gazebo reference="${name}_3_link">
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
     </gazebo>
 
     <gazebo reference="${name}_4_link">
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
     </gazebo>
 
     <gazebo reference="${name}_5_link">
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
     </gazebo>
 
     <gazebo reference="${name}_6_link">
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
     </gazebo>
 
     <gazebo reference="${name}_7_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
       <material value="Schunk/LightGrey" />
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
     </gazebo>
     
   </xacro:macro>
