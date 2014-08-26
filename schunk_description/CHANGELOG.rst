@@ -2,6 +2,44 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* merge with hydro_dev
+* spaces
+* obsolete dependency
+* Gazebo only detect links with inertia
+* fix pg70 property name
+* consistency changes due to new transmission format
+* consistency changes due to latest gazebo tag format
+* remove unused meshes
+* fix arm_1_link mesh + use collision stl
+* merge with latest 320 updates
+* pg70 description and fixed origins for lwa4d
+* pg70 setup
+* mesh file
+* Coloured mesh files
+* use meshes with reduced vertices and reduce joint_limits for moveit_config
+* use meshes with reduced vertices and reduce joint_limits for moveit_config
+* cleaning up after testing
+* lwa4d: fixed offsets error
+* inertias for arm_1_link
+* new meshes
+* temporary modifications for easier controller tuning
+* use inertias and physic properties from controller_tuning tests
+* modifications in tranmissions, removing of bumpers and small cleanups
+* Renamed links and added shoulder model
+* mesh for shoulder added
+* origin for collision model is in the center of the box
+* pg70 collada model
+* wrong lenght
+* materials should not be loaded in the components urdf
+* beautify mesh files
+* Merge pull request `#81 <https://github.com/ipa320/schunk_modular_robotics/issues/81>`_ from ipa320/hydro_release_candidate
+  bring back changes from Hydro release candidate
+* New maintainer
+* Redefined color LightGrey
+* Contributors: Alexander Bubeck, Felix Messmer, Nadia Hammoudeh García, Tim Fröhlich, ipa-cob3-8, ipa-fxm, ipa-nhg
+
 0.5.4 (2014-03-28)
 ------------------
 

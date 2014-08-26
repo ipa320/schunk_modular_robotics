@@ -2,6 +2,12 @@
 Changelog for package schunk_powercube_chain
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* cleaning up
+* New maintainer
+* Contributors: ipa-fxm, ipa-nhg
+
 0.5.4 (2014-03-28)
 ------------------
 * Merge branch 'hydro_dev' into hydro_release_candidate

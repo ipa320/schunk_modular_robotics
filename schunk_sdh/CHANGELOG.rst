@@ -2,6 +2,16 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* enforce sdh operation mode on init
+* cleaning up
+* Merge pull request `#81 <https://github.com/ipa320/schunk_modular_robotics/issues/81>`_ from ipa320/hydro_release_candidate
+  bring back changes from Hydro release candidate
+* Update package.xml
+* New maintainer
+* Contributors: Florian Weisshardt, Mathias Lüdtke, Nadia Hammoudeh García, ipa-fxm, ipa-nhg
+
 0.5.4 (2014-03-28)
 ------------------
 
