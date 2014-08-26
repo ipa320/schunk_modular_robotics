@@ -2,8 +2,8 @@
 Changelog for package schunk_powercube_chain
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.5 (2014-08-26)
+------------------
 * cleaning up
 * New maintainer
 * Contributors: ipa-fxm, ipa-nhg

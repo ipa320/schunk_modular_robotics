@@ -2,8 +2,8 @@
 Changelog for package schunk_modular_robotics
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.5 (2014-08-26)
+------------------
 * Merge pull request `#81 <https://github.com/ipa320/schunk_modular_robotics/issues/81>`_ from ipa320/hydro_release_candidate
   bring back changes from Hydro release candidate
 * New maintainer

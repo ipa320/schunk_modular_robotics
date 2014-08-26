@@ -2,8 +2,8 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.5 (2014-08-26)
+------------------
 * merge with hydro_dev
 * spaces
 * obsolete dependency
