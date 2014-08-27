@@ -2,6 +2,9 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.5.6 (2014-08-27)
+------------------
+
 0.5.5 (2014-08-26)
 ------------------
 * enforce sdh operation mode on init

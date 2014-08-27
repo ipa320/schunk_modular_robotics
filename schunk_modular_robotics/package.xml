@@ -1,6 +1,6 @@
 <package>
   <name>schunk_modular_robotics</name>
-  <version>0.5.5</version>
+  <version>0.5.6</version>
   <description>This stack includes packages that provide access to the Schunk hardware through ROS messages, services and actions.</description>
  
 

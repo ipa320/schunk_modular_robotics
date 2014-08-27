@@ -1,6 +1,6 @@
 <package>
   <name>schunk_simulated_tactile_sensors</name>
-  <version>0.5.5</version>
+  <version>0.5.6</version>
   <description>This package provides simulated tactile sensors for the Schunk Dextrous
      Hand (SDH) which is mounted on the Care-O-bot arm. The node subscribes to
      the Gazebo bumper topics of the SDH. It transforms the Gazebo feedback to

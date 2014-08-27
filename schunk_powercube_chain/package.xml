@@ -1,6 +1,6 @@
 <package>
   <name>schunk_powercube_chain</name>
-  <version>0.5.5</version>
+  <version>0.5.6</version>
   <description>This packages provides a configurable driver of a chain 
   of Schunk powercubes. The powercube chain is configured 
   through parameters. Most users will not directly interact 
