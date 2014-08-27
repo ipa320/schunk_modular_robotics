@@ -2,6 +2,11 @@
 Changelog for package schunk_powercube_chain
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* catkin_lint'ing
+* Contributors: ipa-fxm
+
 0.5.5 (2014-08-26)
 ------------------
 * cleaning up

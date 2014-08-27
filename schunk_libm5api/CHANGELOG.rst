@@ -2,6 +2,11 @@
 Changelog for package schunk_libm5api
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix buildfarm errors
+* Contributors: Florian Weisshardt
+
 0.5.5 (2014-08-26)
 ------------------
 
