@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(schunk_powercube_chain)
 
-find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs urdf schunk_libm5api libntcan libpcan cob_srvs brics_actuator diagnostic_msgs control_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs urdf schunk_libm5api libntcan libpcan cob_srvs brics_actuator diagnostic_msgs control_msgs rostest)
 
 
 if(CMAKE_COMPILER_IS_GNUCXX)
