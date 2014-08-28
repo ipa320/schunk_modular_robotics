@@ -223,7 +223,7 @@ void CMessage::error(const char *pcErrorMessage,...) const
 #ifdef WIN32
 	OutputDebugString(acOutBuffer);
 #else
-	fprintf(stderr, acOutBuffer);
+	fprintf(stderr, "%s",acOutBuffer);
 #endif
 
 	va_end(args);
@@ -278,7 +278,7 @@ void CMessage::error(const int iErrorCode,
 #ifdef WIN32
 	OutputDebugString(acOutBuffer);
 #else
-	fprintf(stderr, acOutBuffer);
+	fprintf(stderr, "%s", acOutBuffer);
 #endif
 	LEAVECS;
 	exit(-1);
@@ -333,7 +333,7 @@ void CMessage::warning(const char *pcWarningMessage,...) const
 	OutputDebugString(acOutBuffer);
 #else
         if (m_bDebug)
-	        fprintf(stderr, acOutBuffer);
+	        fprintf(stderr, "%s", acOutBuffer);
 #endif
 
 	va_end(args);
@@ -413,7 +413,7 @@ void CMessage::debug(const int iDebugLevel,
 #else
         if (m_bDebug)
         {
-	        fprintf(stderr, acOutBuffer);
+	        fprintf(stderr, "%s", acOutBuffer);
         }
 #endif
 
