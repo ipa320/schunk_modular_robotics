@@ -5,7 +5,7 @@
   <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.transmission.xacro" />
 
     
-  <xacro:macro name="schunk_lwa4p_extended" params="parent name *origin arm_1_ref arm_2_ref arm_3_ref arm_4_ref arm_5_ref arm_6_ref arm_7_ref">
+  <xacro:macro name="schunk_lwa4d" params="parent name *origin arm_1_ref arm_2_ref arm_3_ref arm_4_ref arm_5_ref arm_6_ref arm_7_ref">
 
     <!-- joint between base_link and arm_base_link -->
     <joint name="${name}_base_joint" type="fixed">
