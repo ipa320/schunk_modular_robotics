@@ -4,20 +4,20 @@
   <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.gazebo.xacro" />
   <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.transmission.xacro" />
 
-  <xacro:macro name="schunk_lwa4d" params="parent name *origin">
+    
+  <xacro:macro name="schunk_lwa4p_extended" params="parent name *origin arm_1_ref arm_2_ref arm_3_ref arm_4_ref arm_5_ref arm_6_ref arm_7_ref">
 
-    <!-- joint between base_link and arm_0_link -->
-    <joint name="${name}_0_joint" type="fixed" >
+    <!-- joint between base_link and arm_base_link -->
+    <joint name="${name}_base_joint" type="fixed">
       <insert_block name="origin" />
-      <parent link="${parent}" />
-      <child link="${name}_base_link" />
+      <parent link="${parent}"/>
+      <child link="${name}_base_link"/>
     </joint>
 
     <link name="${name}_base_link">
       <xacro:cylinder_inertial radius="0.06" length="0.156" mass="3.6">
         <origin xyz="0 0 ${0.09}" rpy="0 0 0" />
       </xacro:cylinder_inertial>
-
       <visual>
         <origin xyz="0 0 0.004" rpy="0 0 0" />
         <geometry>
@@ -25,7 +25,6 @@
         </geometry>
         <material name="Schunk/Black" />
       </visual>
-
       <collision>
         <origin xyz="0 0 0.005" rpy="0 0 0" />
         <geometry>
@@ -40,15 +39,14 @@
       <parent link="${name}_base_link"/>
       <child link="${name}_1_link"/>
       <axis xyz="0 0 1"/>
-      <calibration rising="${arm_1_ref}"/>      
+      <calibration rising="${arm_1_ref}"/>
       <limit effort="216" velocity="0.43633" lower="-${M_PI}" upper="${M_PI}"/>
     </joint>
 
     <link name="${name}_1_link">
       <xacro:cylinder_inertial radius="0.06" length="0.156" mass="3.6">
           <origin xyz="0 0.02 ${-0.15}" rpy="0 0 0" />
-      </xacro:cylinder_inertial>    
-      
+      </xacro:cylinder_inertial>
       <visual>
         <origin xyz="0 0 -0.15" rpy="0 0 ${M_PI}" />
         <geometry>
@@ -56,7 +54,6 @@
         </geometry>
         <material name="Schunk/LightGrey" />
       </visual>
-      
       <collision>
         <origin xyz="0 0 -0.15" rpy="0 0 ${M_PI}" />
         <geometry>
@@ -79,7 +76,6 @@
       <xacro:cylinder_inertial radius="0.056" length="0.134" mass="2.0">
         <origin xyz="0 0.15 0" rpy="0 0 0" />
       </xacro:cylinder_inertial>
-      
       <visual>
         <origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
         <geometry>
@@ -87,7 +83,6 @@
         </geometry>
         <material name="Schunk/Black" />
       </visual>
-      
       <collision>
         <origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
         <geometry>
@@ -104,12 +99,12 @@
       <axis xyz="0 0 1"/>
       <calibration rising="${arm_3_ref}"/>
       <limit effort="81.5" velocity="0.4189" lower="-${M_PI}" upper="${M_PI}"/>
+    </joint>
 
     <link name="${name}_3_link">
       <xacro:cylinder_inertial radius="0.056" length="0.134" mass="2.0">
         <origin xyz="0.0 0.03 ${-0.39}" rpy="0 0 0" />
       </xacro:cylinder_inertial> 
-      
       <visual>
         <origin xyz="0 0 -0.39" rpy="0 0 ${M_PI}" />
         <geometry>
@@ -117,14 +112,13 @@
         </geometry>
         <material name="Schunk/LightGrey" />
       </visual>
-      
       <collision>
         <origin xyz="0 0 -0.39" rpy="0 0 ${M_PI}" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4d/arm_3_link.stl" />
         </geometry>
       </collision>
-    </link>  
+    </link>
 
     <!-- joint between arm_3_link and arm_4_link -->
     <joint name="${name}_4_joint" type="revolute">
@@ -135,11 +129,10 @@
       <limit effort="81.5" velocity="0.4189" lower="-${M_PI}" upper="${M_PI}"/>      
     </joint>
 
-    <link name="${name}_4_link">      
+    <link name="${name}_4_link">
       <xacro:cylinder_inertial radius="0.056" length="0.134" mass="2.0">
         <origin xyz="0 0.15 0.0" rpy="0 0 0" />
-      </xacro:cylinder_inertial>      
-      
+      </xacro:cylinder_inertial>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
         <geometry>
@@ -147,7 +140,6 @@
         </geometry>
         <material name="Schunk/Black" />
       </visual>
-      
       <collision>
         <origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
         <geometry>
@@ -169,8 +161,7 @@
     <link name="${name}_5_link">
       <xacro:cylinder_inertial radius="0.0445" length="0.052" mass="0.4">
         <origin xyz="0 0.05 -0.24" rpy="0 0 0" />
-      </xacro:cylinder_inertial> 
-      
+      </xacro:cylinder_inertial>
       <visual>
         <origin xyz="0 0 -0.323" rpy="0 0 ${M_PI}" />
         <geometry>
@@ -178,7 +169,6 @@
         </geometry>
         <material name="Schunk/LightGrey" />
       </visual>
-      
       <collision>
         <origin xyz="0 0 -0.323" rpy="0 0 ${M_PI}" />
         <geometry>
@@ -203,7 +193,6 @@
         <mass value="1.9"/>
         <inertia ixx="0.002750" ixy="0" ixz="0" iyy="0.004002" iyz="0" izz="0.002830" />
       </inertial>
-      
       <visual>
         <origin xyz="0 0 0" rpy="0 ${M_PI} 0" />
         <geometry>
@@ -211,7 +200,6 @@
         </geometry>
         <material name="Schunk/Black" />
       </visual>
-      
       <collision>
         <origin xyz="0 0 0" rpy="0 ${M_PI} 0" />
         <geometry>
@@ -233,8 +221,7 @@
     <link name="${name}_7_link">
       <xacro:cylinder_inertial radius="0.03" length="0.035" mass="0.005">
         <origin xyz="0 0 0.06" rpy="0 0 0" />
-      </xacro:cylinder_inertial> 
-      
+      </xacro:cylinder_inertial>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -242,7 +229,6 @@
         </geometry>
         <material name="Schunk/LightGrey" />
       </visual>
-      
       <collision>
         <origin xyz="0 0 0.06" rpy="0 0 0" />
         <geometry>
@@ -250,6 +236,8 @@
         </geometry>
       </collision>
     </link>
+
+
 
     <!-- extensions -->
     <xacro:schunk_lwa4d_gazebo name="${name}" />
