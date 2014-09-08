@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(schunk_simulated_tactile_sensors)
 
-find_package(catkin REQUIRED COMPONENTS rospy schunk_sdh geometry_msgs)
+find_package(catkin REQUIRED COMPONENTS rospy schunk_sdh geometry_msgs rostest)
 
 catkin_package(
     CATKIN_DEPENDS rospy schunk_sdh geometry_msgs

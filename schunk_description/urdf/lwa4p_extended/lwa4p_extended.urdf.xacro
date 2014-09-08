@@ -34,7 +34,6 @@
       </collision>
     </link>
     
-    
     <!-- joint between arm_base_link and arm_1_link -->
     <joint name="${name}_1_joint" type="revolute">
       <origin xyz="0 0 ${0.134+0.005}" rpy="0 0 0" /> 
@@ -45,10 +44,10 @@
       <dynamics damping="0" friction="0"/>
       <!--limit effort="81.5" velocity="0.42" lower="-6.2831853" upper="6.2831853"/-->
       <limit effort="81.5" velocity="0.42" lower="-${M_PI}" upper="${M_PI}"/>
-      <safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-M_PI + 0.01}" soft_upper_limit="${M_PI - 0.01}" />
+      <!--safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-M_PI + 0.01}" soft_upper_limit="${M_PI - 0.01}" /-->
     </joint>
 
-    <!-- prl100 rototor + shoulder flansh --> 
+    <!-- prl100 rotor + shoulder flansh --> 
     <link name="${name}_1_link">
       <inertial>
         <origin xyz="0.0 -0.0662 -0.0473" rpy="0 0 0"/>
@@ -78,12 +77,12 @@
       <calibration rising="${arm_2_ref}"/>
       <dynamics damping="0" friction="0"/>
       <limit effort="48" velocity="1.2566" lower="-2.0943951" upper="2.0943951"/>
-      <safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-2.0943 + 0.01}" soft_upper_limit="${2.0943 - 0.01}" />
+      <!--safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-2.0943 + 0.01}" soft_upper_limit="${2.0943 - 0.01}" /-->
     </joint>
 
     <link name="${name}_2_link">
       <inertial>
-        <origin xyz="0 0.018 0.018" rpy="0 0 0"/>
+        <origin xyz="0 0.018 -0.018" rpy="0 0 0"/>
         <mass value="3.9"/>
         <inertia ixx="0.009780" ixy="0.0" ixz="0.0" iyy="0.013300" iyz="0.0" izz="0.009780" />
       </inertial>
@@ -112,7 +111,7 @@
       <dynamics damping="0" friction="0"/>
       <!--limit effort="48" velocity="1.2566" lower="-6.2831853" upper="6.2831853"/-->
       <limit effort="48" velocity="1.2566" lower="-${M_PI}" upper="${M_PI}"/>
-      <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-M_PI + 0.01}" soft_upper_limit="${M_PI - 0.01}" />
+      <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-M_PI + 0.01}" soft_upper_limit="${M_PI - 0.01}" /-->
     </joint>
 
     <link name="${name}_3_link">
@@ -121,12 +120,7 @@
         <mass value="1.94533"/>
         <inertia ixx="0.0344" ixy="0.0" ixz="0.0077" iyy="0.0362" iyz="0.0" izz="0.0052" />
       </inertial>
-      <inertial>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <mass value="0.1"/>
-        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
-      </inertial>
-    <visual>
+      <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_3_link.dae" />
@@ -149,7 +143,7 @@
       <calibration rising="${arm_4_ref}"/>
       <dynamics damping="0" friction="0"/>
       <limit effort="48" velocity="1.2566" lower="-2.0943951" upper="2.0943951"/>     
-      <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" />
+      <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" /-->
     </joint>
 
     <link name="${name}_4_link">
@@ -182,7 +176,7 @@
       <dynamics damping="0" friction="0"/>
       <!--limit effort="48" velocity="1.2566" lower="-6.2831853" upper="6.2831853" /-->
       <limit effort="48" velocity="1.2566" lower="-${M_PI}" upper="${M_PI}" />
-      <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-M_PI + 0.01}" soft_upper_limit="${M_PI - 0.01}" />
+      <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-M_PI + 0.01}" soft_upper_limit="${M_PI - 0.01}" /-->
     </joint>
 
     <link name="${name}_5_link">
@@ -214,7 +208,7 @@
       <calibration rising="${arm_6_ref}"/>
       <dynamics damping="0" friction="0"/>
       <limit effort="15" velocity="1.2566" lower="-2.0943951" upper="2.0943951" />
-      <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" />
+      <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" /-->
     </joint>
 
     <link name="${name}_6_link">
@@ -246,15 +240,13 @@
       <calibration rising="${arm_7_ref}"/>
       <dynamics damping="0" friction="0"/>
       <limit effort="15" velocity="1.2566" lower="-2.0943951" upper="2.0943951" />
-      <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" />
+      <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" /-->
     </joint>
 
     <link name="${name}_7_link">
-      <inertial>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <mass value="0.1"/>
-        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
-      </inertial>
+      <xacro:box_inertial x="0.01" y="0.01" z="0.01" mass="0.01">
+        <origin xyz="0 0 0.1" rpy="0 0 0" />
+      </xacro:box_inertial>
     </link>
 
 

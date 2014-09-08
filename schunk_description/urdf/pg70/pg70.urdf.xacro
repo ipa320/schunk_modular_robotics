@@ -4,15 +4,15 @@
   <xacro:include filename="$(find schunk_description)/urdf/pg70/pg70.gazebo.xacro" />
   <xacro:include filename="$(find schunk_description)/urdf/pg70/pg70.transmission.xacro" />
 
-  <xacro:macro name="schunk_pg70" params="parent name *origin">
+  <xacro:macro name="schunk_pg70" params="parent name *origin pg70_finger_left_ref pg70_finger_right_ref">
 
-    <joint name="${name}_gripper_joint" type="fixed" >
+    <joint name="${name}_palm_joint" type="fixed" >
       <parent link="${parent}" />
-      <child link="${name}_gripper_link" />
+      <child link="${name}_palm_link" />
       <xacro:insert_block name="origin" />
     </joint>
 
-    <link name="${name}_gripper_link">
+    <link name="${name}_palm_link">
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <mass value="1"/>
@@ -36,8 +36,9 @@
       </collision>
     </link>
 
+
     <joint name="${name}_finger_left_joint" type="prismatic" >
-      <parent link="${name}_gripper_link" />
+      <parent link="${name}_palm_link" />
       <child link="${name}_finger_left_link" />
       <limit effort="100" lower="-0.001" upper="0.0345" velocity="2.0"/>
       <calibration rising="${pg70_finger_left_ref}"/>
@@ -69,9 +70,10 @@
       </collision>
     </link>
 
+
     <joint name="${name}_finger_right_joint" type="prismatic" >
       <mimic joint="${name}_finger_left_joint" multiplier="1" offset="0"/>
-      <parent link="${name}_gripper_link" />
+      <parent link="${name}_palm_link" />
       <child link="${name}_finger_right_link" />
       <limit effort="100" lower="-0.001" upper="0.0345" velocity="2.0"/>
       <calibration rising="${pg70_finger_right_ref}"/>

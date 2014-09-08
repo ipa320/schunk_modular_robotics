@@ -4,21 +4,23 @@
   <xacro:macro name="schunk_pg70_transmission" params="name">
 
     <!-- finger1 -->
-    <transmission name="${name}_finger_trans">
+    <transmission name="${name}_finger_left_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_finger_left_joint"/>
-      <actuator name="${name}_finger_motor">
+      <joint name="${name}_finger_left_joint">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${name}_finger_left_motor">
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
   
-    <!-- finger2 -->
-    <transmission name="${name}_finger_mimic_trans">
+    <!-- finger2 - mimic -->
+    <transmission name="${name}_finger_right_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_finger_right_joint"/>
-      <actuator name="${name}_finger_mimic_motor">
+      <joint name="${name}_finger_right_joint">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${name}_finger_right_motor">
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
