@@ -1,6 +1,6 @@
 <package>
   <name>schunk_sdh</name>
-  <version>0.5.6</version>
+  <version>0.5.4</version>
   <description>This package provides an interface for operating the schunk dexterous hand (SDH), including the tactile sensors.</description>
 
   <license>LGPL</license>
@@ -15,6 +15,7 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>roscpp</build_depend>
+  <build_depend>actionlib</build_depend>
   <build_depend>urdf</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>sensor_msgs</build_depend>

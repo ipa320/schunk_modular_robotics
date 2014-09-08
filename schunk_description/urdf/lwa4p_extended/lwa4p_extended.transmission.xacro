@@ -4,10 +4,9 @@
   <xacro:macro name="schunk_lwa4p_extended_SimpleTransmission" params="jname number">
     <transmission name="${jname}_${number}_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${jname}_${number}_joint">
-        <hardwareInterface>VelocityJointInterface</hardwareInterface>
-      </joint>
+      <joint name="${jname}_${number}_joint"/>
       <actuator name="${jname}_${number}_motor">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>

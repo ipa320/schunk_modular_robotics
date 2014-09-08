@@ -2,16 +2,6 @@
 Changelog for package schunk_simulated_tactile_sensors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.5.6 (2014-08-27)
-------------------
-* catkin_lint'ing
-* Contributors: ipa-fxm
-
-0.5.5 (2014-08-26)
-------------------
-* modifications in tranmissions, removing of bumpers and small cleanups
-* Contributors: Alexander Bubeck
-
 0.5.4 (2014-03-28)
 ------------------
 
