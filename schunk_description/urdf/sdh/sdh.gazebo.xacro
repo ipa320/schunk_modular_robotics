@@ -20,7 +20,7 @@
       <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
       <sensor name='${name}_finger_12_contact_sensor' type='contact'>
-        <always_on>1</always_on>
+        <always_on>true</always_on>
         <update_rate>100</update_rate>
         <contact>
           <collision>${name}_finger_12_link_collision</collision>
@@ -38,7 +38,7 @@
       <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
       <sensor name='${name}_finger_13_contact_sensor' type='contact'>
-        <always_on>1</always_on>
+        <always_on>true</always_on>
         <update_rate>100</update_rate>
         <contact>
           <collision>${name}_finger_13_link_collision</collision>
@@ -66,7 +66,7 @@
       <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
       <sensor name='${name}_finger_22_contact_sensor' type='contact'>
-        <always_on>1</always_on>
+        <always_on>true</always_on>
         <update_rate>100</update_rate>
         <contact>
           <collision>${name}_finger_22_link_collision</collision>
@@ -84,7 +84,7 @@
       <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
       <sensor name='${name}_finger_23_contact_sensor' type='contact'>
-        <always_on>1</always_on>
+        <always_on>true</always_on>
         <update_rate>100</update_rate>
         <contact>
           <collision>${name}_finger_23_link_collision</collision>
@@ -108,7 +108,7 @@
       <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
       <sensor name='${name}_thumb_2_contact_sensor' type='contact'>
-        <always_on>1</always_on>
+        <always_on>true</always_on>
         <update_rate>100</update_rate>
         <contact>
           <collision>${name}_thumb_2_link_collision</collision>
@@ -126,7 +126,7 @@
       <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
       <sensor name='${name}_thumb_3_contact_sensor' type='contact'>
-        <always_on>1</always_on>
+        <always_on>true</always_on>
         <update_rate>100</update_rate>
         <contact>
           <collision>${name}_thumb_3_link_collision</collision>
