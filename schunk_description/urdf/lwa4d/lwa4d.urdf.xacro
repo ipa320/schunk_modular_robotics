@@ -130,7 +130,7 @@
     </joint>
 
     <link name="${name}_4_link">
-      <xacro:cylinder_inertial radius="0.056" length="0.134" mass="2.0">
+      <xacro:cylinder_inertial radius="0.0445" length="0.1125" mass="1.2">
         <origin xyz="0 0.15 0.0" rpy="0 0 0"/>
       </xacro:cylinder_inertial>
       <visual>
@@ -159,7 +159,7 @@
     </joint>
 
     <link name="${name}_5_link">
-      <xacro:cylinder_inertial radius="0.0445" length="0.052" mass="0.4">
+      <xacro:cylinder_inertial radius="0.0445" length="0.032" mass="0.2">
         <origin xyz="0 0.05 -0.24" rpy="0 0 0"/>
       </xacro:cylinder_inertial>
       <visual>
@@ -189,7 +189,7 @@
 
     <link name="${name}_6_link">
       <inertial>
-        <origin xyz="0 -0.012 -0.013" rpy="0 0 0"/>
+        <origin xyz="0 0.012 0.017" rpy="0 0 0"/>
         <mass value="1.9"/>
         <inertia ixx="0.002750" ixy="0" ixz="0" iyy="0.004002" iyz="0" izz="0.002830"/>
       </inertial>
