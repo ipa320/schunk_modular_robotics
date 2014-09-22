@@ -19,42 +19,36 @@
       <gravity>true</gravity>
       <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
-<!--
       <sensor name='${name}_finger_12_contact_sensor' type='contact'>
         <always_on>true</always_on>
         <update_rate>100</update_rate>
         <contact>
-          <collision>${name}_finger_12_link_geom</collision>
+          <collision>${name}_finger_12_link_collision</collision>
+          <topic>${name}_finger_12_bumper</topic>
         </contact>
         <plugin name="${name}_finger_12_gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">
-          <alwaysOn>true</alwaysOn>
-          <updateRate>100.0</updateRate>
           <frameName>${name}_finger_12_link</frameName>
           <bumperTopicName>${name}_finger_12_bumper</bumperTopicName>
         </plugin>
       </sensor>
--->
     </gazebo>
 
     <gazebo reference="${name}_finger_13_link">
       <gravity>true</gravity>
       <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
-<!--
       <sensor name='${name}_finger_13_contact_sensor' type='contact'>
         <always_on>true</always_on>
-        <update_rate>100</update_rate>        
+        <update_rate>100</update_rate>
         <contact>
-          <collision>${name}_finger_13_link_geom</collision>
+          <collision>${name}_finger_13_link_collision</collision>
+          <topic>${name}_finger_13_bumper</topic>
         </contact>
         <plugin name="${name}_finger_13_gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">
-          <alwaysOn>true</alwaysOn>
-          <updateRate>100.0</updateRate>
           <frameName>${name}_finger_13_link</frameName>
           <bumperTopicName>${name}_finger_13_bumper</bumperTopicName>
         </plugin>
       </sensor>
--->
     </gazebo>
 
     <gazebo reference="${name}_finger_21_link">
@@ -71,42 +65,36 @@
       <gravity>true</gravity>
       <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
-<!--
       <sensor name='${name}_finger_22_contact_sensor' type='contact'>
         <always_on>true</always_on>
-        <update_rate>100</update_rate>        
+        <update_rate>100</update_rate>
         <contact>
-          <collision>${name}_finger_22_link_geom</collision>
+          <collision>${name}_finger_22_link_collision</collision>
+          <topic>${name}_finger_22_bumper</topic>
         </contact>
         <plugin name="${name}_finger_22_gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">
-          <alwaysOn>true</alwaysOn>
-          <updateRate>100.0</updateRate>
           <frameName>${name}_finger_22_link</frameName>
           <bumperTopicName>${name}_finger_22_bumper</bumperTopicName>
         </plugin>
       </sensor>
--->
     </gazebo>
 
     <gazebo reference="${name}_finger_23_link">
       <gravity>true</gravity>
       <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
-<!--
       <sensor name='${name}_finger_23_contact_sensor' type='contact'>
         <always_on>true</always_on>
-        <update_rate>100</update_rate>        
+        <update_rate>100</update_rate>
         <contact>
-          <collision>${name}_finger_23_link_geom</collision>
+          <collision>${name}_finger_23_link_collision</collision>
+          <topic>${name}_finger_23_bumper</topic>
         </contact>
         <plugin name="${name}_finger_23_gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">
-          <alwaysOn>true</alwaysOn>
-          <updateRate>100.0</updateRate>
           <frameName>${name}_finger_23_link</frameName>
           <bumperTopicName>${name}_finger_23_bumper</bumperTopicName>
         </plugin>
       </sensor>
--->
     </gazebo>
 
     <gazebo reference="${name}_thumb_1_link">
@@ -119,42 +107,36 @@
       <gravity>true</gravity>
       <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
-<!--
       <sensor name='${name}_thumb_2_contact_sensor' type='contact'>
         <always_on>true</always_on>
-        <update_rate>100</update_rate>        
+        <update_rate>100</update_rate>
         <contact>
-          <collision>${name}_thumb_2_link_geom</collision>
+          <collision>${name}_thumb_2_link_collision</collision>
+          <topic>${name}_thumb_2_bumper</topic>
         </contact>
         <plugin name="${name}_thumb_2_gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">
-          <alwaysOn>true</alwaysOn>
-          <updateRate>100.0</updateRate>
           <frameName>${name}_thumb_2_link</frameName>
           <bumperTopicName>${name}_thumb_2_bumper</bumperTopicName>
-        </plugin>        
+        </plugin>
       </sensor>
--->
     </gazebo>
 
     <gazebo reference="${name}_thumb_3_link">
       <gravity>true</gravity>
       <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
-<!--
       <sensor name='${name}_thumb_3_contact_sensor' type='contact'>
         <always_on>true</always_on>
-        <update_rate>100</update_rate>        
+        <update_rate>100</update_rate>
         <contact>
-          <collision>${name}_thumb_3_link_geom</collision>
+          <collision>${name}_thumb_3_link_collision</collision>
+          <topic>${name}_thumb_3_bumper</topic>
         </contact>
         <plugin name="${name}_thumb_3_gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">
-          <alwaysOn>true</alwaysOn>
-          <updateRate>100.0</updateRate>
           <frameName>${name}_thumb_3_link</frameName>
           <bumperTopicName>${name}_thumb_3_bumper</bumperTopicName>
         </plugin>
-      </sensor>      
--->
+      </sensor>
     </gazebo>
 
     <!--gazebo reference="${name}_finger_21_joint">
