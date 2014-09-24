@@ -250,6 +250,26 @@ public:
 
 	void updateVelocities(std::vector<double> pos_temp, double delta_t);
 
+	/*!
+	 * \brief Map an external position to an internal position.
+	 *
+	 * Apply the provided offset to the external position to get an internal position.
+	 * An external position is a position which is communicated through this class'
+	 * API. (e.g. from a ROS or OROCOS component). An internal position is a
+	 * position that is read from or written to the hardware module.
+	 */
+	double mapToInternalPosition(double external_pos, double offset);
+
+	/*!
+	 * \brief Map an internal position to an external position.
+	 *
+	 * Apply the provided offset to the internal position to get an external position.
+	 * An external position is a position which is communicated through this class'
+	 * API. (e.g. from a ROS or OROCOS component). An internal position is a
+	 * position that is read from or written to the hardware module.
+	 */
+	double mapToExternalPosition(double internal_pos, double offset);
+
 protected:
 	pthread_mutex_t m_mutex;
 
