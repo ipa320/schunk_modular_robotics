@@ -15,9 +15,12 @@
     </joint>
 
      <link name="${name}_base_link">
+      <xacro:default_inertial/>
+<!--
       <xacro:cylinder_inertial radius="0.045" length="0.03" mass="3.6">
         <origin xyz="0 0 0.015" rpy="0 0 0"/>
        </xacro:cylinder_inertial>
+-->
        <visual>
         <origin xyz="0 0 0.015" rpy="0 0 0"/>
          <geometry>
@@ -44,9 +47,12 @@
     </joint>
 
     <link name="${name}_1_link">
+      <xacro:default_inertial/>
+<!--
       <xacro:cylinder_inertial radius="0.06" length="0.150" mass="3.6">
           <origin xyz="0 0 0.02" rpy="0 0 0"/>
       </xacro:cylinder_inertial>
+-->
       <visual>
         <origin xyz="0 0 -0.15" rpy="0 0 ${M_PI}"/>
         <geometry>
@@ -73,9 +79,12 @@
     </joint>
 
     <link name="${name}_2_link">
+      <xacro:default_inertial/>
+<!--
       <xacro:cylinder_inertial radius="0.06" length="0.150" mass="2.0">
         <origin xyz="0 0 0" rpy="0 0 0"/>
       </xacro:cylinder_inertial>
+-->
       <visual>
         <origin xyz="0 0 0" rpy="0 0 ${M_PI}"/>
         <geometry>
@@ -102,9 +111,12 @@
     </joint>
 
     <link name="${name}_3_link">
+      <xacro:default_inertial/>
+<!--
       <xacro:cylinder_inertial radius="0.06" length="0.2" mass="2.0">
         <origin xyz="0.0 0 -0.2" rpy="0 0 0"/>
       </xacro:cylinder_inertial> 
+-->
       <visual>
         <origin xyz="0 0 -0.39" rpy="0 0 ${M_PI}"/>
         <geometry>
@@ -131,9 +143,12 @@
     </joint>
 
     <link name="${name}_4_link">
+      <xacro:default_inertial/>
+<!--
       <xacro:cylinder_inertial radius="0.06" length="0.150" mass="1.2">
         <origin xyz="0 0 0" rpy="0 0 0"/>
       </xacro:cylinder_inertial>
+-->
       <visual>
         <origin xyz="0 0 0" rpy="0 0 ${M_PI}"/>
         <geometry>
@@ -160,9 +175,12 @@
     </joint>
 
     <link name="${name}_5_link">
+      <xacro:default_inertial/>
+<!--
       <xacro:cylinder_inertial radius="0.06" length="0.15" mass="1.2">
         <origin xyz="0 0 -0.18" rpy="0 0 0"/>
       </xacro:cylinder_inertial>
+-->
       <visual>
         <origin xyz="0 0 -0.323" rpy="0 0 ${M_PI}"/>
         <geometry>
@@ -189,9 +207,12 @@
     </joint>
 
     <link name="${name}_6_link">
+      <xacro:default_inertial/>
+<!--
       <xacro:sphere_inertial radius="0.05" mass="1.9">
         <origin xyz="0 0 0" rpy="0 0 0"/>
       </xacro:sphere_inertial>
+-->
       <visual>
         <origin xyz="0 0 0" rpy="0 ${M_PI} 0"/>
         <geometry>
@@ -218,9 +239,12 @@
     </joint>
 
     <link name="${name}_7_link">
+      <xacro:default_inertial/>
+<!--
       <xacro:cylinder_inertial radius="0.03" length="0.035" mass="0.05">
         <origin xyz="0 0 0.06" rpy="0 0 0"/>
       </xacro:cylinder_inertial>
+-->
       <visual>
         <origin xyz="0 0 0.06" rpy="0 0 0"/>
         <geometry>
