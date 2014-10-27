@@ -68,7 +68,7 @@ extern bool g_bDebugFile;
 
 extern bool g_bDebug;
 
-extern char* g_pcDebugFileName;
+extern const char* g_pcDebugFileName;
 
 // ---- typedefs ------------------------------------------------------------ ;
 
