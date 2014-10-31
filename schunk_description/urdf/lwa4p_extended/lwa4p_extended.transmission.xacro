@@ -5,6 +5,7 @@
     <transmission name="${jname}_${number}_trans">
       <type>transmission_interface/SimpleTransmission</type>
       <joint name="${jname}_${number}_joint">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
         <hardwareInterface>VelocityJointInterface</hardwareInterface>
       </joint>
       <actuator name="${jname}_${number}_motor">
