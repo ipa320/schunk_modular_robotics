@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+  <name>schunk_finger</name>
+  <version>0.0.1</version>
+  <description>The schunk_finger package</description>
+
+  <maintainer email="tdf@ipa.fhg.de">Thiago de Freitas</maintainer>
+  <license>BSD</license>
+
+  <author email="tdf@ipa.fhg.de">Thiago de Freitas</author>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>control_msgs</build_depend>
+  <build_depend>roslib</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <run_depend>control_msgs</run_depend>
+  <run_depend>roslib</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+
+</package>
