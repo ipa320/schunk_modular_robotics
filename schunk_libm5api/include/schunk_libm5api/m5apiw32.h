@@ -45,8 +45,10 @@
  * 
  ******************************************************************************/
 
+#ifndef __LINUX__
+#define __LINUX__
+#endif
 
-#define __LINUX__ 
 #ifndef M5APIW32_H
 #define M5APIW32_H
 
