@@ -64,11 +64,13 @@ FJT_ACTION_NAME="finger_controller/follow_joint_trajectory"
 
 import serial
 import time
+import rospy
+import actionlib
 
 Terminator="\r\n"
 commands = {"position": "p", "stop": "s", "move" : "m"}
 
-class cob4Finger():
+class Finger():
 
   def __init__(self, port):
   
@@ -76,84 +78,123 @@ class cob4Finger():
     
     self._as = actionlib.SimpleActionServer(FJT_ACTION_NAME, FollowJointTrajectoryAction, self.execute_cb, False)
     self._as.start()
-    self._set_io = rospy.ServiceProxy(SETIO_SERVICE_NAME, SetIOState)
-    self._pub_joint_states = rospy.Publisher('joint_states', JointState)
-    self._pub_controller_state = rospy.Publisher('gripper_controller/state', JointTrajectoryControllerState)
+    self._pub_joint_states = rospy.Publisher('joint_states', JointState,queue_size=5)
+    self._pub_controller_state = rospy.Publisher('finger_controller/state', JointTrajectoryControllerState,queue_size=5)
     # joint state
     self._joint_states = JointState()
-    self._joint_states.name = ["finger_left_joint"]
-    self._joint_states.position = [POSITION_OPEN]
-    self._joint_states.velocity = [0.0]
-    self._joint_states.effort = [0.0]
+    self._joint_states.name = ["finger_distal", "finger_proximal"]
+    self._joint_states.velocity = [0.0,0.0]
+    self._joint_states.effort = [0.0,0.0]
     # contoller state
     self._controller_state = JointTrajectoryControllerState()
-    self._controller_state.header.stamp = rospy.Time.now()
-    self._controller_state.joint_names = self._joint_states.name
-    self._controller_state.actual.positions = self._joint_states.position
-    self._controller_state.actual.velocities = self._joint_states.velocity 
-
 
   def get_pos(self):  
     status,pos = self.execute_command("position")
     
-    return pos
+    return status, pos
   
   def move(self,pos_0, pos_1):
-    complement = " "+pos_0+","+pos_1+Terminator
+    complement = " "+(str)(pos_0)+","+(str)(pos_1)+Terminator
     
     print self.execute_command("move", complement)
     
   def close_port(self):  
-    self._ser.close() 
+    self._ser.close()
+  
+  def execute_cb(self, goal):
+    
+    position_distal = goal.trajectory.points[-1].positions[0]
+    position_proximal = goal.trajectory.points[-1].positions[1]
+    
+    self.move(position_distal, position_proximal)
+    
+    success = True
+      
+    if success:
+      self._as.set_succeeded()
+    else:
+      self._as.set_aborted()
+    
+  def publish_joint_states(self):
+    status, pos = self.get_pos()
+    if status == True:
+      try:
+        actual_pos_distal = pos[0]
+        actual_pos_proximal = pos[1]
+        self._joint_states.position = [(int)(actual_pos_distal), (int)(actual_pos_proximal)]
+        self._joint_states.header.stamp = rospy.Time.now()
+        self._pub_joint_states.publish(self._joint_states)
+      except ValueError:
+        pass
+        
+  def publish_controller_state(self):
+    self._controller_state.header.stamp = rospy.Time.now()
+    self._controller_state.joint_names = self._joint_states.name
+    self._controller_state.actual.positions = self._joint_states.position
+    self._controller_state.actual.velocities = self._joint_states.velocity 
+    self._pub_controller_state.publish(self._controller_state)
 
   def execute_command(self, command, complement=Terminator, timeout=2):
   
     t_out = time.time() + timeout
     
-    self._ser.write(commands[command]+complement)
+    try:
     
-    line_to_parse = self._ser.readline()
-    
-    if(command == "position"):
-    
-      while True:
-        if (time.time() > t_out):
-          return False,None
-        elif("P=" not in line_to_parse[0:2]):
-          self._ser.write(commands[command]+complement)
-          line_to_parse = self._ser.readline()
-        else:
-          break
+      self._ser.write(commands[command]+complement)
+      line_to_parse = self._ser.readline()
+      if(command == "position"):
       
-      line_to_parse = line_to_parse.replace('P=','')
-      line_to_parse = line_to_parse.strip()
-      line_to_parse = line_to_parse.split(',')
-      result = line_to_parse
-            
-    elif(command == "move"):
-    
-      while True:
-        if (time.time() > t_out):
-          return False,None
-        elif("@Mov" not in line_to_parse[0:5]):
-          self._ser.write(commands[command]+complement)
-          line_to_parse = self._ser.readline()
+        while True:
+          if (time.time() > t_out):
+            return False,None
+          elif("P=" not in line_to_parse[0:2]):
+            self._ser.write(commands[command]+complement)
+            line_to_parse = self._ser.readline()
+          else:
+            break
+        
+        line_to_parse = line_to_parse.replace('P=','')
+        line_to_parse = line_to_parse.strip()
+        line_to_parse = line_to_parse.split(',')
+        result = line_to_parse
+        
+        if(len(result) !=2):
+          status = False
         else:
-          break
-     
-      result = line_to_parse
+          status=True
+              
+      elif(command == "move"):
+      
+        while True:
+          if (time.time() > t_out):
+            return False,None
+          elif("@Mov" not in line_to_parse[0:5]):
+            self._ser.write(commands[command]+complement)
+            line_to_parse = self._ser.readline()
+          else:
+            break
+       
+        result = line_to_parse
+      
+        status = True
+      
+      self._ser.flush()
+      
+      return status, result
+      
+    except serial.serialutil.SerialException:
+      pass
     
-    status = True
     
-    self._ser.flush()
     
-    return status, result
-
     
 if __name__ == '__main__':
+  rospy.init_node('schunk_finger')
+  fing = Finger("/dev/ttyACM0")
+  r = rospy.Rate(30) # 10hz
+  while not rospy.is_shutdown():
+    fing.publish_joint_states()
+    fing.publish_controller_state()
+    r.sleep()
+  fing.close_port()
 
-  cfing = cob4Finger("/dev/ttyACM0")
-  
-  cfing.move("3688","2483")
-  
-  cfing.close_port()
