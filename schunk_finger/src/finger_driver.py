@@ -85,7 +85,7 @@ class Finger():
     self._joint_states.name = ["finger_distal", "finger_proximal"]
     self._joint_states.velocity = [0.0,0.0]
     self._joint_states.effort = [0.0,0.0]
-    # contoller state
+    # controller state
     self._controller_state = JointTrajectoryControllerState()
 
   def get_pos(self):  
@@ -96,7 +96,11 @@ class Finger():
   def move(self,pos_0, pos_1):
     complement = " "+(str)(pos_0)+","+(str)(pos_1)+Terminator
     
-    print self.execute_command("move", complement)
+    status, reply = self.execute_command("move", complement)
+
+    return status, reply
+
+
     
   def close_port(self):  
     self._ser.close()
@@ -106,11 +110,9 @@ class Finger():
     position_distal = goal.trajectory.points[-1].positions[0]
     position_proximal = goal.trajectory.points[-1].positions[1]
     
-    self.move(position_distal, position_proximal)
-    
-    success = True
-      
-    if success:
+    status, reply = self.move(position_distal, position_proximal)
+
+    if(status==True):
       self._as.set_succeeded()
     else:
       self._as.set_aborted()
