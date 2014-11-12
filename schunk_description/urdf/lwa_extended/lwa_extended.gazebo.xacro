@@ -1,52 +1,56 @@
 <?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
-       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
-       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
-       xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="schunk_lwa_extended_gazebo" params="name">
 
-	<xacro:macro name="schunk_lwa_extended_gazebo" params="name">
+    <gazebo reference="${name}_0_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <material value="Schunk/DarkGolden" />
+    </gazebo>
 
-		<gazebo reference="${name}_0_link">
-			<material value="Schunk/DarkGolden" />
-			<turnGravityOff>false</turnGravityOff>
-		</gazebo>
+    <gazebo reference="${name}_1_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <material value="Schunk/DarkGolden" />
+    </gazebo>
 
-		<gazebo reference="${name}_1_link">
-			<material value="Schunk/DarkGolden" />
-			<turnGravityOff>false</turnGravityOff>
-		</gazebo>
+    <gazebo reference="${name}_2_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <material value="Schunk/DarkGolden" />
+    </gazebo>
 
-		<gazebo reference="${name}_2_link">
-			<material value="Schunk/DarkGolden" />
-			<turnGravityOff>false</turnGravityOff>
-		</gazebo>
+    <gazebo reference="${name}_3_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <material value="Schunk/DarkGolden" />
+    </gazebo>
 
-		<gazebo reference="${name}_3_link">
-			<material value="Schunk/DarkGolden" />
-			<turnGravityOff>false</turnGravityOff>
-		</gazebo>
+    <gazebo reference="${name}_4_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <material value="Schunk/DarkGolden" />
+    </gazebo>
 
-		<gazebo reference="${name}_4_link">
-			<material value="Schunk/DarkGolden" />
-			<turnGravityOff>false</turnGravityOff>
-		</gazebo>
+    <gazebo reference="${name}_5_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <material value="Schunk/DarkGolden" />
+    </gazebo>
 
-		<gazebo reference="${name}_5_link">
-			<material value="Schunk/DarkGolden" />
-			<turnGravityOff>false</turnGravityOff>
-		</gazebo>
+    <gazebo reference="${name}_6_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <material value="Schunk/DarkGolden" />
+    </gazebo>
 
-		<gazebo reference="${name}_6_link">
-			<material value="Schunk/DarkGolden" />
-			<turnGravityOff>false</turnGravityOff>
-		</gazebo>
+    <gazebo reference="${name}_7_link">
+      <gravity>true</gravity>
+      <self_collide>false</self_collide>
+      <material value="Schunk/DarkGolden" />
+    </gazebo>
 
-		<gazebo reference="${name}_7_link">
-			<material value="Schunk/DarkGolden" />
-			<turnGravityOff>false</turnGravityOff>
-		</gazebo>
-
-	</xacro:macro>
+  </xacro:macro>
 
 </robot>

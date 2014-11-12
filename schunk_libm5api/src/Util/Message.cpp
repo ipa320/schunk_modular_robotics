@@ -51,7 +51,7 @@
 int g_iDebugLevel = 3;
 bool g_bDebugFile = false;
 bool g_bDebug = true;
-char* g_pcDebugFileName = "debug.txt";
+const char* g_pcDebugFileName = "debug.txt";
 
 double CMessage::m_fInitTime;
 
@@ -72,7 +72,7 @@ CMessage::CMessage() : m_bDebug(g_bDebug), m_bDebugFile(g_bDebugFile), m_iDebugL
 	m_acClassName[0] = 0;
 }
 
-CMessage::CMessage(char* pcClassName, int iDebuglevel, bool bDebug, bool bDebugFile) : m_bDebug(bDebug), m_bDebugFile(bDebugFile), m_iDebugLevel(iDebuglevel)
+CMessage::CMessage(const char* pcClassName, int iDebuglevel, bool bDebug, bool bDebugFile) : m_bDebug(bDebug), m_bDebugFile(bDebugFile), m_iDebugLevel(iDebuglevel)
 {
 	strncpy(m_acClassName ,pcClassName, 50);
 }
@@ -118,7 +118,7 @@ int CMessage::getDebugLevel() const
 //                                                                            ;
 // ========================================================================== ;
 
-int CMessage::initMessage(char* pcClassName, int iDebuglevel, bool bDebug, bool bDebugFile)
+int CMessage::initMessage(const char* pcClassName, int iDebuglevel, bool bDebug, bool bDebugFile)
 {
 	strncpy(m_acClassName, pcClassName, 50);
 	m_bDebug = bDebug;
@@ -223,7 +223,7 @@ void CMessage::error(const char *pcErrorMessage,...) const
 #ifdef WIN32
 	OutputDebugString(acOutBuffer);
 #else
-	fprintf(stderr, acOutBuffer);
+	fprintf(stderr, "%s",acOutBuffer);
 #endif
 
 	va_end(args);
@@ -278,7 +278,7 @@ void CMessage::error(const int iErrorCode,
 #ifdef WIN32
 	OutputDebugString(acOutBuffer);
 #else
-	fprintf(stderr, acOutBuffer);
+	fprintf(stderr, "%s", acOutBuffer);
 #endif
 	LEAVECS;
 	exit(-1);
@@ -333,7 +333,7 @@ void CMessage::warning(const char *pcWarningMessage,...) const
 	OutputDebugString(acOutBuffer);
 #else
         if (m_bDebug)
-	        fprintf(stderr, acOutBuffer);
+	        fprintf(stderr, "%s", acOutBuffer);
 #endif
 
 	va_end(args);
@@ -413,7 +413,7 @@ void CMessage::debug(const int iDebugLevel,
 #else
         if (m_bDebug)
         {
-	        fprintf(stderr, acOutBuffer);
+	        fprintf(stderr, "%s", acOutBuffer);
         }
 #endif
 

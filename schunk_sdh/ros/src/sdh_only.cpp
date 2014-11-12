@@ -72,9 +72,8 @@
 #include <std_msgs/Float32MultiArray.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <sensor_msgs/JointState.h>
-//#include <pr2_controllers_msgs/JointTrajectoryAction.h>
 #include <control_msgs/FollowJointTrajectoryAction.h>
-#include <pr2_controllers_msgs/JointTrajectoryControllerState.h>
+#include <control_msgs/JointTrajectoryControllerState.h>
 #include <brics_actuator/JointVelocities.h>
 #include <brics_actuator/JointValue.h>
 
@@ -115,7 +114,6 @@ class SdhNode
 		ros::ServiceServer srvServer_SetOperationMode_;
 
 		// actionlib server
-		//actionlib::SimpleActionServer<pr2_controllers_msgs::JointTrajectoryAction> as_;
 		actionlib::SimpleActionServer<control_msgs::FollowJointTrajectoryAction> as_;
 		std::string action_name_;
 
@@ -187,7 +185,7 @@ class SdhNode
 
 			// implementation of topics to publish
 			topicPub_JointState_ = nh_.advertise<sensor_msgs::JointState>("/joint_states", 1);
-			topicPub_ControllerState_ = nh_.advertise<pr2_controllers_msgs::JointTrajectoryControllerState>("state", 1);
+			topicPub_ControllerState_ = nh_.advertise<control_msgs::JointTrajectoryControllerState>("state", 1);
 
 			// pointer to sdh
 			sdh_ = new SDH::cSDH(false, false, 0); //(_use_radians=false, bool _use_fahrenheit=false, int _debug_level=0)
@@ -246,6 +244,37 @@ class SdhNode
 			nh_.param("OperationMode", operationMode_, std::string("position"));
 			return true;
 		}
+		/*!
+		* \brief Switches operation mode if possible
+		*
+		* \param mode new mode
+		*/
+		bool switchOperationMode(const std::string &mode){
+			hasNewGoal_ = false;
+			sdh_->Stop();
+			
+			try{
+				if(mode == "position"){
+					sdh_->SetController(SDH::cSDH::eCT_POSE);
+				}else if(mode == "velocity"){
+					sdh_->SetController(SDH::cSDH::eCT_VELOCITY);
+				}else{
+					ROS_ERROR_STREAM("Operation mode '" << mode << "'  not supported");
+					return false;
+				}
+				sdh_->SetAxisEnable(sdh_->All, 1.0); // TODO: check if necessary
+			}
+			catch (SDH::cSDHLibraryException* e)
+			{
+				ROS_ERROR("An exception was caught: %s", e->what());
+				delete e;
+				return false;
+			}
+			
+			operationMode_ = mode;
+			return true;
+
+		}
 
 		/*!
 		* \brief Executes the callback from the actionlib
@@ -253,7 +282,6 @@ class SdhNode
 		* Set the current goal to aborted after receiving a new goal and write new goal to a member variable. Wait for the goal to finish and set actionlib status to succeeded.
 		* \param goal JointTrajectoryGoal
 		*/
-		//void executeCB(const pr2_controllers_msgs::JointTrajectoryGoalConstPtr &goal)
 		void executeCB(const control_msgs::FollowJointTrajectoryGoalConstPtr &goal)
 		{			
 			ROS_INFO("sdh: executeCB");
@@ -467,6 +495,11 @@ class SdhNode
 					delete e;
 					return true;
 				}
+				if(!switchOperationMode(operationMode_)){
+					res.success.data = false;
+					res.error_message.data = "Could not set operation mode to '" + operationMode_ + "'";
+					return true;
+				}
 			}
 			else
 			{
@@ -535,9 +568,7 @@ class SdhNode
 	{
 		hasNewGoal_ = false;
 		sdh_->Stop();
-		ROS_INFO("Set operation mode to [%s]", req.operation_mode.data.c_str());
-		operationMode_ = req.operation_mode.data;
-		res.success.data = true;
+		res.success.data = switchOperationMode(req.operation_mode.data);
 		if( operationMode_ == "position"){
 			sdh_->SetController(SDH::cSDH::eCT_POSE);
 		}else if( operationMode_ == "velocity"){
@@ -691,7 +722,7 @@ class SdhNode
 			
 			
 			// publish controller state message
-			pr2_controllers_msgs::JointTrajectoryControllerState controllermsg;
+			control_msgs::JointTrajectoryControllerState controllermsg;
 			controllermsg.header.stamp = time;
 			controllermsg.joint_names.resize(DOF_);
 			controllermsg.desired.positions.resize(DOF_);

@@ -1,0 +1,31 @@
+<package>
+  <name>schunk_modular_robotics</name>
+  <version>0.5.6</version>
+  <description>This stack includes packages that provide access to the Schunk hardware through ROS messages, services and actions.</description>
+ 
+
+  <license>LGPL</license>
+
+  <url type="website">http://ros.org/wiki/schunk_modular_robotics</url>
+  <!-- <url type="bugtracker"></url> -->
+
+  <maintainer email="fmw@ipa.fhg.de">Florian Weisshardt</maintainer>
+  <maintainer email="nhg@ipa.fhg.de">Nadia Hammoudeh Garcia</maintainer> 
+  <author email="fmw@ipa.fhg.de">Florian Weisshardt</author>
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>schunk_sdh</run_depend>
+  <run_depend>schunk_simulated_tactile_sensors</run_depend>
+  <run_depend>schunk_libm5api</run_depend>
+  <run_depend>schunk_description</run_depend>
+  <run_depend>schunk_powercube_chain</run_depend>
+
+
+
+
+
+  <export>
+    <metapackage/>
+  </export>
+</package>
