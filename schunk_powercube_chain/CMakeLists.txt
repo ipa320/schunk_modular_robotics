@@ -29,6 +29,7 @@ include_directories(common/include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 # add project executable
 add_executable(${PROJECT_NAME} common/src/PowerCubeCtrl.cpp common/src/TimeStamp.cpp common/src/moveCommand.cpp ros/src/schunk_powercube_chain.cpp)
+add_dependencies(${PROJECT_NAME} brics_actuator_gencpp)
 
 # link libraries
 #target_link_libraries(${PROJECT_NAME} m5api)
