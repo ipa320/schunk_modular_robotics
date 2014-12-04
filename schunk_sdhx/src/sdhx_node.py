@@ -12,9 +12,9 @@
 # \note
 # Project name: schunk_modular_robotics
 # \note
-# ROS stack name: schunk_finger
+# ROS stack name: schunk_sdhx
 # \note
-# ROS package name: schunk_finger
+# ROS package name: schunk_sdhx
 #
 # \author
 # Thiago de Freitas, email:tdf@ipa.fhg.de
@@ -22,7 +22,7 @@
 # \date Date of creation: November 2014
 #
 # \brief
-# Simple driver for the Schunk finger
+# Simple driver for the Schunk SDHx
 #
 #################################################################
 #
@@ -86,7 +86,6 @@ class Finger():
     self.max_pwm1 = rospy.get_param("~max_pwm1")
 
     rospy.loginfo("starting node")
-    print port
     self._ser = serial.Serial(port, timeout=1.2)
     rospy.loginfo("node is alive")
     
@@ -165,12 +164,9 @@ class Finger():
 
     position_proximal = -math.degrees(position_proximal)*100 # from radians to centidegrees
     position_distal = -math.degrees(position_distal)*100
-    rospy.logwarn("before")
     status, reply = self.move(position_proximal, position_distal)
-    rospy.logwarn("after")
 
     rospy.sleep(1)
-    rospy.logwarn("after sleep")
     self.stop()
 
     if(status==True):
@@ -274,7 +270,7 @@ class Finger():
     
 if __name__ == '__main__':
   try:
-    rospy.init_node('schunk_finger')
+    rospy.init_node('schunk_sdhx')
     fing = Finger("/dev/ttyACM0")
     r = rospy.Rate(10)
     while not rospy.is_shutdown():
