@@ -61,7 +61,7 @@ roslib.load_manifest('schunk_sdhx')
 from control_msgs.msg import *
 from sensor_msgs.msg import *
 
-FJT_ACTION_NAME = "joint_trajectory_controller/follow_joint_trajectory"
+FJT_ACTION_NAME = "~joint_trajectory_controller/follow_joint_trajectory"
 
 import serial
 import time
@@ -72,9 +72,9 @@ import math
 Terminator="\r\n"
 commands = {"position": "p", "stop": "s", "move": "m", "set_pwm":"set", "get_pwm":"get"}
 
-class Finger():
+class Sdhx():
 
-  def __init__(self, port):
+  def __init__(self):
 
     if(rospy.has_param("~devicestring")):
 	rospy.loginfo("Setting port to:")
@@ -91,8 +91,8 @@ class Finger():
     
     self._as = actionlib.SimpleActionServer(FJT_ACTION_NAME, FollowJointTrajectoryAction, self.execute_cb, False)
     self._as.start()
-    self._pub_joint_states = rospy.Publisher('joint_states', JointState,queue_size=5)
-    self._pub_controller_state = rospy.Publisher('finger_controller/state', JointTrajectoryControllerState,queue_size=5)
+    self._pub_joint_states = rospy.Publisher('/joint_states', JointState,queue_size=5)
+    self._pub_controller_state = rospy.Publisher('~joint_trajectory_controller/state', JointTrajectoryControllerState,queue_size=5)
     # joint state
     self._joint_states = JointState()
     self._joint_states.name = rospy.get_param("~joint_names")
@@ -271,13 +271,13 @@ class Finger():
 if __name__ == '__main__':
   try:
     rospy.init_node('schunk_sdhx')
-    fing = Finger("/dev/ttyACM0")
+    sdhx = Sdhx()
     r = rospy.Rate(10)
     while not rospy.is_shutdown():
-      fing.publish_joint_states()
-      fing.publish_controller_state()
+      sdhx.publish_joint_states()
+      sdhx.publish_controller_state()
       r.sleep()
-    fing.close_port()
+    sdhx.close_port()
   except serial.serialutil.SerialException:
     pass
   except OSError:
