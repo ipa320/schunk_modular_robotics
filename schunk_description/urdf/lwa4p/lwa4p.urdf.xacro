@@ -4,13 +4,13 @@
   <xacro:include filename="$(find schunk_description)/urdf/lwa4p/lwa4p.gazebo.xacro" />
   <xacro:include filename="$(find schunk_description)/urdf/lwa4p/lwa4p.transmission.xacro" />
 
-  <xacro:macro name="schunk_lwa4p" params="parent name *origin">
+  <xacro:macro name="schunk_lwa4p" params="parent name *origin arm_1_ref arm_2_ref arm_3_ref arm_4_ref arm_5_ref arm_6_ref">
 
     <!-- joint between base_link and arm_0_link -->
-    <joint name="${name}_0_joint" type="fixed" >
+    <joint name="${name}_0_joint" type="fixed">
       <insert_block name="origin" />
-      <parent link="${parent}" />
-      <child link="${name}_0_link" />
+      <parent link="${parent}"/>
+      <child link="${name}_0_link"/>
     </joint>
 
     <link name="${name}_0_link">
@@ -22,7 +22,6 @@
         <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
       </inertial>
 -->
-      
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>

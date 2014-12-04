@@ -4,7 +4,7 @@
   <xacro:include filename="$(find schunk_description)/urdf/lwa4p_extended/lwa4p_extended.gazebo.xacro" />
   <xacro:include filename="$(find schunk_description)/urdf/lwa4p_extended/lwa4p_extended.transmission.xacro" />
 
-    
+
   <xacro:macro name="schunk_lwa4p_extended" params="parent name *origin arm_1_ref arm_2_ref arm_3_ref arm_4_ref arm_5_ref arm_6_ref arm_7_ref">
 
     <!-- joint between base_link and lwa4p_extended_connector_link -->
@@ -13,7 +13,7 @@
       <parent link="${parent}"/>
       <child link="${name}_base_link"/>
     </joint>
-    
+
     <!-- static part of PRL100 -->
     <link name="${name}_base_link">
       <xacro:default_inertial/>
@@ -28,6 +28,7 @@
           <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_base_link.stl" />
         </geometry>
       </visual>
+      
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -64,6 +65,7 @@
           <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_1_link.dae" />
         </geometry>
       </visual>
+      
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -93,12 +95,14 @@
         <inertia ixx="0.009780" ixy="0.0" ixz="0.0" iyy="0.013300" iyz="0.0" izz="0.009780" />
       </inertial>
 -->
+      
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_2_link.dae" />
         </geometry>
       </visual>
+      
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -106,7 +110,6 @@
         </geometry>
       </collision>
     </link>
-
 
     <!-- joint between arm_2_link and arm_3_link -->  
     <joint name="${name}_3_joint" type="revolute">
@@ -129,12 +132,14 @@
         <inertia ixx="0.0344" ixy="0.0" ixz="0.0077" iyy="0.0362" iyz="0.0" izz="0.0052" />
       </inertial>
 -->
+      
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_3_link.dae" />
         </geometry>
       </visual>
+      
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -164,12 +169,14 @@
         <inertia ixx="0.009780" ixy="0.0" ixz="0.0" iyy="0.013300" iyz="0.0" izz="0.009780" />
       </inertial>
 -->
+      
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_4_link.dae" />
         </geometry>
       </visual>
+      
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -199,12 +206,14 @@
         <inertia ixx="0.01" ixy="0.0" ixz="-0.0031" iyy="0.0111" iyz="0.0" izz="0.0031" />
       </inertial>
 -->
+      
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_5_link.dae" />
         </geometry>
       </visual>
+      
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -234,12 +243,14 @@
         <inertia ixx="0.002750" ixy="0.0" ixz="0.0" iyy="0.004002" iyz="0.0" izz="0.002830" />
       </inertial>
 -->
+      
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4p_extended/arm_6_link.dae" />
         </geometry>
       </visual>
+      
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
