@@ -56,12 +56,12 @@
 #################################################################
 
 import roslib
-roslib.load_manifest('schunk_finger')
+roslib.load_manifest('schunk_sdhx')
 
 from control_msgs.msg import *
 from sensor_msgs.msg import *
 
-FJT_ACTION_NAME = "finger/joint_trajectory_controller/follow_joint_trajectory"
+FJT_ACTION_NAME = "joint_trajectory_controller/follow_joint_trajectory"
 
 import serial
 import time
@@ -76,13 +76,19 @@ class Finger():
 
   def __init__(self, port):
 
-    port = rospy.get_param("~devicestring")
+    if(rospy.has_param("~devicestring")):
+	rospy.loginfo("Setting port to:")
+    	port = rospy.get_param("~devicestring")
+	rospy.loginfo(port)
     self.min_pwm0 = rospy.get_param("~min_pwm0")
     self.min_pwm1 = rospy.get_param("~min_pwm1")
     self.max_pwm0 = rospy.get_param("~max_pwm0")
     self.max_pwm1 = rospy.get_param("~max_pwm1")
 
+    rospy.loginfo("starting node")
+    print port
     self._ser = serial.Serial(port, timeout=1.2)
+    rospy.loginfo("node is alive")
     
     self._as = actionlib.SimpleActionServer(FJT_ACTION_NAME, FollowJointTrajectoryAction, self.execute_cb, False)
     self._as.start()
@@ -157,8 +163,8 @@ class Finger():
     position_proximal = goal.trajectory.points[-1].positions[0]
     position_distal = goal.trajectory.points[-1].positions[1]
 
-    position_proximal = math.degrees(position_proximal)*100 # from radians to centidegrees
-    position_distal = math.degrees(position_distal)*100
+    position_proximal = -math.degrees(position_proximal)*100 # from radians to centidegrees
+    position_distal = -math.degrees(position_distal)*100
     rospy.logwarn("before")
     status, reply = self.move(position_proximal, position_distal)
     rospy.logwarn("after")
