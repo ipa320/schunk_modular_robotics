@@ -77,9 +77,9 @@ class Sdhx():
   def __init__(self):
 
     if(rospy.has_param("~devicestring")):
-	rospy.loginfo("Setting port to:")
-    	port = rospy.get_param("~devicestring")
-	rospy.loginfo(port)
+      rospy.loginfo("Setting port to:")
+      port = rospy.get_param("~devicestring")
+      rospy.loginfo(port)
     self.min_pwm0 = rospy.get_param("~min_pwm0")
     self.min_pwm1 = rospy.get_param("~min_pwm1")
     self.max_pwm0 = rospy.get_param("~max_pwm0")
@@ -248,7 +248,7 @@ class Sdhx():
         while True:
           if (time.time() > t_out):
             return False,None
-          elif("@Mov" not in line_to_parse[0:5]):
+          elif("@Mov" not in line_to_parse):
             self._ser.write(commands[command]+complement)
             line_to_parse = self._ser.readline()
           else:
