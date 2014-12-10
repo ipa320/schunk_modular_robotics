@@ -38,7 +38,7 @@ install(TARGETS
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(PROGRAMS src/sdhx_node.py
+install(PROGRAMS src/sdhx_node.py src/recover_gripper.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}/src
 )
 
