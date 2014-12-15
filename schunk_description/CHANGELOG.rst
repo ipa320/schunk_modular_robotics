@@ -2,6 +2,25 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* added velocity and position controllers
+* unify all schunk urdfs
+* type error
+* defined real limits
+* defined real limits
+* extend limits for axis 1
+* multiple hw-interfaces for lwa4p
+* prepare lwa4p for VelocityInterface
+* multiple hardwareinterface tags in transmission
+* multiple hardwareinterface tags in transmission
+* inertia go to hell
+* new collision meshes
+* improve model - velocity error <0.01
+* add new collision meshes
+* remove wrong mesh
+* Contributors: Florian Weisshardt, ipa-cob4-2, ipa-fmw, ipa-fxm, ipa-nhg
+
 0.6.1 (2014-09-22)
 ------------------
 * 1=true
