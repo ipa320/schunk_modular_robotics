@@ -16,6 +16,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <run_depend>schunk_sdh</run_depend>
+  <run_depend>schunk_sdhx</run_depend>
   <run_depend>schunk_simulated_tactile_sensors</run_depend>
   <run_depend>schunk_libm5api</run_depend>
   <run_depend>schunk_description</run_depend>

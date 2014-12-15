@@ -4,22 +4,24 @@
   <xacro:include filename="$(find schunk_description)/urdf/lwa4p/lwa4p.gazebo.xacro" />
   <xacro:include filename="$(find schunk_description)/urdf/lwa4p/lwa4p.transmission.xacro" />
 
-  <xacro:macro name="schunk_lwa4p" params="parent name *origin">
+  <xacro:macro name="schunk_lwa4p" params="parent name *origin arm_1_ref arm_2_ref arm_3_ref arm_4_ref arm_5_ref arm_6_ref">
 
     <!-- joint between base_link and arm_0_link -->
-    <joint name="${name}_0_joint" type="fixed" >
+    <joint name="${name}_0_joint" type="fixed">
       <insert_block name="origin" />
-      <parent link="${parent}" />
-      <child link="${name}_0_link" />
+      <parent link="${parent}"/>
+      <child link="${name}_0_link"/>
     </joint>
 
     <link name="${name}_0_link">
+      <xacro:default_inertial/>
+<!--
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <mass value="0.29364"/>
         <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
       </inertial>
-      
+-->
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -43,17 +45,19 @@
       <child link="${name}_1_link"/>
       <axis xyz="0 0 1"/>
       <calibration rising="${arm_1_ref}"/>
-      <dynamics damping="10" />
       <limit effort="370" velocity="2.0" lower="-6.2831853" upper="6.2831853"/>
-      <safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-6.2831853 + 0.01}" soft_upper_limit="${6.2831853 - 0.01}" />
+      <!--safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-6.2831853 + 0.01}" soft_upper_limit="${6.2831853 - 0.01}" /-->
     </joint>
 
     <link name="${name}_1_link">
+      <xacro:default_inertial/>
+<!--
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <mass value="0.29364"/>
         <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
       </inertial>
+-->
       
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
@@ -78,17 +82,19 @@
       <child link="${name}_2_link"/>
       <axis xyz="0 0 1"/>
       <calibration rising="${arm_2_ref}"/>
-      <dynamics damping="10" />
       <limit effort="370" velocity="2.0" lower="-2.0943951" upper="2.0943951"/>
-      <safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-2.0943 + 0.01}" soft_upper_limit="${2.0943 - 0.01}" />
+      <!--safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-2.0943 + 0.01}" soft_upper_limit="${2.0943 - 0.01}" /-->
     </joint>
 
     <link name="${name}_2_link">
+      <xacro:default_inertial/>
+<!--
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <mass value="1.68311"/>
         <inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.03" />
       </inertial>
+-->
       
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
@@ -113,17 +119,19 @@
       <child link="${name}_3_link"/>
       <axis xyz="0 0 1"/>
       <calibration rising="${arm_3_ref}"/>
-      <dynamics damping="5" />
       <limit effort="176" velocity="2.0" lower="-6.2831853" upper="6.2831853"/>
-      <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-6.2831853 + 0.01}" soft_upper_limit="${6.2831853 - 0.01}" />
+      <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-6.2831853 + 0.01}" soft_upper_limit="${6.2831853 - 0.01}" /-->
     </joint>
 
     <link name="${name}_3_link">
+      <xacro:default_inertial/>
+<!--
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <mass value="2.1"/>
         <inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.03" />
       </inertial>
+-->
       
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
@@ -148,17 +156,19 @@
       <child link="${name}_4_link"/>
       <axis xyz="0 0 1" />
       <calibration rising="${arm_4_ref}"/>
-      <dynamics damping="5" />
       <limit effort="176" velocity="2.0" lower="-2.0943951" upper="2.0943951"/>
-      <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" />
+      <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" /-->
     </joint>
 
     <link name="${name}_4_link">
+      <xacro:default_inertial/>
+<!--
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <mass value="1.68311"/>
         <inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.03" />
       </inertial>
+-->
       
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
@@ -183,17 +193,19 @@
       <child link="${name}_5_link"/>
       <axis xyz="0 0 1" />
       <calibration rising="${arm_5_ref}"/>
-      <dynamics damping="5" />
       <limit effort="41.6" velocity="2.0" lower="-6.2831853" upper="6.2831853" />
-      <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-6.2831853 + 0.01}" soft_upper_limit="${6.2831853 - 0.01}" />
+      <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-6.2831853 + 0.01}" soft_upper_limit="${6.2831853 - 0.01}" /-->
     </joint>
 
     <link name="${name}_5_link">
+      <xacro:default_inertial/>
+<!--
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <mass value="0.807"/>
         <inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.03" />
       </inertial>
+-->
       
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
@@ -218,17 +230,19 @@
       <child link="${name}_6_link"/>
       <axis xyz="0 0 1" />
       <calibration rising="${arm_6_ref}"/>
-      <dynamics damping="5" />
       <limit effort="20.1" velocity="2.0" lower="-2.0943951" upper="2.0943951" />
-      <safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" />
+      <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" /-->
     </joint>
 
     <link name="${name}_6_link">
+      <xacro:default_inertial/>
+<!--
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <mass value="0.819"/>
         <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
       </inertial>
+-->
       
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />

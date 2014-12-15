@@ -51,7 +51,7 @@
 int g_iDebugLevel = 3;
 bool g_bDebugFile = false;
 bool g_bDebug = true;
-char* g_pcDebugFileName = "debug.txt";
+const char* g_pcDebugFileName = "debug.txt";
 
 double CMessage::m_fInitTime;
 
