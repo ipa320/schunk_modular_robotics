@@ -2,6 +2,18 @@
 Changelog for package schunk_modular_robotics
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.2 (2014-12-15)
+------------------
+* Merge branch 'indigo_dev' into indigo_release_candidate
+* sdhx tested
+* Contributors: Florian Weisshardt, ipa-nhg
+
+0.6.1 (2014-09-22)
+------------------
+
+0.6.0 (2014-09-18)
+------------------
+
 0.5.6 (2014-08-27)
 ------------------
 

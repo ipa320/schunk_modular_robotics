@@ -2,6 +2,17 @@
 Changelog for package schunk_libm5api
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.2 (2014-12-15)
+------------------
+* fix minor compiler warnings
+* Contributors: ipa-fxm
+
+0.6.1 (2014-09-22)
+------------------
+
+0.6.0 (2014-09-18)
+------------------
+
 0.5.6 (2014-08-27)
 ------------------
 * fix buildfarm errors
