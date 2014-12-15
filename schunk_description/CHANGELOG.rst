@@ -2,8 +2,8 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.2 (2014-12-15)
+------------------
 * added velocity and position controllers
 * unify all schunk urdfs
 * type error

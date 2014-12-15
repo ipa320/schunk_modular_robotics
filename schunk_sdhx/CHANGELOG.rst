@@ -2,8 +2,8 @@
 Changelog for package schunk_sdhx
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.2 (2014-12-15)
+------------------
 * add install tag for recover scipt
 * add recover for grippers
 * Tries to accelerate the moving acknowledgment

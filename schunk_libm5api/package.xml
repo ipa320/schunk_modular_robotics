@@ -1,6 +1,6 @@
 <package>
   <name>schunk_libm5api</name>
-  <version>0.6.1</version>
+  <version>0.6.2</version>
   <description>This package wraps the libm5api to use it as a ros dependency. Original sources from http://www.schunk-modular-robotics.com/fileadmin/user_upload/software/schunk_libm5api_source.zip.</description>
 
   <license>LGPL</license>
