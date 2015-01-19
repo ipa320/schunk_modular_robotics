@@ -40,9 +40,9 @@
     <joint name="${name}_finger_left_joint" type="prismatic" >
       <parent link="${name}_palm_link" />
       <child link="${name}_finger_left_link" />
-      <limit effort="100" lower="-0.001" upper="0.0345" velocity="2.0"/>
+      <limit effort="100" lower="-0.001" upper="0.061" velocity="2.0"/>
       <calibration rising="${pg70_finger_left_ref}"/>
-      <origin xyz="0 0.0105 0.0789" rpy="0 0 0"/>
+      <origin xyz="0 0.0 0.0789" rpy="0 0 0"/>
       <axis xyz="0 1 0" />
     </joint>
 
@@ -75,9 +75,9 @@
       <mimic joint="${name}_finger_left_joint" multiplier="1" offset="0"/>
       <parent link="${name}_palm_link" />
       <child link="${name}_finger_right_link" />
-      <limit effort="100" lower="-0.001" upper="0.0345" velocity="2.0"/>
+      <limit effort="100" lower="-0.001" upper="0.061" velocity="2.0"/>
       <calibration rising="${pg70_finger_right_ref}"/>
-      <origin xyz="0 -0.0105 0.0789" rpy="-0 0 0"/>
+      <origin xyz="0 0.0 0.0789" rpy="-0 0 0"/>
       <axis xyz="0 -1 0" />
     </joint>
 
