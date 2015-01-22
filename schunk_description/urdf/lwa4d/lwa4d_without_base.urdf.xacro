@@ -1,0 +1,242 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.gazebo.xacro"/>
+  <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.transmission.xacro"/>
+
+    
+  <xacro:macro name="schunk_lwa4d_without_base" params="parent name *origin arm_1_ref arm_2_ref arm_3_ref arm_4_ref arm_5_ref arm_6_ref arm_7_ref">
+
+    <!-- joint between arm_0_link and arm_1_link -->
+    <joint name="${name}_1_joint" type="revolute">
+      <insert_block name="origin"/>
+      <parent link="${parent}"/>
+      <child link="${name}_1_link"/>
+      <axis xyz="0 0 1"/>
+      <calibration rising="${arm_1_ref}"/>
+      <limit effort="216" velocity="0.43633" lower="-${M_PI}" upper="${M_PI}"/>
+    </joint>
+
+    <link name="${name}_1_link">
+      <xacro:default_inertial/>
+<!--
+      <xacro:cylinder_inertial radius="0.06" length="0.150" mass="3.6">
+          <origin xyz="0 0 0.02" rpy="0 0 0"/>
+      </xacro:cylinder_inertial>
+-->
+      <visual>
+        <origin xyz="0 0 -0.15" rpy="0 0 ${M_PI}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_1_link.stl"/>
+        </geometry>
+        <material name="Schunk/LightGrey"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 -0.15" rpy="0 0 ${M_PI}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_1_link.stl"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- joint between arm_1_link and arm_2_link -->
+    <joint name="${name}_2_joint" type="revolute">
+      <origin xyz="0 0 -0.15" rpy="-${M_PI/2} 0 0"/>
+      <parent link="${name}_1_link"/>
+      <child link="${name}_2_link"/>
+      <axis xyz="0 0 1"/>
+      <calibration rising="${arm_2_ref}"/>      
+      <limit effort="216" velocity="0.43633" lower="-${M_PI}" upper="${M_PI}"/>      
+    </joint>
+
+    <link name="${name}_2_link">
+      <xacro:default_inertial/>
+<!--
+      <xacro:cylinder_inertial radius="0.06" length="0.150" mass="2.0">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </xacro:cylinder_inertial>
+-->
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 ${M_PI}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_2_link.stl"/>
+        </geometry>
+        <material name="Schunk/Black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 ${M_PI}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_2_link_collision.stl"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- joint between arm_2_link and arm_3_link -->  
+    <joint name="${name}_3_joint" type="revolute">
+      <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
+      <parent link="${name}_2_link"/>
+      <child link="${name}_3_link"/>
+      <axis xyz="0 0 1"/>
+      <calibration rising="${arm_3_ref}"/>
+      <limit effort="81.5" velocity="0.4189" lower="-${M_PI}" upper="${M_PI}"/>
+    </joint>
+
+    <link name="${name}_3_link">
+      <xacro:default_inertial/>
+<!--
+      <xacro:cylinder_inertial radius="0.06" length="0.2" mass="2.0">
+        <origin xyz="0.0 0 -0.2" rpy="0 0 0"/>
+      </xacro:cylinder_inertial> 
+-->
+      <visual>
+        <origin xyz="0 0 -0.39" rpy="0 0 ${M_PI}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_3_link.stl"/>
+        </geometry>
+        <material name="Schunk/LightGrey"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 -0.39" rpy="0 0 ${M_PI}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_3_link_collision.stl"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- joint between arm_3_link and arm_4_link -->
+    <joint name="${name}_4_joint" type="revolute">
+      <origin xyz="0 0 -0.39" rpy="-${M_PI/2} 0 0"/>
+      <parent link="${name}_3_link"/>
+      <child link="${name}_4_link"/>
+      <axis xyz="0 0 1"/>
+      <calibration rising="${arm_4_ref}"/>
+      <limit effort="81.5" velocity="0.4189" lower="-${M_PI}" upper="${M_PI}"/>      
+    </joint>
+
+    <link name="${name}_4_link">
+      <xacro:default_inertial/>
+<!--
+      <xacro:cylinder_inertial radius="0.06" length="0.150" mass="1.2">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </xacro:cylinder_inertial>
+-->
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 ${M_PI}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_4_link.stl"/>
+        </geometry>
+        <material name="Schunk/Black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 ${M_PI}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_4_link_collision.stl"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- joint between arm_4_link and arm_5_link -->
+    <joint name="${name}_5_joint" type="revolute">
+      <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
+      <parent link="${name}_4_link"/>
+      <child link="${name}_5_link"/>
+      <axis xyz="0 0 1"/>
+      <calibration rising="${arm_5_ref}"/>
+      <limit effort="20.7" velocity="0.43633" lower="-${M_PI}" upper="${M_PI}"/>
+    </joint>
+
+    <link name="${name}_5_link">
+      <xacro:default_inertial/>
+<!--
+      <xacro:cylinder_inertial radius="0.06" length="0.15" mass="1.2">
+        <origin xyz="0 0 -0.18" rpy="0 0 0"/>
+      </xacro:cylinder_inertial>
+-->
+      <visual>
+        <origin xyz="0 0 -0.323" rpy="0 0 ${M_PI}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_5_link.stl"/>
+        </geometry>
+        <material name="Schunk/LightGrey"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 -0.323" rpy="0 0 ${M_PI}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_5_link_collision.stl"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- joint between arm_5_link and arm_6_link -->
+    <joint name="${name}_6_joint" type="revolute">
+      <origin xyz="0 0 -0.323" rpy="-${M_PI/2} 0 0"/>
+      <parent link="${name}_5_link"/>
+      <child link="${name}_6_link"/>
+      <axis xyz="0 0 1"/>
+      <calibration rising="${arm_6_ref}"/>
+      <limit effort="15" velocity="1.2566" lower="-2.0943951" upper="2.0943951"/>
+    </joint>
+
+    <link name="${name}_6_link">
+      <xacro:default_inertial/>
+<!--
+      <xacro:sphere_inertial radius="0.05" mass="1.9">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </xacro:sphere_inertial>
+-->
+      <visual>
+        <origin xyz="0 0 0" rpy="0 ${M_PI} 0"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_6_link.stl"/>
+        </geometry>
+        <material name="Schunk/Black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 ${M_PI} 0"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4d/arm_6_link_collision.stl"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- joint between arm_6_link and arm_7_link -->
+    <joint name="${name}_7_joint" type="revolute">
+      <origin xyz="0 0 0" rpy="-${M_PI/2} 0 0"/>
+      <parent link="${name}_6_link"/>
+      <child link="${name}_7_link"/>
+      <axis xyz="0 0 1"/>
+      <calibration rising="${arm_7_ref}"/>      
+      <limit effort="15" velocity="1.2566" lower="-2.0943951" upper="2.0943951"/>
+    </joint>
+
+    <link name="${name}_7_link">
+      <xacro:default_inertial/>
+<!--
+      <xacro:cylinder_inertial radius="0.03" length="0.035" mass="0.05">
+        <origin xyz="0 0 0.06" rpy="0 0 0"/>
+      </xacro:cylinder_inertial>
+-->
+      <visual>
+        <origin xyz="0 0 0.06" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.03" length="0.035"/>
+        </geometry>
+        <material name="Schunk/LightGrey"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.06" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.03" length="0.035"/>
+        </geometry>
+      </collision>
+    </link>
+
+
+
+    <!-- extensions -->
+    <xacro:schunk_lwa4d_gazebo name="${name}"/>
+    <xacro:schunk_lwa4d_transmission name="${name}"/>
+
+  </xacro:macro>
+
+</robot>
