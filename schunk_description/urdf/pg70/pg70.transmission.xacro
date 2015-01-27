@@ -12,7 +12,7 @@
         <hardwareInterface>VelocityJointInterface</hardwareInterface>
       </joint>
       <actuator name="${name}_finger_left_motor">
-        <mechanicalReduction>1</mechanicalReduction>
+        <mechanicalReduction>0.5</mechanicalReduction>
       </actuator>
     </transmission>
   
@@ -25,7 +25,7 @@
         <hardwareInterface>VelocityJointInterface</hardwareInterface>
       </joint>
       <actuator name="${name}_finger_right_motor">
-        <mechanicalReduction>1</mechanicalReduction>
+        <mechanicalReduction>0.5</mechanicalReduction>
       </actuator>
     </transmission>
 
