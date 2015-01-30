@@ -6,6 +6,8 @@
 
   <xacro:macro name="schunk_lwa4p_extended" params="parent name *origin arm_1_ref arm_2_ref arm_3_ref arm_4_ref arm_5_ref arm_6_ref arm_7_ref has_podest">
   
+    <property name="safety_offset" value="0.01"/>
+    
     <xacro:if value="${has_podest}">
       <!-- joint between base_link and lwa4p_extended_connector_link -->
       <joint name="${name}_podest_joint" type="fixed">
