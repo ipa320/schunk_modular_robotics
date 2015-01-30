@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-
+  <property name="safety_offset" value="0.01"/>
+  
   <xacro:include filename="$(find schunk_description)/urdf/lwa4p_extended/lwa4p_extended.gazebo.xacro" />
   <xacro:include filename="$(find schunk_description)/urdf/lwa4p_extended/lwa4p_extended.transmission.xacro" />
 
   <xacro:macro name="schunk_lwa4p_extended" params="parent name *origin arm_1_ref arm_2_ref arm_3_ref arm_4_ref arm_5_ref arm_6_ref arm_7_ref has_podest">
   
-    <property name="safety_offset" value="0.01"/>
+    
     
     <xacro:if value="${has_podest}">
       <!-- joint between base_link and lwa4p_extended_connector_link -->
