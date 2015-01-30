@@ -6,6 +6,8 @@
 
   <xacro:macro name="schunk_lwa4p_extended" params="parent name *origin arm_1_ref arm_2_ref arm_3_ref arm_4_ref arm_5_ref arm_6_ref arm_7_ref has_podest">
   
+    <property name="safety_offset" value="0.01"/>
+    
     <xacro:if value="${has_podest}">
       <!-- joint between base_link and lwa4p_extended_connector_link -->
       <joint name="${name}_podest_joint" type="fixed">
@@ -79,7 +81,7 @@
       <axis xyz="0 0 1"/>
       <calibration rising="${arm_1_ref}"/>
       <dynamics damping="0" friction="0"/>
-      <limit effort="81.5" velocity="0.42" lower="-4.712" upper="4.712"/>   <!--Theoricarl limit +/-270 , Real Limit +/- 270--> 
+      <limit effort="81.5" velocity="0.42" lower="${-4.712 + safety_offset}" upper="${4.712 - safety_offset}"/>   <!--Theoretical limit +/-270 , Real Limit +/- 270-->
       <!--safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-M_PI + 0.01}" soft_upper_limit="${M_PI - 0.01}" /-->
     </joint>    
     
@@ -116,7 +118,7 @@
       <axis xyz="0 0 1"/>
       <calibration rising="${arm_2_ref}"/>
       <dynamics damping="0" friction="0"/>
-      <limit effort="48" velocity="1.2566" lower="-1.92" upper="1.92"/>   <!--Theoricarl limit +/-170 , Real Limit +/- 110 (self collision)-->   
+      <limit effort="48" velocity="1.2566" lower="${-1.92 + safety_offset}" upper="${1.92 - safety_offset}"/>   <!--Theoretical limit +/-170 , Real Limit +/- 110 (self collision)-->
       <!--safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-2.0943 + 0.01}" soft_upper_limit="${2.0943 - 0.01}" /-->
     </joint>
 
@@ -153,7 +155,7 @@
       <axis xyz="0 0 1"/>
       <calibration rising="${arm_3_ref}"/>
       <dynamics damping="0" friction="0"/>
-      <limit effort="48" velocity="1.2566" lower="-2.967" upper="2.967"/>   <!--Theoricarl limit +/-170 , Real Limit +/- 170--> 
+      <limit effort="48" velocity="1.2566" lower="${-2.967 + safety_offset}" upper="${2.967 - safety_offset}"/>   <!--Theoretical limit +/-170 , Real Limit +/- 170-->
       <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-M_PI + 0.01}" soft_upper_limit="${M_PI - 0.01}" /-->
     </joint>
 
@@ -190,7 +192,7 @@
       <axis xyz="0 0 1" />
       <calibration rising="${arm_4_ref}"/>
       <dynamics damping="0" friction="0"/>
-      <limit effort="48" velocity="1.2566" lower="-2.618" upper="2.618"/>   <!--Theoricarl limit +/-170 , Real Limit +/- 150 (self collision)--> 
+      <limit effort="48" velocity="1.2566" lower="${-2.618 + safety_offset}" upper="${2.618 - safety_offset}"/>   <!--Theoretical limit +/-170 , Real Limit +/- 150 (self collision)-->
       <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" /-->
     </joint>
 
@@ -227,7 +229,7 @@
       <axis xyz="0 0 1" />
       <calibration rising="${arm_5_ref}"/>
       <dynamics damping="0" friction="0"/>
-      <limit effort="48" velocity="1.2566" lower="-2.967" upper="2.967"/>   <!--Theoricarl limit +/-170 , Real Limit +/- 170-->
+      <limit effort="48" velocity="1.2566" lower="${-2.967 + safety_offset}" upper="${2.967 - safety_offset}"/>   <!--Theoretical limit +/-170 , Real Limit +/- 170-->
       <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-M_PI + 0.01}" soft_upper_limit="${M_PI - 0.01}" /-->
     </joint>
 
@@ -264,7 +266,7 @@
       <axis xyz="0 0 1" />
       <calibration rising="${arm_6_ref}"/>
       <dynamics damping="0" friction="0"/>
-      <limit effort="15" velocity="1.2566" lower="-2.443" upper="2.967"/>   <!--Theoricarl limit +/-170 , Real Limit -140/+170 (self collision)--> 
+      <limit effort="15" velocity="1.2566" lower="${-2.443 + safety_offset}" upper="${2.967 - safety_offset}"/>   <!--Theoretical limit +/-170 , Real Limit -140/+170 (self collision)-->
       <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" /-->
     </joint>
 
@@ -301,7 +303,7 @@
       <axis xyz="0 0 1" />
       <calibration rising="${arm_7_ref}"/>
       <dynamics damping="0" friction="0"/>
-      <limit effort="15" velocity="1.2566" lower="-2.967" upper="2.967"/>   <!--Theoricarl limit +/-170 , Real Limit +/- 170-->
+      <limit effort="15" velocity="1.2566" lower="${-2.967 + safety_offset}" upper="${2.967 - safety_offset}"/>   <!--Theoretical limit +/-170 , Real Limit +/- 170-->
       <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.0943951 + 0.01}" soft_upper_limit="${2.0943951 - 0.01}" /-->
     </joint>
 
