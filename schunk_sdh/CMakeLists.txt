@@ -1,7 +1,5 @@
-# http://ros.org/doc/groovy/api/catkin/html/user_guide/supposed.html
 cmake_minimum_required(VERSION 2.8.3)
 project(schunk_sdh)
-
 
 find_package(catkin REQUIRED COMPONENTS roscpp urdf actionlib libntcan libpcan message_generation std_msgs sensor_msgs trajectory_msgs cob_srvs control_msgs diagnostic_msgs brics_actuator)
 
@@ -27,25 +25,22 @@ generate_messages(
 ###################################
 catkin_package(
     CATKIN_DEPENDS roscpp message_runtime urdf std_msgs sensor_msgs trajectory_msgs actionlib cob_srvs control_msgs libntcan libpcan diagnostic_msgs brics_actuator
-    DEPENDS #
-    INCLUDE_DIRS # TODO include
-    LIBRARIES # TODO
 )
 
 ###########
 ## Build ##
 ###########
-FIND_PROGRAM(CMAKE_DPKG dpkg /bin /usr/bin /usr/local/bin )
-IF(CMAKE_DPKG)
-  EXEC_PROGRAM(dpkg ARGS --print-architecture OUTPUT_VARIABLE CMAKE_DPKG_ARCH)
-  IF(CMAKE_DPKG_ARCH MATCHES "amd64")
+find_program(CMAKE_DPKG dpkg /bin /usr/bin /usr/local/bin )
+if(CMAKE_DPKG)
+  exec_program(dpkg ARGS --print-architecture OUTPUT_VARIABLE CMAKE_DPKG_ARCH)
+  if(CMAKE_DPKG_ARCH MATCHES "amd64")
     message(STATUS "++++++++++++++++++++++++++ DETECTED 64 bit +++++++++++++++++++++++++++++++++++")
     set(MYARCH "x86_64")
-  ELSE(CMAKE_DPKG_ARCH MATCHES "amd64")
+  else()
     message(STATUS "++++++++++++++++++++++++++ DETECTED 32 bit +++++++++++++++++++++++++++++++++++")
     set(MYARCH "i686")
-  ENDIF(CMAKE_DPKG_ARCH MATCHES "amd64")
-ENDIF(CMAKE_DPKG)
+  endif()
+endif()
 
 
 
@@ -53,7 +48,7 @@ add_custom_target(
     copy_SDHLIB ALL 
     COMMAND /bin/ln -sf ${PROJECT_SOURCE_DIR}/common/lib/${MYARCH}/libSDHLibrary-CPP.so ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so
     DEPENDS ${PROJECT_SOURCE_DIR}/common/lib/${MYARCH}/libSDHLibrary-CPP.so
-    )
+)
 
 include_directories(common/include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
