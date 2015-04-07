@@ -110,9 +110,10 @@ class Sdhx():
     self.set_pwm("max_pwm1")
 
     self.pos = [0,0]
+    self.command_pos = [0,0]
     
-    rospy.Timer(rospy.Duration(0.1), self.publish_joint_states)
-    
+    rospy.Timer(rospy.Duration(0.1), self.publish_joint_states)    
+    rospy.Timer(rospy.Duration(10), self.intern_move)    
     self.lock = False
 
   def set_pwm(self, pwm_to_set):
@@ -155,6 +156,7 @@ class Sdhx():
     return status, reply
   
   def move(self,pos_0, pos_1):
+    self.command_pos = [pos_0, pos_1]
     complement = " "+(str)(pos_0)+","+(str)(pos_1)+Terminator
     
     status, reply = self.execute_command("move", complement)
@@ -163,6 +165,9 @@ class Sdhx():
 
   def close_port(self):  
     self._ser.close()
+  
+  def intern_move(self, event):
+    self.move(self.command_pos[0], self.command_pos[1])
   
   def execute_cb(self, goal):
     
