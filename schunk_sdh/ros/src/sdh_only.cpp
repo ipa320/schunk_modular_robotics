@@ -97,6 +97,8 @@ class SdhNode
 	public:
 		/// create a handle for this node, initialize node
 		ros::NodeHandle nh_;
+		ros::NodeHandle nh_private_;
+		
 	private:
 		// declaration of topics to publish
 		ros::Publisher topicPub_JointState_;
@@ -150,17 +152,13 @@ class SdhNode
 		*
 		* \param name Name for the actionlib server
 		*/
-		SdhNode(std::string name):
-			as_(nh_, name, boost::bind(&SdhNode::executeCB, this, _1),true),
-			action_name_(name)
+		SdhNode():
+			as_(nh_, "joint_trajectory_controller/follow_joint_trajectory", boost::bind(&SdhNode::executeCB, this, _1),true),
+			action_name_("follow_joint_trajectory")
 		{
+			nh_private_ = ros::NodeHandle ("~");
 			pi_ = 3.1415926;
-			
-			nh_ = ros::NodeHandle ("~");
 			isError_ = false;
-			// diagnostics
-			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
-
 		}
 
 		/*!
@@ -184,41 +182,42 @@ class SdhNode
 			hasNewGoal_ = false;
 
 			// implementation of topics to publish
-			topicPub_JointState_ = nh_.advertise<sensor_msgs::JointState>("/joint_states", 1);
+			topicPub_JointState_ = nh_.advertise<sensor_msgs::JointState>("joint_states", 1);
 			topicPub_ControllerState_ = nh_.advertise<control_msgs::JointTrajectoryControllerState>("state", 1);
+			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("diagnostics", 1);
 
 			// pointer to sdh
 			sdh_ = new SDH::cSDH(false, false, 0); //(_use_radians=false, bool _use_fahrenheit=false, int _debug_level=0)
 
 			// implementation of service servers
-			srvServer_Init_ = nh_.advertiseService("init", &SdhNode::srvCallback_Init, this);
-			srvServer_Stop_ = nh_.advertiseService("stop", &SdhNode::srvCallback_Stop, this);
-			srvServer_Recover_ = nh_.advertiseService("recover", &SdhNode::srvCallback_Init, this); //HACK: There is no recover implemented yet, so we execute a init
-			srvServer_SetOperationMode_ = nh_.advertiseService("set_operation_mode", &SdhNode::srvCallback_SetOperationMode, this);
+			srvServer_Init_ = nh_.advertiseService("driver/init", &SdhNode::srvCallback_Init, this);
+			srvServer_Stop_ = nh_.advertiseService("driver/stop", &SdhNode::srvCallback_Stop, this);
+			srvServer_Recover_ = nh_.advertiseService("driver/recover", &SdhNode::srvCallback_Init, this); //HACK: There is no recover implemented yet, so we execute a init
+			srvServer_SetOperationMode_ = nh_.advertiseService("driver/set_operation_mode", &SdhNode::srvCallback_SetOperationMode, this);
 			
-			subSetVelocitiesRaw_ = nh_.subscribe("set_velocities_raw", 1, &SdhNode::topicCallback_setVelocitiesRaw, this);
-			subSetVelocities_ = nh_.subscribe("set_velocities", 1, &SdhNode::topicCallback_setVelocities, this);
-
+			subSetVelocitiesRaw_ = nh_.subscribe("driver/set_velocities_raw", 1, &SdhNode::topicCallback_setVelocitiesRaw, this);
+			subSetVelocities_ = nh_.subscribe("driver/set_velocities", 1, &SdhNode::topicCallback_setVelocities, this);
+			
 			// getting hardware parameters from parameter server
-			nh_.param("sdhdevicetype", sdhdevicetype_, std::string("PCAN"));
-			nh_.param("sdhdevicestring", sdhdevicestring_, std::string("/dev/pcan0"));
-			nh_.param("sdhdevicenum", sdhdevicenum_, 0);
+			nh_private_.param("sdhdevicetype", sdhdevicetype_, std::string("PCAN"));
+			nh_private_.param("sdhdevicestring", sdhdevicestring_, std::string("/dev/pcan0"));
+			nh_private_.param("sdhdevicenum", sdhdevicenum_, 0);
 			
-			nh_.param("baudrate", baudrate_, 1000000);
-			nh_.param("timeout", timeout_, (double)0.04);
-			nh_.param("id_read", id_read_, 43);
-			nh_.param("id_write", id_write_, 42);
+			nh_private_.param("baudrate", baudrate_, 1000000);
+			nh_private_.param("timeout", timeout_, (double)0.04);
+			nh_private_.param("id_read", id_read_, 43);
+			nh_private_.param("id_write", id_write_, 42);
 
 			// get joint_names from parameter server
 			ROS_INFO("getting joint_names from parameter server");
 			XmlRpc::XmlRpcValue joint_names_param;
-			if (nh_.hasParam("joint_names"))
+			if (nh_private_.hasParam("joint_names"))
 			{
-				nh_.getParam("joint_names", joint_names_param);
+				nh_private_.getParam("joint_names", joint_names_param);
 			}
 			else
 			{
-				ROS_ERROR("Parameter joint_names not set, shutting down node...");
+				ROS_ERROR("Parameter 'joint_names' not set, shutting down node...");
 				nh_.shutdown();
 				return false;
 			}
@@ -240,8 +239,8 @@ class SdhNode
 			ROS_INFO("DOF = %d",DOF_);
 			
 			state_.resize(axes_.size());
-
-			nh_.param("OperationMode", operationMode_, std::string("position"));
+			
+			nh_private_.param("OperationMode", operationMode_, std::string("position"));
 			return true;
 		}
 		/*!
@@ -283,7 +282,7 @@ class SdhNode
 		* \param goal JointTrajectoryGoal
 		*/
 		void executeCB(const control_msgs::FollowJointTrajectoryGoalConstPtr &goal)
-		{			
+		{
 			ROS_INFO("sdh: executeCB");
 			if (operationMode_ != "position")
 			{
@@ -348,15 +347,10 @@ class SdhNode
 		 			}
 		 		}
 		 		usleep(10000);
-				//feedback_ = 
-				//as_.send feedback_
 			}
 
-			// set the action state to succeeded			
+			// set the action state to succeeded
 			ROS_INFO("%s: Succeeded", action_name_.c_str());
-			//result_.result.data = "succesfully received new goal";
-			//result_.success = 1;
-			//as_.setSucceeded(result_);
 			as_.setSucceeded();
 		}
 
@@ -446,7 +440,7 @@ class SdhNode
 
 			if (isInitialized_ == false)
 			{
-				//Init Hand connection	
+				//Init Hand connection
 				
 				try
 				{
@@ -808,16 +802,15 @@ int main(int argc, char** argv)
 	// initialize ROS, spezify name of node
 	ros::init(argc, argv, "schunk_sdh");
 
-	//SdhNode sdh_node(ros::this_node::getName() + "/joint_trajectory_action");
-	SdhNode sdh_node(ros::this_node::getName() + "/follow_joint_trajectory");
+	SdhNode sdh_node;
 	if (!sdh_node.init()) return 0;
 	
 	ROS_INFO("...sdh node running...");
 
 	double frequency;
-	if (sdh_node.nh_.hasParam("frequency"))
+	if (sdh_node.nh_private_.hasParam("frequency"))
 	{
-		sdh_node.nh_.getParam("frequency", frequency);
+		sdh_node.nh_private_.getParam("frequency", frequency);
 	}
 	else
 	{

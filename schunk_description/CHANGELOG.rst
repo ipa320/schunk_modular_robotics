@@ -2,6 +2,59 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.2 (2014-12-15)
+------------------
+* added velocity and position controllers
+* unify all schunk urdfs
+* type error
+* defined real limits
+* defined real limits
+* extend limits for axis 1
+* multiple hw-interfaces for lwa4p
+* prepare lwa4p for VelocityInterface
+* multiple hardwareinterface tags in transmission
+* multiple hardwareinterface tags in transmission
+* inertia go to hell
+* new collision meshes
+* improve model - velocity error <0.01
+* add new collision meshes
+* remove wrong mesh
+* Contributors: Florian Weisshardt, ipa-cob4-2, ipa-fmw, ipa-fxm, ipa-nhg
+
+0.6.1 (2014-09-22)
+------------------
+* 1=true
+* fix bumper plugins
+* merge
+* fixed center of mass and inertias
+* Contributors: ipa-fxm, ipa-fxm-fm
+
+0.6.0 (2014-09-18)
+------------------
+* beautification
+* fix bad merge
+* cleaning up
+* merge
+* Merge branch 'indigo_dev' into velocity_interface_controller_indigo
+* Merge branch 'velocity_interface_controller' of github.com:ipa-fxm-fm/schunk_modular_robotics into velocity_interface_controller
+* use velocity interface, fix link name
+* added common xacro files
+* back to CAD inertia
+* changed inertia of link 5
+* fix center of mass
+* get rid off safety_controller and gazebo tags for more intuitive testing
+* switch to velocity interface
+* added inertias and limits for lwa4d
+* Merge branch 'hydro_dev' into velocity_interface_controller
+* back to CAD inertia
+* changed inertia of link 5
+* merge with new_model
+* merge with 320
+* fix center of mass
+* get rid off safety_controller and gazebo tags for more intuitive testing
+* switch to velocity interface
+* Contributors: Felix Messmer, ipa-fxm, ipa-fxm-fm
+
 0.5.6 (2014-08-27)
 ------------------
 
