@@ -13,11 +13,12 @@ sss = simple_script_server()
 
 def right_cb(req):
     rospy.loginfo("recovering gripper_right")
-    os.system("rosnode kill /gripper_right")
+    os.system("rosnode kill /gripper_right/gripper_right_node")
     return TriggerResponse()
 
 def left_cb(req):
     rospy.loginfo("recovering gripper_left")
+    os.system("rosnode kill /gripper_left/gripper_left_node")
     return TriggerResponse()
 
 if __name__ == "__main__":

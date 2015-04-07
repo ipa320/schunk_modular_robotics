@@ -61,7 +61,7 @@ roslib.load_manifest('schunk_sdhx')
 from control_msgs.msg import *
 from sensor_msgs.msg import *
 
-FJT_ACTION_NAME = "~joint_trajectory_controller/follow_joint_trajectory"
+FJT_ACTION_NAME = "joint_trajectory_controller/follow_joint_trajectory"
 
 import serial
 import time
@@ -91,8 +91,8 @@ class Sdhx():
     
     self._as = actionlib.SimpleActionServer(FJT_ACTION_NAME, FollowJointTrajectoryAction, self.execute_cb, False)
     self._as.start()
-    self._pub_joint_states = rospy.Publisher('/joint_states', JointState,queue_size=5)
-    self._pub_controller_state = rospy.Publisher('~joint_trajectory_controller/state', JointTrajectoryControllerState,queue_size=5)
+    self._pub_joint_states = rospy.Publisher('joint_states', JointState,queue_size=5)
+    self._pub_controller_state = rospy.Publisher('joint_trajectory_controller/state', JointTrajectoryControllerState,queue_size=5)
     # joint state
     self._joint_states = JointState()
     self._joint_states.name = rospy.get_param("~joint_names")
@@ -178,8 +178,8 @@ class Sdhx():
     status, pos = self.get_pos()
     if status == True and (not pos==None):
       try:
-        actual_pos_proximal = math.radians((float)(pos[0])/100)
-        actual_pos_distal = math.radians((float)(pos[1])/100)
+        actual_pos_proximal = -math.radians((float)(pos[0])/100)
+        actual_pos_distal = -math.radians((float)(pos[1])/100)
         self._joint_states.position = [actual_pos_proximal, actual_pos_distal]
         self._joint_states.header.stamp = rospy.Time.now()
         self._pub_joint_states.publish(self._joint_states)
