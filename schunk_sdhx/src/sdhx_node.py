@@ -173,8 +173,6 @@ class Sdhx():
     position_distal = -math.degrees(position_distal)*100
     status, reply = self.move(position_proximal, position_distal)
 
-    self.stop()
-
     if(status==True):
       self._as.set_succeeded()
     else:
