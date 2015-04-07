@@ -111,6 +111,8 @@ class Sdhx():
 
     self.pos = [0,0]
     
+    rospy.Timer(rospy.Duration(0.1), self.publish_joint_states)
+    
     self.lock = False
 
   def set_pwm(self, pwm_to_set):
@@ -178,16 +180,11 @@ class Sdhx():
     else:
       self._as.set_aborted()
     
-  def publish_joint_states(self):
+  def publish_joint_states(self, event):
       
-    r = rospy.Rate(10)
-
-    while not rospy.is_shutdown():
-      self._joint_states.header.stamp = rospy.Time.now()
-      self._pub_joint_states.publish(self._joint_states)
-      self.publish_controller_state()
-      r.sleep()  
-
+    self._joint_states.header.stamp = rospy.Time.now()
+    self._pub_joint_states.publish(self._joint_states)
+    self.publish_controller_state()
 
     
   def update_joint_states(self):
@@ -297,8 +294,7 @@ if __name__ == '__main__':
     rospy.init_node('schunk_sdhx')
     sdhx = Sdhx()
     r = rospy.Rate(10)
-    t = threading.Thread(target=sdhx.publish_joint_states)
-    t.start()
+    
     while not rospy.is_shutdown():
       sdhx.update_joint_states()
       r.sleep()
