@@ -85,6 +85,8 @@ class Sdhx():
     self.min_pwm1 = rospy.get_param("~min_pwm1")
     self.max_pwm0 = rospy.get_param("~max_pwm0")
     self.max_pwm1 = rospy.get_param("~max_pwm1")
+    
+    self.move_lock = False
 
     rospy.loginfo("starting node")
     self._ser = serial.Serial(port, timeout=1.2)
@@ -156,10 +158,16 @@ class Sdhx():
     return status, reply
   
   def move(self,pos_0, pos_1):
-    self.command_pos = [pos_0, pos_1]
-    complement = " "+(str)(pos_0)+","+(str)(pos_1)+Terminator
+    status = None
+    reply = None
     
-    status, reply = self.execute_command("move", complement)
+    if(not self.move_lock):
+      self.move_lock = True
+      complement = " "+(str)(pos_0)+","+(str)(pos_1)+Terminator
+      
+      status, reply = self.execute_command("move", complement)
+    
+    self.move_lock = False
 
     return status, reply
 
@@ -176,6 +184,7 @@ class Sdhx():
 
     position_proximal = -math.degrees(position_proximal)*100 # from radians to centidegrees
     position_distal = -math.degrees(position_distal)*100
+    self.command_pos = [position_proximal, position_distal]
     status, reply = self.move(position_proximal, position_distal)
 
     if(status==True):
