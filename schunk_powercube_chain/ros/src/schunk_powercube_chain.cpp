@@ -79,7 +79,7 @@
 
 // ROS service includes
 #include <cob_srvs/Trigger.h>
-#include <cob_srvs/SetOperationMode.h>
+#include <cob_srvs/SetString.h>
 
 // own includes
 #include <schunk_powercube_chain/PowerCubeCtrl.h>
@@ -587,16 +587,16 @@ public:
    * \param req Service request
    * \param res Service response
    */
-  bool srvCallback_SetOperationMode(cob_srvs::SetOperationMode::Request &req, cob_srvs::SetOperationMode::Response &res)
+  bool srvCallback_SetOperationMode(cob_srvs::SetString::Request &req, cob_srvs::SetString::Response &res)
   {
-  if(req.operation_mode.data != "velocity")
+  if(req.data != "velocity")
   {
     ROS_WARN("Powercube chain currently only supports velocity commands");
-    res.success.data = false;
+    res.success = false;
   }
   else
   {
-    res.success.data = true;
+    res.success = true;
   }
   return true;
   }
