@@ -2,14 +2,14 @@ cmake_minimum_required(VERSION 2.8.3)
 project(schunk_sdhx)
 
 find_package(catkin REQUIRED COMPONENTS
-  control_msgs
   roslib
-  rospy
+  std_srvs
   sensor_msgs
+  control_msgs
 )
 
 catkin_package(
-    CATKIN_DEPENDS rospy control_msgs roslib sensor_msgs
+    CATKIN_DEPENDS rospy roslib std_srvs sensor_msgs control_msgs
 )
 
 
