@@ -72,7 +72,6 @@
 
 // ROS service includes
 #include <cob_srvs/Trigger.h>
-#include <cob_srvs/SetOperationMode.h>
 
 // ROS diagnostic msgs
 #include <diagnostic_msgs/DiagnosticArray.h>

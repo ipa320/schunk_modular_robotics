@@ -79,7 +79,7 @@
 
 // ROS service includes
 #include <cob_srvs/Trigger.h>
-#include <cob_srvs/SetOperationMode.h>
+#include <cob_srvs/SetString.h>
 
 // ROS diagnostic msgs
 #include <diagnostic_msgs/DiagnosticArray.h>
@@ -557,12 +557,12 @@ class SdhNode
 	* \param req Service request
 	* \param res Service response
 	*/
-	bool srvCallback_SetOperationMode(cob_srvs::SetOperationMode::Request &req,
-									cob_srvs::SetOperationMode::Response &res )
+	bool srvCallback_SetOperationMode(cob_srvs::SetString::Request &req,
+									cob_srvs::SetString::Response &res )
 	{
 		hasNewGoal_ = false;
 		sdh_->Stop();
-		res.success.data = switchOperationMode(req.operation_mode.data);
+		res.success = switchOperationMode(req.data);
 		if( operationMode_ == "position"){
 			sdh_->SetController(SDH::cSDH::eCT_POSE);
 		}else if( operationMode_ == "velocity"){
@@ -576,7 +576,7 @@ class SdhNode
 				delete e;
 			}
 		}else{
-			ROS_ERROR_STREAM("Operation mode '" << req.operation_mode.data << "'  not supported");
+			ROS_ERROR_STREAM("Operation mode '" << req.data << "'  not supported");
 		}
 		return true;
 	}
