@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-
-  <property name="safety_offset" value="0.01"/>
+  <property name="safety_offset" value="0.02"/>
   
   <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.gazebo.xacro"/>
   <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.transmission.xacro"/>
@@ -219,7 +218,7 @@
       <child link="${name}_6_link"/>
       <axis xyz="0 0 1"/>
       <calibration rising="${arm_6_ref}"/>
-      <limit effort="15" velocity="1.2566" lower="${-2.0 + safety_offset}" upper="${2.0 - safety_offset}"/>
+      <limit effort="15" velocity="1.2566" lower="${-2.09 + safety_offset}" upper="${2.09 - safety_offset}"/>
     </joint>
 
     <link name="${name}_6_link">
@@ -251,7 +250,7 @@
       <child link="${name}_7_link"/>
       <axis xyz="0 0 1"/>
       <calibration rising="${arm_7_ref}"/>      
-      <limit effort="15" velocity="1.2566" lower="${-2.0943951 + safety_offset}" upper="${2.0943951 - safety_offset}"/>
+      <limit effort="15" velocity="1.2566" lower="${-2.96 + safety_offset}" upper="${2.96 - safety_offset}"/>
     </joint>
 
     <link name="${name}_7_link">
