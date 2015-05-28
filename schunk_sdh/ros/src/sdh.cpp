@@ -80,7 +80,7 @@
 #include <brics_actuator/JointValue.h>
 
 // ROS service includes
-#include <cob_srvs/Trigger.h>
+#include <std_srvs/Trigger.h>
 #include <cob_srvs/SetString.h>
 
 // ROS diagnostic msgs
@@ -455,8 +455,8 @@ class SdhNode
 		* \param req Service request
 		* \param res Service response
 		*/
-		bool srvCallback_Init(cob_srvs::Trigger::Request &req,
-							cob_srvs::Trigger::Response &res )
+		bool srvCallback_Init(std_srvs::Trigger::Request &req,
+							std_srvs::Trigger::Response &res )
 		{
 
 			if (isInitialized_ == false)
@@ -494,8 +494,8 @@ class SdhNode
 						else
 						{
 							ROS_ERROR("Currently only support for /dev/can0 and /dev/can1");
-							res.success.data = false;
-							res.error_message.data = "Currently only support for /dev/can0 and /dev/can1";
+							res.success = false;
+							res.message = "Currently only support for /dev/can0 and /dev/can1";
 							return true;
 						}
 						ROS_INFO("Initialized ESDCAN for SDH");	
@@ -505,8 +505,8 @@ class SdhNode
 				catch (SDH::cSDHLibraryException* e)
 				{
 					ROS_ERROR("An exception was caught: %s", e->what());
-					res.success.data = false;
-					res.error_message.data = e->what();
+					res.success = false;
+					res.message = e->what();
 					delete e;
 					return true;
 				}
@@ -528,26 +528,26 @@ class SdhNode
 					{
 						isDSAInitialized_ = false;
 						ROS_ERROR("An exception was caught: %s", e->what());
-						res.success.data = false;
-						res.error_message.data = e->what();
+						res.success = false;
+						res.message = e->what();
 						delete e;
 						return true;
 					}
 				}
 				if(!switchOperationMode(operationMode_)){
-					res.success.data = false;
-					res.error_message.data = "Could not set operation mode to '" + operationMode_ + "'";
+					res.success = false;
+					res.message = "Could not set operation mode to '" + operationMode_ + "'";
 					return true;
 				}
 			}
 			else
 			{
 				ROS_WARN("...sdh already initialized...");
-				res.success.data = true;
-				res.error_message.data = "sdh already initialized";
+				res.success = true;
+				res.message = "sdh already initialized";
 			}
 			
-			res.success.data = true;
+			res.success = true;
 			return true;
 		}
 
@@ -558,8 +558,8 @@ class SdhNode
 		* \param req Service request
 		* \param res Service response
 		*/
-		bool srvCallback_Stop(cob_srvs::Trigger::Request &req,
-							cob_srvs::Trigger::Response &res )
+		bool srvCallback_Stop(std_srvs::Trigger::Request &req,
+							std_srvs::Trigger::Response &res )
 		{
 			ROS_INFO("Stopping sdh");
 
@@ -575,7 +575,7 @@ class SdhNode
 			}
 
 		ROS_INFO("Stopping sdh succesfull");
-		res.success.data = true;
+		res.success = true;
 		return true;
 	}
 
@@ -586,12 +586,12 @@ class SdhNode
 	* \param req Service request
 	* \param res Service response
 	*/
-	bool srvCallback_Recover(cob_srvs::Trigger::Request &req,
-							cob_srvs::Trigger::Response &res )
+	bool srvCallback_Recover(std_srvs::Trigger::Request &req,
+							std_srvs::Trigger::Response &res )
 	{
 		ROS_WARN("Service recover not implemented yet");
-		res.success.data = true;
-		res.error_message.data = "Service recover not implemented yet";
+		res.success = true;
+		res.message = "Service recover not implemented yet";
 		return true;
 	}
 	

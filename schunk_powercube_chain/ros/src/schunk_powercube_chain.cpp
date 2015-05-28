@@ -69,6 +69,7 @@
 #include <urdf/model.h>
 
 // ROS message includes
+#include <std_msgs/String.h>
 #include <sensor_msgs/JointState.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <control_msgs/JointTrajectoryControllerState.h>
@@ -78,7 +79,7 @@
 
 
 // ROS service includes
-#include <cob_srvs/Trigger.h>
+#include <std_srvs/Trigger.h>
 #include <cob_srvs/SetString.h>
 
 // own includes
@@ -480,7 +481,7 @@ public:
    * \param req Service request
    * \param res Service response
    */
-  bool srvCallback_Init(cob_srvs::Trigger::Request &req, cob_srvs::Trigger::Response &res)
+  bool srvCallback_Init(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
   {
     if (!initialized_)
     {
@@ -490,25 +491,25 @@ public:
       if (pc_ctrl_->Init(pc_params_))
       {
         initialized_ = true;
-        res.success.data = true;
+        res.success = true;
         ROS_INFO("...initializing powercubes successful");
       }
 
       else
       {
-            error_ = true;
-             error_msg_ = pc_ctrl_->getErrorMessage();
-        res.success.data = false;
-        res.error_message.data = pc_ctrl_->getErrorMessage();
-        ROS_INFO("...initializing powercubes not successful. error: %s", res.error_message.data.c_str());
+        error_ = true;
+        error_msg_ = pc_ctrl_->getErrorMessage();
+        res.success = false;
+        res.message = pc_ctrl_->getErrorMessage();
+        ROS_INFO("...initializing powercubes not successful. error: %s", res.message.c_str());
       }
     }
 
     else
     {
-      res.success.data = true;
-      res.error_message.data = "powercubes already initialized";
-      ROS_WARN("...initializing powercubes not successful. error: %s",res.error_message.data.c_str());
+      res.success = true;
+      res.message = "powercubes already initialized";
+      ROS_WARN("...initializing powercubes not successful. error: %s",res.message.c_str());
     }
 
     return true;
@@ -521,22 +522,22 @@ public:
    * \param req Service request
    * \param res Service response
    */
-  bool srvCallback_Stop(cob_srvs::Trigger::Request &req, cob_srvs::Trigger::Response &res)
+  bool srvCallback_Stop(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
   {
     ROS_INFO("Stopping powercubes...");
 
     /// stop powercubes
     if (pc_ctrl_->Stop())
     {
-      res.success.data = true;
+      res.success = true;
       ROS_INFO("...stopping powercubes successful.");
     }
 
     else
     {
-      res.success.data = false;
-      res.error_message.data = pc_ctrl_->getErrorMessage();
-      ROS_ERROR("...stopping powercubes not successful. error: %s", res.error_message.data.c_str());
+      res.success = false;
+      res.message = pc_ctrl_->getErrorMessage();
+      ROS_ERROR("...stopping powercubes not successful. error: %s", res.message.c_str());
     }
     return true;
   }
@@ -548,7 +549,7 @@ public:
    * \param req Service request
    * \param res Service response
    */
-  bool srvCallback_Recover(cob_srvs::Trigger::Request &req, cob_srvs::Trigger::Response &res)
+  bool srvCallback_Recover(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
   {
     ROS_INFO("Recovering powercubes...");
     if (initialized_)
@@ -556,25 +557,25 @@ public:
       /// stopping all arm movements
       if (pc_ctrl_->Recover())
       {
-            error_ = false;
-            error_msg_ = "";
-      res.success.data = true;
-      ROS_INFO("...recovering powercubes successful.");
+        error_ = false;
+        error_msg_ = "";
+        res.success = true;
+        ROS_INFO("...recovering powercubes successful.");
       }
       else
       {
-      res.success.data = false;
-            error_ = true;
-            error_msg_ = pc_ctrl_->getErrorMessage();
-      res.error_message.data = pc_ctrl_->getErrorMessage();
-      ROS_ERROR("...recovering powercubes not successful. error: %s", res.error_message.data.c_str());
+        res.success = false;
+        error_ = true;
+        error_msg_ = pc_ctrl_->getErrorMessage();
+        res.message = pc_ctrl_->getErrorMessage();
+        ROS_ERROR("...recovering powercubes not successful. error: %s", res.message.c_str());
       }
     }
     else
     {
-      res.success.data = false;
-      res.error_message.data = "powercubes not initialized";
-      ROS_ERROR("...recovering powercubes not successful. error: %s",res.error_message.data.c_str());
+      res.success = false;
+      res.message = "powercubes not initialized";
+      ROS_ERROR("...recovering powercubes not successful. error: %s",res.message.c_str());
     }
 
     return true;
