@@ -167,7 +167,7 @@ class SdhNode
 			nh_ = ros::NodeHandle ("~");
 			isError_ = false;
 			// diagnostics
-			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
+			topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("diagnostics", 1);
 
 		}
 
