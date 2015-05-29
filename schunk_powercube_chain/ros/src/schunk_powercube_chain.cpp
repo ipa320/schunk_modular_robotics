@@ -137,12 +137,12 @@ public:
 
     /// implementation of topics to publish
     topicPub_JointState_ = n_.advertise<sensor_msgs::JointState> ("joint_states", 1);
-    topicPub_ControllerState_ = n_.advertise<control_msgs::JointTrajectoryControllerState> ("state", 1);
+    topicPub_ControllerState_ = n_.advertise<control_msgs::JointTrajectoryControllerState> ("joint_trajectory_controller/state", 1);
     topicPub_Diagnostic_ = n_.advertise<diagnostic_msgs::DiagnosticArray>("diagnostics", 1);
 
     /// implementation of topics to subscribe
-    topicSub_CommandPos_ = n_.subscribe("command_pos", 1, &PowerCubeChainNode::topicCallback_CommandPos, this);
-    topicSub_CommandVel_ = n_.subscribe("command_vel", 1, &PowerCubeChainNode::topicCallback_CommandVel, this);
+    topicSub_CommandPos_ = n_.subscribe("joint_group_position_controller/command", 1, &PowerCubeChainNode::topicCallback_CommandPos, this);
+    topicSub_CommandVel_ = n_.subscribe("joint_group_velocity_controller/command", 1, &PowerCubeChainNode::topicCallback_CommandVel, this);
 
     /// implementation of service servers
     srvServer_Init_ = n_.advertiseService("driver/init", &PowerCubeChainNode::srvCallback_Init, this);
