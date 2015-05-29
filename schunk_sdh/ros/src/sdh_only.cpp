@@ -69,13 +69,11 @@
 #include <actionlib/server/simple_action_server.h>
 
 // ROS message includes
-#include <std_msgs/Float32MultiArray.h>
+#include <std_msgs/Float64MultiArray.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <sensor_msgs/JointState.h>
 #include <control_msgs/FollowJointTrajectoryAction.h>
 #include <control_msgs/JointTrajectoryControllerState.h>
-#include <brics_actuator/JointVelocities.h>
-#include <brics_actuator/JointValue.h>
 
 // ROS service includes
 #include <std_srvs/Trigger.h>
@@ -107,7 +105,6 @@ class SdhNode
 		
 		// topic subscribers
 		ros::Subscriber subSetVelocitiesRaw_;
-		ros::Subscriber subSetVelocities_;
 
 		// service servers
 		ros::ServiceServer srvServer_Init_;
@@ -195,8 +192,7 @@ class SdhNode
 			srvServer_Recover_ = nh_.advertiseService("driver/recover", &SdhNode::srvCallback_Init, this); //HACK: There is no recover implemented yet, so we execute a init
 			srvServer_SetOperationMode_ = nh_.advertiseService("driver/set_operation_mode", &SdhNode::srvCallback_SetOperationMode, this);
 			
-			subSetVelocitiesRaw_ = nh_.subscribe("driver/set_velocities_raw", 1, &SdhNode::topicCallback_setVelocitiesRaw, this);
-			subSetVelocities_ = nh_.subscribe("driver/set_velocities", 1, &SdhNode::topicCallback_setVelocities, this);
+			subSetVelocitiesRaw_ = nh_.subscribe("joint_group_velocity_controller/command", 1, &SdhNode::topicCallback_setVelocitiesRaw, this);
 			
 			// getting hardware parameters from parameter server
 			nh_private_.param("sdhdevicetype", sdhdevicetype_, std::string("PCAN"));
@@ -354,7 +350,7 @@ class SdhNode
 			as_.setSucceeded();
 		}
 
-		void topicCallback_setVelocitiesRaw(const std_msgs::Float32MultiArrayPtr& velocities)
+		void topicCallback_setVelocitiesRaw(const std_msgs::Float64MultiArrayPtr& velocities)
 		{
 			if (!isInitialized_)
 			{
@@ -384,49 +380,7 @@ class SdhNode
 
 			hasNewGoal_ = true;
 		}
- 		bool parseDegFromJointValue(const brics_actuator::JointValue& val, double &deg_val){
-		    if (val.unit == "rad/s"){
-			deg_val = val.value  * 180.0 / pi_;
-			return true;
-		    }else if (val.unit == "deg/s"){
-			deg_val = val.value;
-			return true;
-		    }else {
-			ROS_ERROR_STREAM("Rejected message, unit '" << val.unit << "' not supported");
-			return false;
-		    }
-		}
-		void topicCallback_setVelocities(const brics_actuator::JointVelocities::ConstPtr& msg)
-		{
-			if (!isInitialized_)
-			{
-				ROS_ERROR("%s: Rejected, sdh not initialized", action_name_.c_str());
-				return;
-			}
-			if(msg->velocities.size() != velocities_.size()){
-				ROS_ERROR("Velocity array dimension mismatch");
-				return;
-			}
-			if (operationMode_ != "velocity")
-			{
-				ROS_ERROR("%s: Rejected, sdh not in velocity mode", action_name_.c_str());
-				return;
-			}
 
-			// TODO: write proper lock!
-			while (hasNewGoal_ == true ) usleep(10000);
-			bool valid = true;
-
-			valid = valid && parseDegFromJointValue(msg->velocities[0], velocities_[0]); // sdh_knuckle_joint
-			valid = valid && parseDegFromJointValue(msg->velocities[5], velocities_[1]); // sdh_finger22_joint
-			valid = valid && parseDegFromJointValue(msg->velocities[6], velocities_[2]); // sdh_finger23_joint
-			valid = valid && parseDegFromJointValue(msg->velocities[1], velocities_[3]); // sdh_thumb2_joint
-			valid = valid && parseDegFromJointValue(msg->velocities[2], velocities_[4]); // sdh_thumb3_joint
-			valid = valid && parseDegFromJointValue(msg->velocities[3], velocities_[5]); // sdh_finger12_joint
-			valid = valid && parseDegFromJointValue(msg->velocities[4], velocities_[6]); // sdh_finger13_joint
-
-			if (valid) hasNewGoal_ = true;
-		}		
 		/*!
 		* \brief Executes the service callback for init.
 		*
