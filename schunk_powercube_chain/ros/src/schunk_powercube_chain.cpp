@@ -70,13 +70,11 @@
 
 // ROS message includes
 #include <std_msgs/String.h>
+#include <std_msgs/Float64MultiArray.h>
 #include <sensor_msgs/JointState.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <control_msgs/JointTrajectoryControllerState.h>
 #include <diagnostic_msgs/DiagnosticArray.h>
-#include <brics_actuator/JointPositions.h>
-#include <brics_actuator/JointVelocities.h>
-
 
 // ROS service includes
 #include <std_srvs/Trigger.h>
@@ -390,9 +388,9 @@ public:
    * \brief Executes the callback from the command_pos topic.
    *
    * Set the current position target.
-   * \param msg JointPositions
+   * \param msg Float64MultiArray
    */
-  void topicCallback_CommandPos(const brics_actuator::JointPositions::ConstPtr& msg)
+  void topicCallback_CommandPos(const std_msgs::Float64MultiArray::ConstPtr& msg)
   {
     ROS_WARN("Received new position command. Skipping command: Position commands currently not implemented");
   }
@@ -401,9 +399,9 @@ public:
    * \brief Executes the callback from the command_vel topic.
    *
    * Set the current velocity target.
-   * \param msg JointVelocities
+   * \param msg Float64MultiArray
    */
-  void topicCallback_CommandVel(const brics_actuator::JointVelocities::ConstPtr& msg)
+  void topicCallback_CommandVel(const std_msgs::Float64MultiArray::ConstPtr& msg)
   {
     ROS_DEBUG("Received new velocity command");
     if (!initialized_)
@@ -424,44 +422,17 @@ public:
     std::vector<std::string> errorMessages;
     pc_ctrl_->getStatus(status, errorMessages);
 
-    /// ToDo: don't rely on position of joint names, but merge them (check between msg.joint_uri and member variable JointStates)
-
     unsigned int DOF = pc_params_->GetDOF();
-    std::vector<std::string> jointNames = pc_params_->GetJointNames();
-    std::vector<double> cmd_vel(DOF);
-    std::string unit = "rad";
 
     /// check dimensions
-    if (msg->velocities.size() != DOF)
+    if (msg->data.size() != DOF)
     {
       ROS_ERROR("Skipping command: Commanded velocities and DOF are not same dimension.");
       return;
     }
-
-    /// parse velocities
-    for (unsigned int i = 0; i < DOF; i++)
-    {
-      /// check joint name
-      if (msg->velocities[i].joint_uri != jointNames[i])
-      {
-        ROS_ERROR("Skipping command: Received joint name %s doesn't match expected joint name %s for joint %d.",msg->velocities[i].joint_uri.c_str(),jointNames[i].c_str(),i);
-        return;
-      }
-
-      /// check unit
-      if (msg->velocities[i].unit != unit)
-      {
-        ROS_ERROR("Skipping command: Received unit %s doesn't match expected unit %s.",msg->velocities[i].unit.c_str(),unit.c_str());
-        return;
-      }
-
-      /// if all checks are successful, parse the velocity value for this joint
-      ROS_DEBUG("Parsing velocity %f for joint %s",msg->velocities[i].value,jointNames[i].c_str());
-      cmd_vel[i] = msg->velocities[i].value;
-    }
     
     /// command velocities to powercubes
-    if (!pc_ctrl_->MoveVel(cmd_vel))
+    if (!pc_ctrl_->MoveVel(msg->data))
     {
        error_ = true;
       error_msg_ = pc_ctrl_->getErrorMessage();
