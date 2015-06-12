@@ -5,7 +5,7 @@
   <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.gazebo.xacro"/>
   <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.transmission.xacro"/>
     
-  <xacro:macro name="schunk_lwa4d" params="parent name *origin arm_1_ref arm_2_ref arm_3_ref arm_4_ref arm_5_ref arm_6_ref arm_7_ref has_podest">
+  <xacro:macro name="schunk_lwa4d" params="parent name *origin has_podest">
    
     <xacro:if value="${has_podest}">
       <!-- joint between base_link and lwa4p_extended_connector_link -->
@@ -57,7 +57,6 @@
       <parent link="${name}_base_link"/>
       <child link="${name}_1_link"/>
       <axis xyz="0 0 1"/>
-      <calibration rising="${arm_1_ref}"/>
       <limit effort="216" velocity="0.43633" lower="${-M_PI+safety_offset}" upper="${M_PI-safety_offset}"/>
     </joint>
 
@@ -89,7 +88,6 @@
       <parent link="${name}_1_link"/>
       <child link="${name}_2_link"/>
       <axis xyz="0 0 1"/>
-      <calibration rising="${arm_2_ref}"/>      
       <limit effort="216" velocity="0.43633" lower="${-2.14 + safety_offset}" upper="${2.14 - safety_offset}"/>
     </joint>
 
@@ -121,7 +119,6 @@
       <parent link="${name}_2_link"/>
       <child link="${name}_3_link"/>
       <axis xyz="0 0 1"/>
-      <calibration rising="${arm_3_ref}"/>
       <limit effort="81.5" velocity="0.4189" lower="${-M_PI + safety_offset}" upper="${M_PI - safety_offset}"/>
     </joint>
 
@@ -153,7 +150,6 @@
       <parent link="${name}_3_link"/>
       <child link="${name}_4_link"/>
       <axis xyz="0 0 1"/>
-      <calibration rising="${arm_4_ref}"/>
       <limit effort="81.5" velocity="0.4189" lower="${-2.18 + safety_offset}" upper="${2.18 - safety_offset}"/>
     </joint>
 
@@ -185,7 +181,6 @@
       <parent link="${name}_4_link"/>
       <child link="${name}_5_link"/>
       <axis xyz="0 0 1"/>
-      <calibration rising="${arm_5_ref}"/>
       <limit effort="20.7" velocity="0.43633" lower="${-M_PI + safety_offset}" upper="${M_PI - safety_offset}"/>
     </joint>
 
@@ -217,7 +212,6 @@
       <parent link="${name}_5_link"/>
       <child link="${name}_6_link"/>
       <axis xyz="0 0 1"/>
-      <calibration rising="${arm_6_ref}"/>
       <limit effort="15" velocity="1.2566" lower="${-2.09 + safety_offset}" upper="${2.09 - safety_offset}"/>
     </joint>
 
@@ -249,7 +243,6 @@
       <parent link="${name}_6_link"/>
       <child link="${name}_7_link"/>
       <axis xyz="0 0 1"/>
-      <calibration rising="${arm_7_ref}"/>      
       <limit effort="15" velocity="1.2566" lower="${-2.96 + safety_offset}" upper="${2.96 - safety_offset}"/>
     </joint>
 

@@ -6,7 +6,7 @@ import rospy
 import os
 
 import dynamic_reconfigure.client
-from std_srvs.srv import Trigger
+from std_srvs.srv import Trigger, TriggerResponse
 
 from simple_script_server import *
 sss = simple_script_server()

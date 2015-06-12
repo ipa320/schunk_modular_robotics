@@ -4,7 +4,7 @@
   <xacro:include filename="$(find schunk_description)/urdf/pg70/pg70.gazebo.xacro" />
   <xacro:include filename="$(find schunk_description)/urdf/pg70/pg70.transmission.xacro" />
 
-  <xacro:macro name="schunk_pg70" params="parent name *origin pg70_finger_left_ref pg70_finger_right_ref">
+  <xacro:macro name="schunk_pg70" params="parent name *origin">
 
     <joint name="${name}_palm_joint" type="fixed" >
       <parent link="${parent}" />
@@ -41,7 +41,6 @@
       <parent link="${name}_palm_link" />
       <child link="${name}_finger_left_link" />
       <limit effort="100" lower="-0.001" upper="0.061" velocity="2.0"/>
-      <calibration rising="${pg70_finger_left_ref}"/>
       <origin xyz="0 0 0.0789" rpy="0 0 0"/>
       <axis xyz="0 1 0" />
     </joint>
@@ -76,7 +75,6 @@
       <parent link="${name}_palm_link" />
       <child link="${name}_finger_right_link" />
       <limit effort="100" lower="-0.001" upper="0.061" velocity="2.0"/>
-      <calibration rising="${pg70_finger_right_ref}"/>
       <origin xyz="0 0 0.0789" rpy="-0 0 0"/>
       <axis xyz="0 -1 0" />
     </joint>
