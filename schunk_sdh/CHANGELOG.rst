@@ -2,6 +2,17 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix topic names
+* replace brics_actuator
+* use new Trigger from std_srvs
+* cleanup/replace cob_srvs
+* adapt schunk_sdh to new namespaces
+* beautify CMakeLists
+* beautify CMakeLists
+* Contributors: ipa-fxm
+
 0.6.2 (2014-12-15)
 ------------------
 

@@ -2,6 +2,43 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove unsupported calibration_rising
+* proper rounding of joint_limits for lwa4d
+* proper rounding of joint_limits for lwa4p
+* round down joint limits for lwa4p_extended
+* Update lwa4p_extended.urdf.xacro
+  Velocity and Positions limits updated according to firmware settings
+* reduce joint limits for moveit
+* default inertia
+* fix transmission for mimic joint
+* allow cob3 components to be used with PositionJointInterface
+* empty lines
+* Fixes import error
+* Safety_offset
+* safety_offset
+* Merge branch 'patch-1' of github.com:thiagodefreitas/schunk_modular_robotics into patch-2
+  Conflicts:
+  schunk_description/urdf/lwa4p_extended/lwa4p_extended_without_base.urdf.xacro
+* Fixes the limits for the lwa4d
+* Merge branch 'indigo_dev' of https://github.com/ipa320/schunk_modular_robotics into patch-2
+  Conflicts:
+  schunk_description/urdf/lwa4p_extended/lwa4p_extended.urdf.xacro
+* new urdf structure
+* Merge branch 'patch-1' of github.com:thiagodefreitas/schunk_modular_robotics into indigo_dev
+  Conflicts:
+  schunk_description/urdf/lwa4d/lwa4d.urdf.xacro
+* new without_base descriptions
+* updated schunk_lwa4d description
+* Update pg70.urdf.xacro
+* lwad description without base
+* Update lwa4p_extended.urdf.xacro
+  Proposing this as according to the tests on the Schunk LWA4D, the limits should be reduced from the HW limit in a range of 0.01 radians
+* Update lwa4d.urdf.xacro
+  According to HW limits
+* Contributors: Nadia Hammoudeh García, Thiago de Freitas Oliveira Araujo, ipa-cob3-9, ipa-cob4-2, ipa-fxm, ipa-nhg, thiagodefreitas
+
 0.6.2 (2014-12-15)
 ------------------
 * added velocity and position controllers

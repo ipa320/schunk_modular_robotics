@@ -2,6 +2,17 @@
 Changelog for package schunk_powercube_chain
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix topic names
+* replace brics_actuator
+* missing dependency
+* use new Trigger from std_srvs
+* cleanup/replace cob_srvs
+* adapt schunk_powercube_chain to new namespaces
+* beautify CMakeLists
+* Contributors: ipa-fxm
+
 0.6.2 (2014-12-15)
 ------------------
 * add dependencies
