@@ -2,8 +2,8 @@
 Changelog for package schunk_powercube_chain
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.3 (2015-06-17)
+------------------
 * fix topic names
 * replace brics_actuator
 * missing dependency

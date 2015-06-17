@@ -2,8 +2,8 @@
 Changelog for package schunk_sdhx
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.3 (2015-06-17)
+------------------
 * missing import
 * Merge branch 'indigo_dev' of github.com:ipa320/schunk_modular_robotics into replace_Trigger
 * hmi fixes for sdhx driver, needs revision

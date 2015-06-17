@@ -2,8 +2,8 @@
 Changelog for package schunk_simulated_tactile_sensors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.3 (2015-06-17)
+------------------
 * beautify CMakeLists
 * Contributors: ipa-fxm
 

@@ -2,8 +2,8 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.3 (2015-06-17)
+------------------
 * remove unsupported calibration_rising
 * proper rounding of joint_limits for lwa4d
 * proper rounding of joint_limits for lwa4p

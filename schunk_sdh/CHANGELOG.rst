@@ -2,8 +2,8 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.3 (2015-06-17)
+------------------
 * fix topic names
 * replace brics_actuator
 * use new Trigger from std_srvs
