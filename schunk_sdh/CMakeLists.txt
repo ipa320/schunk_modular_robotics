@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(schunk_sdh)
 
-find_package(catkin REQUIRED COMPONENTS roscpp message_generation std_msgs std_srvs cob_srvs sensor_msgs diagnostic_msgs trajectory_msgs control_msgs actionlib urdf libntcan libpcan)
-
+find_package(catkin REQUIRED COMPONENTS actionlib cob_srvs control_msgs diagnostic_msgs libntcan libpcan message_generation roscpp sensor_msgs std_msgs std_srvs trajectory_msgs urdf)
 
 ### Message Generation ###
 add_message_files(
@@ -15,9 +14,8 @@ generate_messages(
   DEPENDENCIES std_msgs
 )
 
-
 catkin_package(
-    CATKIN_DEPENDS roscpp message_runtime std_msgs std_srvs cob_srvs sensor_msgs diagnostic_msgs trajectory_msgs control_msgs actionlib urdf libntcan libpcan
+    CATKIN_DEPENDS actionlib cob_srvs control_msgs diagnostic_msgs libntcan libpcan message_runtime roscpp sensor_msgs std_msgs std_srvs trajectory_msgs urdf
 )
 
 ### BUILD ###
@@ -50,18 +48,15 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX -
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencpp)
 target_link_libraries(${PROJECT_NAME} SDHLibrary ${catkin_LIBRARIES})
 
-# SDH only
 add_executable(sdh_only ros/src/sdh_only.cpp)
 set_target_properties(sdh_only PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX -DWITH_ESD_CAN")
 add_dependencies(sdh_only ${PROJECT_NAME}_gencpp)
 target_link_libraries(sdh_only SDHLibrary ${catkin_LIBRARIES})
 
-# DSA only
 add_executable(dsa_only ros/src/dsa_only.cpp)
 set_target_properties(dsa_only PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX")
 add_dependencies(dsa_only ${PROJECT_NAME}_gencpp)
 target_link_libraries(dsa_only SDHLibrary ${catkin_LIBRARIES})
-
 
 ### INSTALL ###
 install(TARGETS ${PROJECT_NAME} sdh_only dsa_only

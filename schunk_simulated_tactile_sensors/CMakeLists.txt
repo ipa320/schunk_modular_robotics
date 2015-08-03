@@ -4,7 +4,7 @@ project(schunk_simulated_tactile_sensors)
 find_package(catkin REQUIRED COMPONENTS)
 
 catkin_package(
-    CATKIN_DEPENDS rospy gazebo_msgs schunk_sdh
+    CATKIN_DEPENDS gazebo_msgs rospy schunk_sdh
 )
 
 install(DIRECTORY ros/launch/
