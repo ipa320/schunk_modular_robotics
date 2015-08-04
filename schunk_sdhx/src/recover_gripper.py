@@ -1,15 +1,9 @@
 #!/usr/bin/python
 
-import roslib
-roslib.load_manifest('cob_script_server')
-import rospy
 import os
 
-import dynamic_reconfigure.client
+import rospy
 from std_srvs.srv import Trigger, TriggerResponse
-
-from simple_script_server import *
-sss = simple_script_server()
 
 def right_cb(req):
     rospy.loginfo("recovering gripper_right")

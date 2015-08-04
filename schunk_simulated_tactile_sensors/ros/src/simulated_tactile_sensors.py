@@ -1,10 +1,8 @@
 #!/usr/bin/env python
-import roslib; roslib.load_manifest('schunk_simulated_tactile_sensors')
+
 import rospy
-import math
 from schunk_sdh.msg import *
 from gazebo_msgs.msg import *
-from geometry_msgs.msg import *
 
 
 class GazeboTactilePad():

@@ -16,30 +16,31 @@
   <author email="fmw@ipa.fhg.de">Florian Weisshardt</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>urdf</build_depend>
-  <build_depend>schunk_libm5api</build_depend>
+
+  <build_depend>cob_srvs</build_depend>
+  <build_depend>control_msgs</build_depend>
+  <build_depend>diagnostic_msgs</build_depend>
   <build_depend>libntcan</build_depend>
   <build_depend>libpcan</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>schunk_libm5api</build_depend>
+  <build_depend>sensor_msgs</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>std_srvs</build_depend>
-  <build_depend>cob_srvs</build_depend>
-  <build_depend>diagnostic_msgs</build_depend>
-  <build_depend>control_msgs</build_depend>
-  <build_depend>rostest</build_depend>
-  <run_depend>sensor_msgs</run_depend>
-  <run_depend>urdf</run_depend>
-  <run_depend>schunk_libm5api</run_depend>
+  <build_depend>trajectory_msgs</build_depend>
+  <build_depend>urdf</build_depend>
+
+  <run_depend>cob_srvs</run_depend>
+  <run_depend>control_msgs</run_depend>
+  <run_depend>diagnostic_msgs</run_depend>
   <run_depend>libntcan</run_depend>
   <run_depend>libpcan</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>schunk_libm5api</run_depend>
+  <run_depend>sensor_msgs</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>std_srvs</run_depend>
-  <run_depend>cob_srvs</run_depend>
-  <run_depend>diagnostic_msgs</run_depend>
-  <run_depend>control_msgs</run_depend>
+  <run_depend>trajectory_msgs</run_depend>
+  <run_depend>urdf</run_depend>
 
-  <export>
-    <cpp cflags="-I${prefix}/common/include"/>
-  </export>
 </package>

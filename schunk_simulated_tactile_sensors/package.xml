@@ -44,7 +44,6 @@
      The simulated bumper must obtain the collision data in the link that the
      sensor is attached to. This is achieved by setting the "frameName" property
      in the gazebo_ros_bumper controller.</description>
-  <!-- <maintainer>Sven Schneider</maintainer> -->
 
   <license>LGPL</license>
 
@@ -56,15 +55,8 @@
   
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>rospy</build_depend>
-  <build_depend>schunk_sdh</build_depend>
-  <build_depend>geometry_msgs</build_depend>
-  <build_depend>rostest</build_depend>
+  <run_depend>gazebo_msgs</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>schunk_sdh</run_depend>
-  <run_depend>geometry_msgs</run_depend>
-  <run_depend>rostest</run_depend>
-  <export>
 
-  </export>
 </package>

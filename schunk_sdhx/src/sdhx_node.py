@@ -55,20 +55,18 @@
 #
 #################################################################
 
-import roslib
-roslib.load_manifest('schunk_sdhx')
+import serial
+import time
+import math
 import threading
 import os
+
+import rospy
+import actionlib
 from control_msgs.msg import *
 from sensor_msgs.msg import *
 
 FJT_ACTION_NAME = "joint_trajectory_controller/follow_joint_trajectory"
-
-import serial
-import time
-import rospy
-import actionlib
-import math
 
 Terminator="\r\n"
 commands = {"position": "p", "stop": "s", "move": "m", "set_pwm":"set", "get_pwm":"get"}
