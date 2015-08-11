@@ -13,7 +13,7 @@
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
-  
+
     <transmission name="${name}_2_trans">
       <type>transmission_interface/SimpleTransmission</type>
       <joint name="${name}_2_joint">
@@ -24,7 +24,7 @@
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
-  
+
     <transmission name="${name}_3_trans">
       <type>transmission_interface/SimpleTransmission</type>
       <joint name="${name}_3_joint">
@@ -35,7 +35,7 @@
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
-  
+
     <transmission name="${name}_4_trans">
       <type>transmission_interface/SimpleTransmission</type>
       <joint name="${name}_4_joint">
@@ -46,7 +46,7 @@
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
-  
+
     <transmission name="${name}_5_trans">
       <type>transmission_interface/SimpleTransmission</type>
       <joint name="${name}_5_joint">
@@ -57,7 +57,7 @@
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
-  
+
     <transmission name="${name}_6_trans">
       <type>transmission_interface/SimpleTransmission</type>
       <joint name="${name}_6_joint">

@@ -2,7 +2,7 @@
  *
  * Copyright (c) 2010
  *
- * Fraunhofer Institute for Manufacturing Engineering	
+ * Fraunhofer Institute for Manufacturing Engineering
  * and Automation (IPA)
  *
  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -11,9 +11,9 @@
  * ROS stack name: cob_driver
  * ROS package name: cob_powercube_chain
  * Description:
- *								
+ *
  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- *			
+ *
  * Author: Alexander Bubeck, email:alexander.bubeck@ipa.fhg.de
  * Supervised by: Alexander Bubeck, email:alexander.bubeck@ipa.fhg.de
  *
@@ -30,23 +30,23 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Fraunhofer Institute for Manufacturing 
+ *     * Neither the name of the Fraunhofer Institute for Manufacturing
  *       Engineering and Automation (IPA) nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License LGPL as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License LGPL as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License LGPL for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
- * License LGPL along with this program. 
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License LGPL along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  *
  ****************************************************************/
@@ -87,7 +87,7 @@ PowerCubeCtrl_OROCOS::PowerCubeCtrl_OROCOS(std::string name, std::string xmlFile
 
     this->methods()->addMethod(&m_stop_method, "Stop the Arm");
     //this->methods()->addMethod(&m_moveJointSpace_method, "execute synchronized ramp commands");
-    
+
 	this->properties()->addProperty(&m_CanDev_prop);
 	this->properties()->addProperty(&m_CanBaud_prop);
 	this->properties()->addProperty(&m_dof_prop);
@@ -100,7 +100,7 @@ PowerCubeCtrl_OROCOS::PowerCubeCtrl_OROCOS(std::string name, std::string xmlFile
   	m_ul_props.clear();
   	m_ll_props.clear();
 	m_offset_props.clear();
-	
+
 	for (int i=0; i<m_dof; i++)
 	{
 		ostringstream os;
@@ -115,7 +115,7 @@ PowerCubeCtrl_OROCOS::PowerCubeCtrl_OROCOS(std::string name, std::string xmlFile
 		os.str("");	os.clear();
 		os << "lowerLimit" << i+1;
 		m_ll_props.push_back( Property<double>( os.str(), os.str(), 0.0 ) );
-		
+
 		os.str("");	os.clear();
 		os << "offset" << i+1;
 		m_offset_props.push_back( Property<double>( os.str(), os.str(), 0.0 ) );
@@ -155,28 +155,28 @@ bool PowerCubeCtrl_OROCOS::configureHook()
 {
 	this->marshalling()->readProperties(m_xmlFile);
 
-	// COPY PROPERTIES INTO STRUCT POWERCUBEPARAMETERS	
+	// COPY PROPERTIES INTO STRUCT POWERCUBEPARAMETERS
 
 	PowerCubeParameters pcparams;
-	
+
 	pcparams.modIds.resize(m_dof);
 	pcparams.upperlimits.resize(m_dof);
 	pcparams.lowerlimits.resize(m_dof);
 	pcparams.offsets.resize(m_dof);
-	
-	pcparams.dof=m_dof_prop.get();	
+
+	pcparams.dof=m_dof_prop.get();
 	pcparams.CanDevice=m_CanDev_prop.get();
 	pcparams.BaudRate=m_CanBaud_prop.get();
 	pcparams.maxVel=m_MaxVel_prop.get();
-	pcparams.maxAcc=m_MaxAcc_prop.get(); 
-	
+	pcparams.maxAcc=m_MaxAcc_prop.get();
+
 	int i;
 	if(m_dof != pcparams.dof)
 	{
 		log(Info) << "Degrees of freedom" << m_dof << "doesn't match with xml input DOF." << pcparams.dof << endlog();
 	    return false;
 	}
-	
+
 	for (i=0 ; i< (m_dof) ; i++)
 	{
 		pcparams.modIds[i] = m_modId_props[i].get();
@@ -186,7 +186,7 @@ bool PowerCubeCtrl_OROCOS::configureHook()
 	}
 
 //	int id = m_modId_props[3].get();
-	
+
 	if ( m_powercubectrl.Init(pcparams) )
 	{
 		log(Info) << "PowerCubeCtrl initialized successfully." << endlog();
@@ -241,7 +241,7 @@ bool PowerCubeCtrl_OROCOS::startHook()
     	/*
     	// only one of the input ports should be used simultaniously
     	if ( m_in_Angles.connected() || m_in_Velocities.connected() ) {
-    		log(Info) << "Error in PowerCubeSim.startHook(): more than one input port is connected!" << endlog();    		
+    		log(Info) << "Error in PowerCubeSim.startHook(): more than one input port is connected!" << endlog();
     		return false;
     	}
     	m_in_Current_connected = true;
@@ -259,7 +259,7 @@ bool PowerCubeCtrl_OROCOS::startHook()
 void PowerCubeCtrl_OROCOS::updateHook()
 {
 	// log(Info) << "updateHook is being executed." << endlog();
-	
+
 	// Execute desired movements:
 	if ( m_in_Angles_connected )
 	{
@@ -267,7 +267,7 @@ void PowerCubeCtrl_OROCOS::updateHook()
 		angles_desired = m_in_Angles.Get();
 	    m_powercubectrl.MovePos( angles_desired );
 	}
-	
+
 	if ( m_in_Velocities_connected )
 	{
 		std::vector<double> vel_desired(7);
@@ -288,17 +288,17 @@ void PowerCubeCtrl_OROCOS::updateHook()
 
     std::vector<double> curVelocities(7);
     m_powercubectrl.getJointVelocities(curVelocities);
-    m_out_Velocities.Set(curVelocities);	
+    m_out_Velocities.Set(curVelocities);
 }
 
 bool PowerCubeCtrl_OROCOS::stopArm()
 {
     //stop
-    m_powercubectrl.Stop();		
+    m_powercubectrl.Stop();
     return true;
 }
 
-bool PowerCubeCtrl_OROCOS::moveJointSpace(std::vector<double> target)		
+bool PowerCubeCtrl_OROCOS::moveJointSpace(std::vector<double> target)
 {
 	return m_powercubectrl.MoveJointSpaceSync(target);
 }

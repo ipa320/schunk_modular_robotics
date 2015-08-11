@@ -65,7 +65,7 @@
 #include <sstream>
 #include <string>
 #include <deque>
-#include <pthread.h> 
+#include <pthread.h>
 
 // own includes
 #include <schunk_libm5api/m5apiw32.h>
@@ -112,7 +112,7 @@ public:
 	{
 		return m_ErrorMessage;
 	}
-	
+
 	/*!
 	 * \brief Get PC_Status message
 	 */
@@ -213,7 +213,7 @@ public:
 	 * \brief Gets the status of the modules
 	 */
 	bool getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& errorMessages);
-	
+
 	/*!
 	 * \brief Gets the firmware version of the modules
 	 */

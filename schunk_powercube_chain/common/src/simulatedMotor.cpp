@@ -60,7 +60,7 @@
 #include <schunk_powercube_chain/simulatedMotor.h>
 #include <math.h>
 
-		
+
 simulatedMotor::simulatedMotor(double lowLimit, double upLimit, double maxAcc, double maxVel)
 	: m_lastMove(0, 0, 0, 1, 1)
 {
@@ -82,17 +82,17 @@ void simulatedMotor::moveRamp(double targetAngle, double vmax, double amax)
 {
 	double x = m_lastMove.pos();
 	double v = m_lastMove.vel();
-	
+
 	// Range Check:
 	if ( targetAngle < m_ll ) targetAngle = m_ll;
 	else if ( targetAngle > m_ul ) targetAngle = m_ul;
-	
+
 	double vm = fabs(vmax);
 	double am = fabs(amax);
-	
+
 	if ( vm > m_vmax ) vm = m_vmax;
 	if ( am > m_amax ) am = m_amax;
-	
+
 	m_lastMove = RampCommand(x, v, targetAngle, am, vm);
 	m_lastMove.start();
 }
@@ -103,20 +103,20 @@ void simulatedMotor::moveVel(double vel)
 {
 	double x = m_lastMove.pos();
 	double v = m_lastMove.vel();
-	
+
 	double targetAngle = x;
-	
+
 	// Move with constant v is RampMove to the corresponding limit!
-	if ( vel > 0 ) 
+	if ( vel > 0 )
 		targetAngle = m_ul;
 	else if ( vel < 0)
 		targetAngle = m_ll;
-	
+
 	double vm = fabs(vel);
-	if ( vm > m_vmax ) vm = m_vmax;	
-	
+	if ( vm > m_vmax ) vm = m_vmax;
+
 	double a = fabs(vel-v) / T0;
-	
+
 	m_lastMove = RampCommand(x, v, targetAngle, a, vm);
 	m_lastMove.start();
 }
@@ -127,21 +127,21 @@ void simulatedMotor::movePos(double pos)
 {
 	double x = m_lastMove.pos();
 	double v = m_lastMove.vel();
-	
+
 	double targetAngle = pos;
 
 	// Range Check:
 	if ( targetAngle < m_ll ) targetAngle = m_ll;
 	else if ( targetAngle > m_ul ) targetAngle = m_ul;
-	
+
 	double vm = fabs(m_vmax);
-	
+
 	// move backwards?
 	if ( pos < x )
 		vm = -vm;
-	
+
 	double a = fabs(vm-v) / T0;
-	
+
 	m_lastMove = RampCommand(x, v, targetAngle, a, vm);
 	m_lastMove.start();
 }
@@ -153,7 +153,7 @@ void simulatedMotor::stop()
 	// Stops immediately (would not be possible with a real motor)
 	double x = m_lastMove.pos();
 	double v = 0;
-	
+
 	m_lastMove = RampCommand(x, v, x, 1, 1);
 	m_lastMove.start();
 }
@@ -163,17 +163,17 @@ RampCommand simulatedMotor::getRampMove(double targetAngle, double vmax, double 
 {
 	double x = m_lastMove.pos();
 	double v = m_lastMove.vel();
-	
+
 	// Range Check:
 	if ( targetAngle < m_ll ) targetAngle = m_ll;
 	else if ( targetAngle > m_ul ) targetAngle = m_ul;
-	
+
 	double vm = fabs(vmax);
 	double am = fabs(amax);
-	
+
 	if ( vm > m_vmax ) vm = m_vmax;
 	if ( am > m_amax ) am = m_amax;
-	
+
 	RampCommand rc(x, v, targetAngle, am, vm);
 	return rc;
 }

@@ -91,8 +91,8 @@ PowerCubeSim::PowerCubeSim()
 	m_SimThreadID = NULL;
 
 	//pthreads variables
-	
-	
+
+
 }
 
 
@@ -107,13 +107,13 @@ bool PowerCubeSim::Init(PowerCubeCtrlParams * params)
 
 	m_Dev=0;
 	m_NumOfModules = m_DOF;
-	
+
 	m_maxVel = params->GetMaxVel();
 	m_maxAcc = params->GetMaxAcc();
 
 	// Make sure m_IdModules is clear of Elements:
 	m_IdModules.clear();
-			
+
 
 	m_CurrentAngles.resize(m_DOF);
 	m_CurrentAngularMaxAccel.resize(m_DOF);
@@ -126,24 +126,24 @@ bool PowerCubeSim::Init(PowerCubeCtrlParams * params)
 	{
 		std::ostringstream os;
 		os << "ID_Module_Number" << i+1;
-		
+
 		// Get the Module Id from the config file
-		
+
 		//set initial angles to zero
 		m_CurrentAngles[i] = 0.0;
 		m_CurrentAngularVel[i] =0.0;
 		m_CurrentAngularMaxVel[i] = m_maxVel[i];
 		m_CurrentAngularMaxAccel[i] =m_maxAcc[i];
-		
+
 		//printf("Offset Angle %d: %f\n",i,m_AngleOffsets[i]);
 	}
-	
-	
+
+
 	// Jetzt Winkelgrenzen setzen:
 	//m_AngleLimits = m_Obj_Manipulator->GetLimitsTheta();
 
 	// pthreads initialisation
-	
+
 	pthread_mutex_init(&m_Movement_Mutex,NULL);
 	pthread_mutex_init(&m_Angles_Mutex,NULL);
 	pthread_mutex_init(&m_AngularVel_Mutex,NULL);
@@ -168,10 +168,10 @@ bool PowerCubeSim::Init(PowerCubeCtrlParams * params)
 }
 
 
-/** The Deconstructor 
+/** The Deconstructor
  */
 PowerCubeSim::~PowerCubeSim()
-{ 
+{
 	free(m_SimThreadID);
 	for (int i = 0; i < m_DOF; i++)
 	{
@@ -198,7 +198,7 @@ bool PowerCubeSim::getConfig(std::vector<double>& result)
 	//m_Out <<"getConfig: Unlocking Angles_Mutex ... ";
 	pthread_mutex_unlock(&m_Angles_Mutex);
 	//m_Out <<"unlocked "<<endl;
-	
+
 	return true;
 }
 
@@ -229,14 +229,14 @@ void PowerCubeSim::setCurrentAngles(std::vector<double> Angles)
 	//std::cout << "setCurrentAngles: " << Angles[0] << " " << Angles[1] << " " << Angles[2] << " " << Angles[3] << " " << Angles[4] << " " << Angles[5] << " \n";
 	pthread_mutex_lock(&m_Angles_Mutex);
 	//m_Out << "locked"<<endl;
-	
+
 	m_CurrentAngles = Angles;
 	//unlock mutex
 	//
 	//m_Out <<"setCurrentAngles: Unlocking Angles_Mutex ... ";
 	pthread_mutex_unlock(&m_Angles_Mutex);
 	//m_Out <<"unlocked "<<endl;
-	
+
 
 }
 
@@ -247,7 +247,7 @@ void PowerCubeSim::setCurrentJointVelocities( std::vector<double> AngularVel)
 	//m_Out << "setCurrentJointVelocities: Waiting for AngularVel_Mutex ... ";
 	pthread_mutex_lock(&m_AngularVel_Mutex);
 	//m_Out << "locked"<<endl;
-	
+
 	m_CurrentAngularVel = AngularVel;
 	//unlock mutex
 	//
@@ -256,7 +256,7 @@ void PowerCubeSim::setCurrentJointVelocities( std::vector<double> AngularVel)
 	//m_Out <<"unlocked "<<endl;
 
 }
-	
+
 
 
 /// @brief same as MoveJointSpace, but final angles should by reached simultaniously!
@@ -272,12 +272,12 @@ bool PowerCubeSim::MoveJointSpaceSync(const std::vector<double>& target)
 	// Evtl. Fragen zur Rechnung / zum Verfahren an: Felix.Geibel@gmx.de
 	std::vector<double> acc(m_DOF);
 	std::vector<double> vel(m_DOF);
-	
+
 	double TG = 0;
-	
+
 	try
 	{
-		
+
 		// Ermittle Joint, der bei max Geschw. und Beschl. am längsten braucht:
 		int DOF = m_DOF;
 
@@ -297,7 +297,7 @@ bool PowerCubeSim::MoveJointSpaceSync(const std::vector<double>& target)
 			RampCommand rm(posnow[i], velnow[i], targetRAD[i], m_maxAcc[i], m_maxVel[i]);
 			times[i] = rm.getTotalTime();
 		}
-		
+
 		// determine the joint index that has the greates value for time
 		int furthest = 0;
 
@@ -320,11 +320,11 @@ bool PowerCubeSim::MoveJointSpaceSync(const std::vector<double>& target)
 
 		// Gesamtzeit:
 		TG = T1 + T2 + T3;
-		
+
 		// Jetzt Geschwindigkeiten und Beschl. für alle:
 		acc[furthest] = m_maxAcc[furthest];
 		vel[furthest] = m_maxVel[furthest];
-		
+
 		for (int i = 0; i < DOF; i++)
 		{
 			if (i != furthest)
@@ -352,16 +352,16 @@ bool PowerCubeSim::MoveJointSpaceSync(const std::vector<double>& target)
 	}
 
 	startSimulatedMovement(targetRAD);
-	
+
 	// Errechnete Gesamtzeit zurückgeben (könnte ja nützlich sein)
 	return true;
-		
+
 }
 
 
-		
 
-/// @brief Returns the time for a ramp-move about dtheta with v, a would take, assuming the module is currently moving at vnowClose 
+
+/// @brief Returns the time for a ramp-move about dtheta with v, a would take, assuming the module is currently moving at vnowClose
 double PowerCubeSim::timeRampMove(double dtheta, double vnow, double v, double a)
 {
 	// die Zeiten T1, T2 und T3 errechnen
@@ -371,25 +371,25 @@ double PowerCubeSim::timeRampMove(double dtheta, double vnow, double v, double a
 	//m_Out << "-------------------" << endl;
 	//m_Out << "dtheta: " << dtheta << ", vnow: " << vnow << ", v: " << v << ", a: " << a << endl;
 	//m_Out << endl;
-	
+
 	// Wird Joint mit +vmax oder -vmax drehen?
 	double vm = (dtheta<0)?-v:v;
 	double am = (dtheta<0)?-a:a;
 	//m_Out << "vm: " << vm << endl;
 	//m_Out << "am: " << am << endl;
-	
+
 	// Zeit bis vm erreicht:
 	double T1 = (vm - vnow) / am;
 	// Winkel, der hierbei zurückgelegt wird:
 	double dtheta1 = vnow * T1 + 0.5 * am * T1 * T1;
 	//m_Out << "T1: " << T1 << endl;
 	//m_Out << "dtheta1: " << dtheta1 << endl;
-	
+
 	// Zeit zum Bremsen:
 	double T3 = vm / am;
 	// Winkel hierbei:
 	double dtheta3 = 0.5 * vm * T3;
-	
+
 	// Verbleibender Winkel:
 	double dtheta2 = dtheta - dtheta1 - dtheta3;
 	// Also Restzeit (Bew. mit vm):
@@ -399,12 +399,12 @@ double PowerCubeSim::timeRampMove(double dtheta, double vnow, double v, double a
 	//m_Out << "T3: " << T3 << endl;
 	//m_Out << "dtheta3: " << dtheta3 << endl;
 
-	
+
 	// Gesamtzeit zurückgeben:
 	return T1 + T2 + T3;
 }
 
-		
+
 /// @brief Starts moving all cubes with the given velocities
 bool PowerCubeSim::MoveVel(const std::vector<double>& vel)
 {
@@ -422,8 +422,8 @@ bool PowerCubeSim::MoveVel(const std::vector<double>& vel)
 	PCube_startMotionAll(m_Dev);
 	*/
 }
-		
-				
+
+
 /// @brief Stops the Manipulator immediately
 bool PowerCubeSim::Stop()
 {
@@ -435,7 +435,7 @@ bool PowerCubeSim::Stop()
 /// @brief Sets the maximum angular velocity (rad/s) for the Joints, use with care!
 /// A Value of 0.5 is already pretty fast, you probably don't want anything more than one...
 bool PowerCubeSim::setMaxVelocity(double radpersec)
-{ 
+{
 	for (int i=0; i<m_DOF; i++)
 	{
 		m_CurrentAngularMaxVel[i] = radpersec;
@@ -526,7 +526,7 @@ bool PowerCubeSim::statusMoving(int cubeNo)
 
 	return isMoving;
 }
-		
+
 void PowerCubeSim::setStatusMoving (int cubeNo, bool moving)
 {
 	//m_Out << "setStatusMoving: Waiting for Movement_Mutex ... ";
@@ -584,7 +584,7 @@ void  * SimThreadRoutine(void* threadArgs)
 	double targetAngle = args->targetAngle;
 
 	//std::cout << "Thread started for cube no "<< cubeNo<<"["<<(cubeSimPtr->getModuleMap())[cubeNo]<<"]"<<endl;
-	
+
 	//calculate phases of movement
 	float t1,t2,t,tges; //acceleration time t1/t , duration of maximum vel t2, total time tges
 	double deltaT = SIM_CLOCK_FREQUENCY/1000; //clock period
@@ -597,7 +597,7 @@ void  * SimThreadRoutine(void* threadArgs)
 	cubeSimPtr->getJointVelocities(currVels);
 
 	double deltaAngle = targetAngle - currAngles[cubeNo];
-	
+
 	//acceleration phase
 	t1 = maxVel/maxAccel;
 
@@ -605,7 +605,7 @@ void  * SimThreadRoutine(void* threadArgs)
 	t2 = abs(deltaAngle)/maxVel - t1;
 
 	//cubeSimPtr->getOutputStream()<<" (abs(deltaAngle) >, maxVel*maxVel/maxAccel)?"<< abs(deltaAngle) <<"; "<< maxVel*maxVel/maxAccel<<endl;
-	
+
 	//is maxVel reached?
 	if (abs(deltaAngle) > maxVel*maxVel/maxAccel)
 	{
@@ -630,9 +630,9 @@ void  * SimThreadRoutine(void* threadArgs)
 	std::cout << "maxVel: "<<maxVel<<"; maxAccel: "<<maxAccel<< "; t1 [ms]: "<<t1<<"; t2 [ms]: "<<t2 <<"; deltaAngle[rad]" <<deltaAngle<<endl;
 
 	//control loop
-	
-	double simulatedTime = 0.0; 
-	int n = 0;  
+
+	double simulatedTime = 0.0;
+	int n = 0;
 	float currDeltaAngle = deltaAngle;
 
 	if (abs(deltaAngle) > 0.001)
@@ -690,7 +690,7 @@ void  * SimThreadRoutine(void* threadArgs)
 				}
 				else if ((simulatedTime > t) && (simulatedTime <= 2*t))
 				{
-					//deltaPhi = maxVel *simulatedTime - 0.5*maxAccel*(simulatedTime -t)*(simulatedTime-t);	
+					//deltaPhi = maxVel *simulatedTime - 0.5*maxAccel*(simulatedTime -t)*(simulatedTime-t);
 					deltaPhi = maxAccel*t*deltaT - 0.5*maxAccel*((n*deltaT-t)*(n*deltaT-t)-((n-1)*deltaT-t)*((n-1)*deltaT-t));
 					currVels[cubeNo] = maxAccel*t - maxAccel * (simulatedTime -t);
 					std::cout  << "Phase 2 ->";
@@ -757,7 +757,7 @@ void PowerCubeSim::millisleep(unsigned int milliseconds) const
 }
 
 
-/** Wait functions which is waiting that all cubes have done their homing 
+/** Wait functions which is waiting that all cubes have done their homing
 */
 /* Not necessary
    void PowerCubeSim::HomingDone()

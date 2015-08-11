@@ -6,7 +6,7 @@
      the Gazebo bumper topics of the SDH. It transforms the Gazebo feedback to
      the "tactile_data" topic to provide the same tactile sensor interface as
      the schunk_sdh package.
-     
+
      The following parameters can be set:
      * cells_x: The number of patches on the tactile sensor in the direction
                 perpendicular to the finger. Defaults to 6.
@@ -28,7 +28,7 @@
                                  given in the data sheet!
      * filter_length: The length of the moving average filter which smoothes
                       the values from simulation. Defaults to 10.
-     
+
      The node subscribes to the following topics to receive data from the
      simulation:
      * thumb_2/state
@@ -37,10 +37,10 @@
      * finger_13/state
      * finger_22/state
      * finger_23/state
-     
+
      The node publishes the processed data on the following topic:
      * tactile_data
-     
+
      The simulated bumper must obtain the collision data in the link that the
      sensor is attached to. This is achieved by setting the "frameName" property
      in the gazebo_ros_bumper controller.</description>
@@ -52,7 +52,7 @@
 
   <author>Sven Schneider</author>
   <maintainer email="fmw@ipa.fhg.de">Florian Weisshardt</maintainer>
-  
+
   <buildtool_depend>catkin</buildtool_depend>
 
   <run_depend>gazebo_msgs</run_depend>

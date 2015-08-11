@@ -32,7 +32,7 @@ if(CMAKE_DPKG)
 endif()
 
 add_custom_target(
-    copy_SDHLIB ALL 
+    copy_SDHLIB ALL
     COMMAND /bin/ln -sf ${PROJECT_SOURCE_DIR}/common/lib/${MYARCH}/libSDHLibrary-CPP.so ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so
     DEPENDS ${PROJECT_SOURCE_DIR}/common/lib/${MYARCH}/libSDHLibrary-CPP.so
 )

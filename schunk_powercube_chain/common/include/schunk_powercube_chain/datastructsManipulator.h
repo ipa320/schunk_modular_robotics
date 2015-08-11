@@ -71,10 +71,10 @@
 %{
 	#include <schunk_powercube_chain/datastructsManipulator.h>
 %}
-#endif 
+#endif
 
 
-/** 
+/**
  * @brief Definition of the used structs in the project Path planner
  * @author Katrin Thurow <katrinthurow@hotmail.com>
  */
@@ -90,7 +90,7 @@ struct AbsPos {
 	// Bitte beachten: Es werden von nun an XYZ-fixed Winkel benutzt
 	// (Siehe Craig, S.45ff)
 	// welche gleichbedeutend mit den Euler-ZYX Winkeln sind.
-	// Die Bezeichnungen Eulerx, Eulery, Eulerz werden daher beibehalten. 
+	// Die Bezeichnungen Eulerx, Eulery, Eulerz werden daher beibehalten.
     double Eulerx;
     double Eulery;
     double Eulerz;
@@ -140,7 +140,7 @@ struct DH {
 
 struct LimitsTheta {
     Jointd max;
-    Jointd min;	
+    Jointd min;
 };
 
 
