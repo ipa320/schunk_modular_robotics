@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(schunk_powercube_chain)
 
-find_package(catkin REQUIRED COMPONENTS cob_srvs control_msgs diagnostic_msgs libntcan libpcan roscpp schunk_libm5api sensor_msgs std_msgs std_srvs trajectory_msgs urdf
-)
+find_package(catkin REQUIRED COMPONENTS cob_srvs control_msgs diagnostic_msgs libntcan libpcan roscpp schunk_libm5api sensor_msgs std_msgs std_srvs trajectory_msgs urdf)
+
+find_package(Boost REQUIRED)
 
 catkin_package(
-  CATKIN_DEPENDS cob_srvs control_msgs diagnostic_msgs libntcan libpcan roscpp schunk_libm5api sensor_msgs std_msgs std_srvs trajectory_msgs urdf
+  CATKIN_DEPENDS schunk_libm5api
+  DEPENDS Boost
   INCLUDE_DIRS common/include
 )
 
@@ -25,12 +27,4 @@ install(TARGETS ${PROJECT_NAME}
 
 install(DIRECTORY common/include/${PROJECT_NAME}/
    DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-   FILES_MATCHING PATTERN "*.h"
-   PATTERN ".svn" EXCLUDE
-)
-
-install(DIRECTORY orocos/include/${PROJECT_NAME}/
-   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-   FILES_MATCHING PATTERN "*.h"
-   PATTERN ".svn" EXCLUDE
 )

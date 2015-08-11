@@ -4,7 +4,6 @@ project(schunk_libm5api)
 find_package(catkin REQUIRED COMPONENTS libntcan libpcan)
 
 catkin_package(
-    DEPENDS
     CATKIN_DEPENDS libntcan libpcan
     INCLUDE_DIRS include
     LIBRARIES m5api

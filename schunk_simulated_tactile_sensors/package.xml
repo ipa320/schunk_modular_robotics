@@ -1,4 +1,4 @@
-<package>
+<package format="2">
   <name>schunk_simulated_tactile_sensors</name>
   <version>0.6.3</version>
   <description>This package provides simulated tactile sensors for the Schunk Dextrous
@@ -55,8 +55,8 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <run_depend>gazebo_msgs</run_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>schunk_sdh</run_depend>
+  <exec_depend>gazebo_msgs</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>schunk_sdh</exec_depend>
 
 </package>

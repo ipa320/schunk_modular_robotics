@@ -14,9 +14,7 @@ generate_messages(
   DEPENDENCIES std_msgs
 )
 
-catkin_package(
-    CATKIN_DEPENDS actionlib cob_srvs control_msgs diagnostic_msgs libntcan libpcan message_runtime roscpp sensor_msgs std_msgs std_srvs trajectory_msgs urdf
-)
+catkin_package()
 
 ### BUILD ###
 find_program(CMAKE_DPKG dpkg /bin /usr/bin /usr/local/bin )
@@ -67,6 +65,4 @@ install(TARGETS ${PROJECT_NAME} sdh_only dsa_only
 
 install(DIRECTORY common/include/${PROJECT_NAME}/
    DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-   FILES_MATCHING PATTERN "*.h"
-   PATTERN ".svn" EXCLUDE
 )
