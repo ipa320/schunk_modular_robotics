@@ -17,7 +17,6 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <depend>boost</depend>
   <depend>cob_srvs</depend>
   <depend>control_msgs</depend>
   <depend>diagnostic_msgs</depend>

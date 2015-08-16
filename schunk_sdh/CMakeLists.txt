@@ -3,6 +3,8 @@ project(schunk_sdh)
 
 find_package(catkin REQUIRED COMPONENTS actionlib cob_srvs control_msgs diagnostic_msgs libntcan libpcan message_generation roscpp sensor_msgs std_msgs std_srvs trajectory_msgs urdf)
 
+find_package(Boost REQUIRED)
+
 ### Message Generation ###
 add_message_files(
   DIRECTORY msg FILES
@@ -14,7 +16,9 @@ generate_messages(
   DEPENDENCIES std_msgs
 )
 
-catkin_package()
+catkin_package(
+  CATKIN_DEPENDS std_msgs message_runtime
+)
 
 ### BUILD ###
 find_program(CMAKE_DPKG dpkg /bin /usr/bin /usr/local/bin )
@@ -63,6 +67,3 @@ install(TARGETS ${PROJECT_NAME} sdh_only dsa_only
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(DIRECTORY common/include/${PROJECT_NAME}/
-   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-)
