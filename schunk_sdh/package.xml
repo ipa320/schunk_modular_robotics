@@ -1,4 +1,4 @@
-<package>
+<package format="2">
   <name>schunk_sdh</name>
   <version>0.6.3</version>
   <description>This package provides an interface for operating the schunk dexterous hand (SDH), including the tactile sensors.</description>
@@ -14,36 +14,23 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>actionlib</build_depend>
-  <build_depend>cob_srvs</build_depend>
-  <build_depend>control_msgs</build_depend>
-  <build_depend>diagnostic_msgs</build_depend>
-  <build_depend>dpkg</build_depend>
-  <build_depend>libntcan</build_depend>
-  <build_depend>libpcan</build_depend>
-  <build_depend>libusb-dev</build_depend>
   <build_depend>message_generation</build_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>std_srvs</build_depend>
-  <build_depend>trajectory_msgs</build_depend>
-  <build_depend>urdf</build_depend>
+  <exec_depend>message_runtime</exec_depend>
 
-  <run_depend>actionlib</run_depend>
-  <run_depend>cob_srvs</run_depend>
-  <run_depend>control_msgs</run_depend>
-  <run_depend>diagnostic_msgs</run_depend>
-  <run_depend>dpkg</run_depend>
-  <run_depend>libntcan</run_depend>
-  <run_depend>libpcan</run_depend>
-  <run_depend>libusb-dev</run_depend>
-  <run_depend>message_runtime</run_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>sensor_msgs</run_depend>
-  <run_depend>std_msgs</run_depend>
-  <run_depend>std_srvs</run_depend>
-  <run_depend>trajectory_msgs</run_depend>
-  <run_depend>urdf</run_depend>
+  <depend>actionlib</depend>
+  <depend>boost</depend>
+  <depend>cob_srvs</depend>
+  <depend>control_msgs</depend>
+  <depend>diagnostic_msgs</depend>
+  <depend>dpkg</depend>
+  <depend>libntcan</depend>
+  <depend>libpcan</depend>
+  <depend>libusb-dev</depend>
+  <depend>roscpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>trajectory_msgs</depend>
+  <depend>urdf</depend>
 
 </package>

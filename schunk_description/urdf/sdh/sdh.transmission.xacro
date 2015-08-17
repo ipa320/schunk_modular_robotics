@@ -33,7 +33,7 @@
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
-  
+
     <transmission name="${name}_finger_13_trans">
       <type>transmission_interface/SimpleTransmission</type>
       <joint name="${name}_finger_13_joint">
@@ -43,7 +43,7 @@
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
-  
+
     <!-- finger2 -->
     <transmission name="${name}_finger_22_trans">
       <type>transmission_interface/SimpleTransmission</type>
@@ -54,7 +54,7 @@
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
-  
+
     <transmission name="${name}_finger_23_trans">
       <type>transmission_interface/SimpleTransmission</type>
       <joint name="${name}_finger_23_joint">
@@ -64,7 +64,7 @@
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
-  
+
     <!-- thumb -->
     <transmission name="${name}_thumb_2_trans">
       <type>transmission_interface/SimpleTransmission</type>
@@ -75,12 +75,12 @@
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
-  
+
     <transmission name="${name}_thumb_3_trans">
       <type>transmission_interface/SimpleTransmission</type>
       <joint name="${name}_thumb_3_joint">
         <hardwareInterface>PositionJointInterface</hardwareInterface>
-      </joint>    
+      </joint>
       <actuator name="${name}_thumb_3_motor">
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>

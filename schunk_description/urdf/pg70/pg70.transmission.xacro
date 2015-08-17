@@ -15,7 +15,7 @@
         <mechanicalReduction>0.5</mechanicalReduction>
       </actuator>
     </transmission>
-  
+
     <!-- finger2 - mimic -->
     <transmission name="${name}_finger_right_trans">
       <type>transmission_interface/SimpleTransmission</type>

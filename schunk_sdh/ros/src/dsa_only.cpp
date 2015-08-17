@@ -42,17 +42,17 @@
  *       this software without specific prior written permission. \n
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License LGPL as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License LGPL as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License LGPL for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
- * License LGPL along with this program. 
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License LGPL along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  *
  ****************************************************************/
@@ -110,7 +110,7 @@ class DsaNode
 		// declaration of topics to publish
 		ros::Publisher topicPub_TactileSensor_;
 		ros::Publisher topicPub_Diagnostics_;
-		
+
 		// topic subscribers
 
 		// service servers
@@ -135,10 +135,10 @@ class DsaNode
 		bool use_rle_;
 		bool debug_;
 		double frequency_;
-		
-		
+
+
 		ros::Timer timer_dsa,timer_publish, timer_diag;
-		
+
 		std::vector<int> dsa_reorder_;
 	public:
 		/*!
@@ -155,7 +155,7 @@ class DsaNode
 		/*!
 		* \brief Destructor for SdhNode class
 		*/
-		~DsaNode() 
+		~DsaNode()
 		{
 			if(isDSAInitialized_)
 				dsa_->Close();
@@ -177,15 +177,15 @@ class DsaNode
 		bool init()
 		{
 			// implementation of topics to publish
- 
+
 			nh_.param("dsadevicestring", dsadevicestring_, std::string(""));
 			if (dsadevicestring_.empty()) return false;
 
 			nh_.param("dsadevicenum", dsadevicenum_, 0);
 			nh_.param("maxerror", maxerror_, 8);
-			
+
  			double publish_frequency, diag_frequency;
-			
+
 			nh_.param("debug", debug_, false);
 			nh_.param("polling", polling_, false);
 			nh_.param("use_rle", use_rle_, true);
@@ -193,10 +193,10 @@ class DsaNode
 			frequency_ = 30.0;
 			if(polling_) nh_.param("poll_frequency", frequency_, 5.0);
 			nh_.param("publish_frequency", publish_frequency, 0.0);
-			
+
 			auto_publish_ = true;
 
-				
+
 			if(polling_){
 			    timer_dsa = nh_.createTimer(ros::Rate(frequency_).expectedCycleTime(),boost::bind(&DsaNode::pollDsa,  this));
  			}else{
@@ -208,7 +208,7 @@ class DsaNode
 			}
 
 			timer_diag = nh_.createTimer(ros::Rate(diag_frequency).expectedCycleTime(),boost::bind(&DsaNode::publishDiagnostics, this));
-			
+
 			if(!read_vector(nh_, "dsa_reorder", dsa_reorder_)){
 			    dsa_reorder_.resize(6);
 			    dsa_reorder_[0] = 2; // t1
@@ -218,7 +218,7 @@ class DsaNode
 			    dsa_reorder_[4] = 0; // f21
 			    dsa_reorder_[5] = 1; // f22
 			}
-			
+
 			return true;
 		}
 		bool stop(){
@@ -246,7 +246,7 @@ class DsaNode
 						    dsa_->SetFramerate( frequency_, use_rle_ );
                         			else
                             			    dsa_->SetFramerate( 0, use_rle_ );
-						
+
 						ROS_INFO("Initialized RS232 for DSA Tactile Sensors on device %s",dsadevicestring_.c_str());
 						// ROS_INFO("Set sensitivity to 1.0");
 						// for(int i=0; i<6; i++)
@@ -259,13 +259,13 @@ class DsaNode
 						isDSAInitialized_ = false;
 						ROS_ERROR("An exception was caught: %s", e->what());
 						delete e;
-						
+
 						shutdown();
 						return false;
 					}
 				}
 			}
-			
+
 			return true;
 		}
 
@@ -284,7 +284,7 @@ class DsaNode
 				    if(error_counter_ > 0) --error_counter_;
 				    if(auto_publish_) publishTactileData();
 				}
-				
+
 			}
 			catch (SDH::cSDHLibraryException* e)
 			{
@@ -298,7 +298,7 @@ class DsaNode
 		    start();
 		}
 	}
-	
+
 	void pollDsa(){
 		if(debug_) ROS_DEBUG("pollDsa");
 
@@ -308,7 +308,7 @@ class DsaNode
 			{
 				dsa_->SetFramerate( 0, use_rle_ );
 				readDsaFrame();
-				
+
 			}
 			catch (SDH::cSDHLibraryException* e)
 			{
@@ -322,13 +322,13 @@ class DsaNode
 		    start();
 		}
 	}
-	
+
 	void publishTactileData()
 	{
 	    if(debug_) ROS_DEBUG("publishTactileData %ul %ul",dsa_->GetFrame().timestamp, last_data_publish_);
 	    if(!isDSAInitialized_ || dsa_->GetFrame().timestamp == last_data_publish_) return; // no new frame available
 	    last_data_publish_ = dsa_->GetFrame().timestamp;
-	    
+
 	    schunk_sdh::TactileSensor msg;
 	    msg.header.stamp = ros::Time::now();
 	    int m, x, y;
@@ -336,7 +336,7 @@ class DsaNode
 	    ROS_ASSERT(dsa_->GetSensorInfo().nb_matrices == dsa_reorder_.size());
 	    for ( unsigned int i = 0; i < dsa_reorder_.size(); i++ )
 	    {
-		    m = dsa_reorder_[i];                                  
+		    m = dsa_reorder_[i];
 		    schunk_sdh::TactileMatrix &tm = msg.tactile_matrix[i];
 		    tm.matrix_id = i;
 		    tm.cells_x = dsa_->GetMatrixInfo( m ).cells_x;
@@ -350,7 +350,7 @@ class DsaNode
 	    }
 	    //publish matrix
 	    topicPub_TactileSensor_.publish(msg);
-	    
+
 	}
 	void publishDiagnostics()
 	{
@@ -382,7 +382,7 @@ class DsaNode
 	    topicPub_Diagnostics_.publish(diagnostics);
 	    if(debug_) ROS_DEBUG_STREAM("publishDiagnostics " << diagnostics);
 
-	}	 
+	}
 }; //DsaNode
 
 /*!
@@ -394,17 +394,17 @@ int main(int argc, char** argv)
 {
 	// initialize ROS, spezify name of node
 	ros::init(argc, argv, "schunk_dsa");
-	
+
 	DsaNode dsa_node;
-	
+
 	if (!dsa_node.init()) return 0;
-	
+
 	dsa_node.start();
-	
+
 	ROS_INFO("...dsa node running...");
 
 	ros::spin();
-	
+
 	ROS_INFO("...dsa node shut down...");
 	return 0;
 }

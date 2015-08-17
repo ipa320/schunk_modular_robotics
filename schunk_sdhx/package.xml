@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<package>
+<package format="2">
   <name>schunk_sdhx</name>
   <version>0.6.3</version>
   <description>The schunk_sdhx package</description>
@@ -8,14 +7,14 @@
   <license>LGPL</license>
 
   <author email="tdf@ipa.fhg.de">Thiago de Freitas</author>
-  
+
   <buildtool_depend>catkin</buildtool_depend>
 
-  <run_depend>actionlib</run_depend>
-  <run_depend>control_msgs</run_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>sensor_msgs</run_depend>
-  <run_depend>serial</run_depend>
-  <run_depend>std_srvs</run_depend>
-  
+  <exec_depend>actionlib</exec_depend>
+  <exec_depend>control_msgs</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>serial</exec_depend>
+  <exec_depend>std_srvs</exec_depend>
+
 </package>

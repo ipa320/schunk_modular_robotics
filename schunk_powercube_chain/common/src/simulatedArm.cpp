@@ -74,7 +74,7 @@ simulatedArm::simulatedArm()
 	m_DOF = 0;
 	m_Initialized = false;
 	m_motors.clear();
-			
+
 }
 
 simulatedArm::~simulatedArm()
@@ -86,22 +86,22 @@ simulatedArm::~simulatedArm()
 bool simulatedArm::Init(PowerCubeCtrlParams * params)
 {
 	m_DOF = params->GetNumberOfDOF();;
-	
+
 	double vmax = 1.0;
 	double amax = 1.5;
-	
+
 	setMaxVelocity(vmax);
 	setMaxAcceleration(amax);
 	m_maxVel.resize(m_DOF);
 	m_maxAcc.resize(m_DOF);
-	
+
 	std::vector<double> ul(m_DOF);
 	std::vector<double> ll(m_DOF);
 	ul = params->GetUpperLimits();
 	ll = params->GetLowerLimits();
 	m_maxVel = params->GetMaxVel();
 	m_maxAcc =  params->GetMaxAcc();
-	
+
 
 	for (int i=0; i < m_DOF; i++)
 	{
@@ -128,24 +128,24 @@ bool simulatedArm::MoveJointSpaceSync(const std::vector<double>& target)
 
 	std::vector<double> acc(m_DOF);
 	std::vector<double> vel(m_DOF);
-	
-	double TG = 0;
-	
 
-	try 
-	{		
+	double TG = 0;
+
+
+	try
+	{
 		// Ermittle Joint, der bei max Geschw. und Beschl. am längsten braucht:
 
 		std::vector<double> posnow;
 		posnow.resize(m_DOF);
 		if ( getConfig(posnow) == false )
 		    return false;
-		    
+
 		std::vector<double> velnow;
 		velnow.resize(m_DOF);
 		if ( getJointVelocities(velnow) == false )
 		    return false;
-			
+
 		std::vector<double> times(m_DOF);
 
 		for (int i=0; i < m_DOF; i++)
@@ -153,12 +153,12 @@ bool simulatedArm::MoveJointSpaceSync(const std::vector<double>& target)
 			RampCommand rm(posnow[i], velnow[i], target[i], m_maxAcc[i], m_maxVel[i]);
 			times[i] = rm.getTotalTime();
 		}
-		
+
 		// determine the joint index that has the greates value for time
 		int furthest = 0;
-		
+
 		double max = times[0];
-	
+
 	    for (int i=1; i<m_DOF; i++)
 	    {
 		    if (times[i] > max)
@@ -167,20 +167,20 @@ bool simulatedArm::MoveJointSpaceSync(const std::vector<double>& target)
 			    furthest = i;
 		    }
 	    }
-		
+
 		RampCommand rm_furthest(posnow[furthest], velnow[furthest], target[furthest], m_maxAcc[furthest], m_maxVel[furthest]);
-		
+
 		double T1 = rm_furthest.T1();
 		double T2 = rm_furthest.T2();
 		double T3 = rm_furthest.T3();
-		
+
 		// Gesamtzeit:
 		TG = T1 + T2 + T3;
-		
-		// Jetzt Geschwindigkeiten und Beschl. für alle: 
+
+		// Jetzt Geschwindigkeiten und Beschl. für alle:
 		acc[furthest] = m_maxAcc[furthest];
 		vel[furthest] = m_maxVel[furthest];
-		
+
 		for (int i = 0; i < m_DOF; i++)
 		{
 			if (i != furthest)
@@ -188,34 +188,34 @@ bool simulatedArm::MoveJointSpaceSync(const std::vector<double>& target)
 				double a; double v;
 				// a und v berechnen:
 				RampCommand::calculateAV(
-					posnow[i], 
-					velnow[i], 
-					target[i], 
-					TG, T3, 
+					posnow[i],
+					velnow[i],
+					target[i],
+					TG, T3,
 					m_maxAcc[i],
 					m_maxVel[i],
-					a, 
+					a,
 					v);
-							
+
 				acc[i] = a;
 				vel[i] = v;
 			}
 		}
-	} 
-	catch(...) 
+	}
+	catch(...)
 	{
 		m_ErrorMessage.assign("Problem during calculation of a and av.");
 		return false;
 	}
-		
-	// Jetzt Bewegung starten:	
+
+	// Jetzt Bewegung starten:
 	for (int i=0; i < m_DOF; i++)
 	{
 		std::cout << "moving motor " << i << ": " << target[i] << ": " << vel[i] << ": " << acc[i] << "\n";
 		m_motors[i].moveRamp(target[i], vel[i], acc[i]);
 	}
-	
-	return true;	
+
+	return true;
 }
 
 bool simulatedArm::MoveVel(const std::vector<double>& Vel)
@@ -231,7 +231,7 @@ bool simulatedArm::MoveVel(const std::vector<double>& Vel)
 	}
 //	std::cerr << "\n";
 	return true;
-}	
+}
 
 
 bool simulatedArm::MovePos(const std::vector<double>& Pos)
@@ -240,11 +240,11 @@ bool simulatedArm::MovePos(const std::vector<double>& Pos)
 
 	for (int i=0; i < m_DOF; i++)
 		m_motors[i].movePos(Pos[i]);
-	
-	return true;
-}	
 
-	
+	return true;
+}
+
+
 ///////////////////////////////////////////
 // Funktionen zum setzen von Parametern: //
 ///////////////////////////////////////////
@@ -253,7 +253,7 @@ bool simulatedArm::MovePos(const std::vector<double>& Pos)
 bool simulatedArm::setMaxVelocity(double radpersec)
 {
     PSIM_CHECK_INITIALIZED();
-    
+
     m_maxVel.resize(m_DOF);
 
 	for (int i=0; i < m_DOF; i++)
@@ -261,19 +261,19 @@ bool simulatedArm::setMaxVelocity(double radpersec)
 		m_maxAcc[i] = radpersec;
 		m_motors[i].setMaxVelocity(radpersec);
 	}
-	
+
 	return true;
 }
 
 bool simulatedArm::setMaxVelocity(const std::vector<double>& radpersec)
 {
     PSIM_CHECK_INITIALIZED();
-    
+
     m_maxAcc = radpersec;
 
 	for (int i=0; i < m_DOF; i++)
 		m_motors[i].setMaxVelocity(radpersec[i]);
-	
+
 	return true;
 }
 
@@ -284,7 +284,7 @@ bool simulatedArm::setMaxAcceleration(double radPerSecSquared)
 
 	for (int i=0; i < m_DOF; i++)
 		m_motors[i].setMaxAcceleration(radPerSecSquared);
-	
+
 	return true;
 }
 
@@ -294,7 +294,7 @@ bool simulatedArm::setMaxAcceleration(const std::vector<double>& radPerSecSquare
 
 	for (int i=0; i < m_DOF; i++)
 		m_motors[i].setMaxAcceleration(radPerSecSquared[i]);
-	
+
 	return true;
 }
 
@@ -302,8 +302,8 @@ bool simulatedArm::setMaxAcceleration(const std::vector<double>& radPerSecSquare
 ////////////////////////////////////////////
 // hier die Funktionen zur Statusabfrage: //
 ////////////////////////////////////////////
-		
-		
+
+
 /// @brief Returns the current Joint Angles
 bool simulatedArm::getConfig(std::vector<double>& result)
 {
@@ -314,9 +314,9 @@ bool simulatedArm::getConfig(std::vector<double>& result)
 	{
 		result[i] = m_motors[i].getAngle();
 	}
-	
+
 	return true;
-}	
+}
 
 /// @brief Returns the current Angular velocities (Rad/s)
 bool simulatedArm::getJointVelocities(std::vector<double>& result)
@@ -328,9 +328,9 @@ bool simulatedArm::getJointVelocities(std::vector<double>& result)
 	{
 		result[i] = m_motors[i].getVelocity();
 	}
-	
+
 	return true;
-}	
+}
 
 /// @brief Returns true if any of the Joints are still moving
 /// Should also return true if Joints are accelerating or decelerating
@@ -339,13 +339,13 @@ bool simulatedArm::statusMoving()
     PSIM_CHECK_INITIALIZED();
 
 	for(int i=0; i<m_DOF; i++)
-	{	
+	{
 		if (m_motors[i].statusMoving())
 			return true;
 	}
 	return false;
 }
-		
+
 
 /// @brief Returns true if any of the Joints are decelerating
 bool simulatedArm::statusDec()
@@ -353,7 +353,7 @@ bool simulatedArm::statusDec()
     PSIM_CHECK_INITIALIZED();
 
 	for(int i=0; i<m_DOF; i++)
-	{	
+	{
 		if (m_motors[i].statusDec())
 			return true;
 	}
@@ -366,7 +366,7 @@ bool simulatedArm::statusAcc()
     PSIM_CHECK_INITIALIZED();
 
 	for(int i=0; i<m_DOF; i++)
-	{	
+	{
 		if (m_motors[i].statusAcc())
 			return true;
 	}

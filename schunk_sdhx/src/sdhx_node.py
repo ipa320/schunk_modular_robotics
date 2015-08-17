@@ -83,12 +83,12 @@ class Sdhx():
     self.min_pwm1 = rospy.get_param("~min_pwm1")
     self.max_pwm0 = rospy.get_param("~max_pwm0")
     self.max_pwm1 = rospy.get_param("~max_pwm1")
-    
+
     rospy.loginfo("starting node")
     self._ser = None
     self.setup()
     self.move_lock = False
-    
+
     self._as = actionlib.SimpleActionServer(FJT_ACTION_NAME, FollowJointTrajectoryAction, self.execute_cb, False)
     self._as.start()
     self._pub_joint_states = rospy.Publisher('joint_states', JointState,queue_size=1)
@@ -105,9 +105,9 @@ class Sdhx():
 
     self.pos = [0,0]
     self.command_pos = [0,0]
-    
-    rospy.Timer(rospy.Duration(0.1), self.publish_joint_states)    
-    rospy.Timer(rospy.Duration(10), self.intern_move)    
+
+    rospy.Timer(rospy.Duration(0.1), self.publish_joint_states)
+    rospy.Timer(rospy.Duration(10), self.intern_move)
     self.lock = False
 
   def setup(self):
@@ -150,7 +150,7 @@ class Sdhx():
 
     return status, reply
 
-  def get_pos(self):  
+  def get_pos(self):
     status,pos = self.execute_command("position")
 
     if(not pos==None):
@@ -162,11 +162,11 @@ class Sdhx():
     status,reply = self.execute_command("stop", complement)
 
     return status, reply
-  
+
   def move(self,pos_0, pos_1):
     status = None
     reply = None
-    
+
     if(not self.move_lock):
       self.move_lock = True
       complement = " "+(str)(pos_0)+","+(str)(pos_1)+Terminator
@@ -179,16 +179,16 @@ class Sdhx():
       self._joint_states.position = [pos_0/100.0/180.0*math.pi, pos_1/100.0/180.0*math.pi]
     return status, reply
 
-  def close_port(self):  
+  def close_port(self):
     if self._ser:
       self._ser.close()
     self._ser = None
-  
+
   def intern_move(self, event):
     self.move(self.command_pos[0], self.command_pos[1])
-  
+
   def execute_cb(self, goal):
-    
+
     position_proximal = goal.trajectory.points[-1].positions[0]
     position_distal = goal.trajectory.points[-1].positions[1]
 
@@ -203,20 +203,20 @@ class Sdhx():
       self._as.set_succeeded()
     else:
       self._as.set_aborted()
-    
+
   def publish_joint_states(self, event):
-      
+
     self._joint_states.header.stamp = rospy.Time.now()
     self._pub_joint_states.publish(self._joint_states)
     self.publish_controller_state()
 
-    
+
   def update_joint_states(self):
     return
     if(not self.lock):
       self.lock = True
       status, pos = self.get_pos()
-      
+
       if status == True and (not pos==None):
         try:
           actual_pos_proximal = math.radians((float)(pos[0])/100)
@@ -227,12 +227,12 @@ class Sdhx():
 
       self.lock = False
 
-        
+
   def publish_controller_state(self):
     self._controller_state.header.stamp = rospy.Time.now()
     self._controller_state.joint_names = self._joint_states.name
     self._controller_state.actual.positions = self._joint_states.position
-    self._controller_state.actual.velocities = self._joint_states.velocity 
+    self._controller_state.actual.velocities = self._joint_states.velocity
     self._pub_controller_state.publish(self._controller_state)
 
   def execute_command(self, command, complement=Terminator, timeout=1.2):
@@ -242,7 +242,7 @@ class Sdhx():
       return (False,None)
 
     t_out = time.time() + timeout
-    
+
     status,result = False,None
     try:
       self._ser.write(commands[command]+complement)
@@ -320,7 +320,7 @@ class Sdhx():
       result = None
     return status, result
 
-    
+
 if __name__ == '__main__':
   try:
     rospy.init_node('schunk_sdhx')

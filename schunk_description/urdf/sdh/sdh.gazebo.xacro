@@ -8,13 +8,13 @@
       <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
     </gazebo>
-  
+
     <gazebo reference="${name}_finger_11_link">
       <gravity>true</gravity>
       <self_collide>false</self_collide>
       <material>Schunk/LightGrey</material>
     </gazebo>
-  
+
     <gazebo reference="${name}_finger_12_link">
       <gravity>true</gravity>
       <self_collide>false</self_collide>
@@ -60,7 +60,7 @@
       <kp value="1000000.0" />
       <kd value="1.0" /-->
     </gazebo>
-  
+
     <gazebo reference="${name}_finger_22_link">
       <gravity>true</gravity>
       <self_collide>false</self_collide>

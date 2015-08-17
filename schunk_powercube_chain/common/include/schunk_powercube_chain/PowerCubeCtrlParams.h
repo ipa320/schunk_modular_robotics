@@ -159,7 +159,7 @@ public:
 	{
 		return m_ModulIDs;
 	}
-	
+
 	/// Gets the ModuleID
 	int GetModuleID(int no)
 	{
@@ -168,7 +168,7 @@ public:
 		else
 			return -1;
 	}
-	
+
 	/// Sets the Module IDs
 	int SetModuleID(int no, int id)
 	{

@@ -405,19 +405,19 @@ public:
   {
     ROS_DEBUG("Received new velocity command");
     if (!initialized_)
-    {  
+    {
       ROS_WARN("Skipping command: powercubes not initialized");
       publishState(false);
-      return; 
+      return;
     }
-    
+
     if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK)
     {
       publishState(false);
-      return; 
+      return;
     }
 
- 
+
     PowerCubeCtrl::PC_CTRL_STATUS status;
     std::vector<std::string> errorMessages;
     pc_ctrl_->getStatus(status, errorMessages);
@@ -430,7 +430,7 @@ public:
       ROS_ERROR("Skipping command: Commanded velocities and DOF are not same dimension.");
       return;
     }
-    
+
     /// command velocities to powercubes
     if (!pc_ctrl_->MoveVel(msg->data))
     {
@@ -441,7 +441,7 @@ public:
     }
 
     ROS_DEBUG("Executed velocity command");
-   
+
     publishState(false);
   }
 
@@ -616,16 +616,16 @@ public:
 
     // check status of PowerCube chain
     if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK) { error_ = true; }
-  
-    // check status of PowerCube chain 
-    if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK) 
-    {   
+
+    // check status of PowerCube chain
+    if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK)
+    {
       error_ = true;
-    } 
-    else 
+    }
+    else
     {
       error_ = false;
-    } 
+    }
 
     // publishing diagnotic messages
     diagnostic_msgs::DiagnosticArray diagnostics;
