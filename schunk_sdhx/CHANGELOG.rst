@@ -2,6 +2,14 @@
 Changelog for package schunk_sdhx
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* migration to package format 2
+* remove trailing whitespaces
+* sort dependencies
+* review dependencies
+* Contributors: ipa-fxm
+
 0.6.3 (2015-06-17)
 ------------------
 * missing import
