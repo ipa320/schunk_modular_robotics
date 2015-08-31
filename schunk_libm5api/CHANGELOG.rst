@@ -2,8 +2,8 @@
 Changelog for package schunk_libm5api
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.5 (2015-08-31)
+------------------
 * fix include
 * Contributors: ipa-fxm
 
