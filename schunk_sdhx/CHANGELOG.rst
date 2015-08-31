@@ -2,6 +2,9 @@
 Changelog for package schunk_sdhx
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.6.4 (2015-08-25)
 ------------------
 * migration to package format 2
