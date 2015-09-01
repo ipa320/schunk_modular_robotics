@@ -2,6 +2,9 @@
 Changelog for package schunk_powercube_chain
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.6.5 (2015-08-31)
 ------------------
 

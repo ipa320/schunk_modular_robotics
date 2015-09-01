@@ -2,6 +2,9 @@
 Changelog for package schunk_modular_robotics
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.6.5 (2015-08-31)
 ------------------
 
