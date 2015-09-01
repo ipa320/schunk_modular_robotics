@@ -51,7 +51,7 @@
 #include "../include/ntcan.h"
 #endif
 #if defined(__LINUX__)
-#include "ntcan.h"
+#include <libntcan/ntcan.h>
 #endif
 #if defined (__QNX__)
 #include "../include/ntcan_qnx.h"
