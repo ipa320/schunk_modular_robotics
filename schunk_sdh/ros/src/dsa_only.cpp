@@ -149,8 +149,8 @@ public:
   DsaNode() :
       nh_("~"), dsa_(0), last_data_publish_(0), isDSAInitialized_(false), error_counter_(0)
   {
-    topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
-    topicPub_TactileSensor_ = nh_.advertise<schunk_sdh::TactileSensor>("tactile_data", 1);
+    topicPub_Diagnostics_ = nh_.advertise < diagnostic_msgs::DiagnosticArray > ("/diagnostics", 1);
+    topicPub_TactileSensor_ = nh_.advertise < schunk_sdh::TactileSensor > ("tactile_data", 1);
   }
 
   /*!
