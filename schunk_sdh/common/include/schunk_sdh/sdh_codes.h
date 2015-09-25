@@ -67,8 +67,8 @@ NAMESPACE_SDH_START
 // Function prototypes (function declarations)
 //----------------------------------------------------------------------
 
-char const* SDHCommandCodeToString( eCommandCode cc );
-char const* SDHReturnCodeToString( eReturnCode rc );
+char const* SDHCommandCodeToString(eCommandCode cc);
+char const* SDHReturnCodeToString(eReturnCode rc);
 
 NAMESPACE_SDH_END
 

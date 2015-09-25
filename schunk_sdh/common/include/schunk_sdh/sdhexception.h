@@ -79,7 +79,8 @@ class VCC_EXPORT cMsg
 protected:
 
   //! anonymous enum instead of define macros
-  enum {
+  enum
+  {
     eMAX_MSG = 512 //!< maximum length in bytes of a message to store
   };
 
@@ -91,11 +92,11 @@ public:
 
 
   //! Copy constructor, copy message content of other object to this object
-  cMsg( cMsg const & other );
+  cMsg(cMsg const & other);
 
 
   //! Constructor with printf like format, argument parameters
-  cMsg( char const* fmt, ... ) SDH__attribute__((format (printf, 2, 3)));
+  cMsg(char const* fmt, ...) SDH__attribute__((format(printf, 2, 3)));
 
   /*
     Remark:
@@ -190,7 +191,7 @@ public:
       \endcode
 
   */
-  cSDHLibraryException( char const * _type, cMsg const & _msg );
+  cSDHLibraryException(char const * _type, cMsg const & _msg);
 
   /*!
       Return the #msg member
@@ -206,12 +207,12 @@ public:
 class VCC_EXPORT cSDHErrorCommunication: public cSDHLibraryException
 {
 public:
-  cSDHErrorCommunication( cMsg const & _msg )
-    : cSDHLibraryException( "cSDHErrorCommunication", _msg )
+  cSDHErrorCommunication(cMsg const & _msg)
+    : cSDHLibraryException("cSDHErrorCommunication", _msg)
   {}
 
-  cSDHErrorCommunication( char const* _type, cMsg const & _msg )
-      : cSDHLibraryException( _type, _msg )
+  cSDHErrorCommunication(char const* _type, cMsg const & _msg)
+    : cSDHLibraryException(_type, _msg)
   {}
 };
 //-----------------------------------------------------------------

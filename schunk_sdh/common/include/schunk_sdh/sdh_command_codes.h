@@ -78,69 +78,69 @@
 */
 enum eCommandCodeEnum
 {
-    // Movement commands:
-    CMDC_V = 128,   // assign a value so that non ASCII codes are used
+  // Movement commands:
+  CMDC_V = 128,   // assign a value so that non ASCII codes are used
 
-    CMDC_VEL,
-    //130:
-    CMDC_RVEL,
-    CMDC_POS,
-    CMDC_STATE,
-    CMDC_P,
-    CMDC_A,
-    CMDC_M,
-    CMDC_STOP,
-    CMDC_VP,
-    CMDC_CON,
-    CMDC_TPAP,
-    //140:
-    CMDC_TVAV,
+  CMDC_VEL,
+  //130:
+  CMDC_RVEL,
+  CMDC_POS,
+  CMDC_STATE,
+  CMDC_P,
+  CMDC_A,
+  CMDC_M,
+  CMDC_STOP,
+  CMDC_VP,
+  CMDC_CON,
+  CMDC_TPAP,
+  //140:
+  CMDC_TVAV,
 
-    // Diagnostic and identification commands:
-    CMDC_VLIM,
-    CMDC_ALIM,
-    CMDC_POS_SAVE,
-    CMDC_REF,
-    CMDC_TEMP,
-    CMDC_ID,
-    CMDC_SN,
-    CMDC_VER,
-    CMDC_VER_DATE,
-    //150:
-    CMDC_SOC,
-    CMDC_SOC_DATE,
-    CMDC_NUMAXIS,
-    CMDC_P_MIN,
-    CMDC_P_MAX,
-    CMDC_P_OFFSET,
-    CMDC_GET_DURATION,
+  // Diagnostic and identification commands:
+  CMDC_VLIM,
+  CMDC_ALIM,
+  CMDC_POS_SAVE,
+  CMDC_REF,
+  CMDC_TEMP,
+  CMDC_ID,
+  CMDC_SN,
+  CMDC_VER,
+  CMDC_VER_DATE,
+  //150:
+  CMDC_SOC,
+  CMDC_SOC_DATE,
+  CMDC_NUMAXIS,
+  CMDC_P_MIN,
+  CMDC_P_MAX,
+  CMDC_P_OFFSET,
+  CMDC_GET_DURATION,
 
-    // Grip commands:
-    CMDC_IGRIP,
-    CMDC_IHOLD,
-    CMDC_SELGRIP,
-    //160:
-    CMDC_GRIP,
+  // Grip commands:
+  CMDC_IGRIP,
+  CMDC_IHOLD,
+  CMDC_SELGRIP,
+  //160:
+  CMDC_GRIP,
 
-    // Setup and configuration commands:
-    CMDC_PID,
-    CMDC_KV,
-    CMDC_ILIM,
-    CMDC_POWER,
+  // Setup and configuration commands:
+  CMDC_PID,
+  CMDC_KV,
+  CMDC_ILIM,
+  CMDC_POWER,
 
-    // Misc. commands:
-    CMDC_DEMO,
-    CMDC_USER_ERRORS,
-    CMDC_TERMINAL,
-    CMDC_DEBUG,
-    CMDC_USE_FIXED_LENGTH,
-    //170:
-    CMDC_CHANGE_RS232,
-    CMDC_CHANGE_CHANNEL,
+  // Misc. commands:
+  CMDC_DEMO,
+  CMDC_USER_ERRORS,
+  CMDC_TERMINAL,
+  CMDC_DEBUG,
+  CMDC_USE_FIXED_LENGTH,
+  //170:
+  CMDC_CHANGE_RS232,
+  CMDC_CHANGE_CHANNEL,
 
 #if USE_CMD_TEST
 
-    CMDC_TEST,
+  CMDC_TEST,
 #endif
 } SDH__attribute__((packed));
 
