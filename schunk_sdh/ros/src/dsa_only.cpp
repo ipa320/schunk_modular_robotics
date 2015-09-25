@@ -57,10 +57,12 @@
  *
  ****************************************************************/
 
-//##################
-//#### includes ####
+// ##################
+// #### includes ####
 // standard includes
 #include <unistd.h>
+#include <string>
+#include <vector>
 
 // ROS includes
 #include <ros/ros.h>
@@ -119,19 +121,19 @@ private:
   // actionlib server
 
   // service clients
-  //--
+  // --
 
   // other variables
   SDH::cDSA *dsa_;
-  SDH::UInt32 last_data_publish_; // time stamp of last data publishing
+  SDH::UInt32 last_data_publish_;  // time stamp of last data publishing
 
   std::string dsadevicestring_;
   int dsadevicenum_;
-  int maxerror_; // maximum error count allowed
+  int maxerror_;  // maximum error count allowed
 
   bool isDSAInitialized_;
   int error_counter_;
-  bool polling_; // try to publish on each response
+  bool polling_;  // try to publish on each response
   bool auto_publish_;
   bool use_rle_;
   bool debug_;
@@ -221,12 +223,12 @@ public:
     if (!read_vector(nh_, "dsa_reorder", dsa_reorder_))
     {
       dsa_reorder_.resize(6);
-      dsa_reorder_[0] = 2; // t1
-      dsa_reorder_[1] = 3; // t2
-      dsa_reorder_[2] = 4; // f11
-      dsa_reorder_[3] = 5; // f12
-      dsa_reorder_[4] = 0; // f21
-      dsa_reorder_[5] = 1; // f22
+      dsa_reorder_[0] = 2;  // t1
+      dsa_reorder_[1] = 3;  // t2
+      dsa_reorder_[2] = 4;  // f11
+      dsa_reorder_[3] = 5;  // f12
+      dsa_reorder_[4] = 0;  // f21
+      dsa_reorder_[5] = 1;  // f22
     }
 
     return true;
@@ -246,10 +248,9 @@ public:
 
   bool start()
   {
-
     if (isDSAInitialized_ == false)
     {
-      //Init tactile data
+      // Init tactile data
       if (!dsadevicestring_.empty())
       {
         try
@@ -302,7 +303,6 @@ public:
           if (auto_publish_)
             publishTactileData();
         }
-
       }
       catch (SDH::cSDHLibraryException* e)
       {
@@ -312,7 +312,6 @@ public:
       }
       if (error_counter_ > maxerror_)
         stop();
-
     }
     else
     {
@@ -331,7 +330,6 @@ public:
       {
         dsa_->SetFramerate(0, use_rle_);
         readDsaFrame();
-
       }
       catch (SDH::cSDHLibraryException* e)
       {
@@ -341,7 +339,6 @@ public:
       }
       if (error_counter_ > maxerror_)
         stop();
-
     }
     else
     {
@@ -354,7 +351,7 @@ public:
     if (debug_)
       ROS_DEBUG("publishTactileData %ul %ul", dsa_->GetFrame().timestamp, last_data_publish_);
     if (!isDSAInitialized_ || dsa_->GetFrame().timestamp == last_data_publish_)
-      return; // no new frame available
+      return;  // no new frame available
     last_data_publish_ = dsa_->GetFrame().timestamp;
 
     schunk_sdh::TactileSensor msg;
@@ -376,9 +373,8 @@ public:
           tm.tactile_array[tm.cells_x * y + x] = dsa_->GetTexel(m, x, y);
       }
     }
-    //publish matrix
+    // publish matrix
     topicPub_TactileSensor_.publish(msg);
-
   }
   void publishDiagnostics()
   {
@@ -410,10 +406,9 @@ public:
     topicPub_Diagnostics_.publish(diagnostics);
     if (debug_)
       ROS_DEBUG_STREAM("publishDiagnostics " << diagnostics);
-
   }
 };
-//DsaNode
+// DsaNode
 
 /*!
  * \brief Main loop of ROS node.
