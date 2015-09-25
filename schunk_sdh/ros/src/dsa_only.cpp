@@ -263,7 +263,7 @@ public:
           ROS_INFO("Initialized RS232 for DSA Tactile Sensors on device %s", dsadevicestring_.c_str());
           // ROS_INFO("Set sensitivity to 1.0");
           // for(int i=0; i<6; i++)
-          // 	dsa_->SetMatrixSensitivity(i, 1.0);
+          //  dsa_->SetMatrixSensitivity(i, 1.0);
           error_counter_ = 0;
           isDSAInitialized_ = true;
         }
@@ -295,7 +295,8 @@ public:
         last_time = dsa_->GetFrame().timestamp;
         dsa_->UpdateFrame();
         if (last_time != dsa_->GetFrame().timestamp)
-        { // new data
+        {
+          // new data
           if (error_counter_ > 0)
             --error_counter_;
           if (auto_publish_)
