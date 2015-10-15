@@ -71,47 +71,47 @@
 */
 enum eReturnCodeEnum
 {
-    RC_OK = 0,                 //!< Success, no error
-    RC_NOT_AVAILABLE,          //!< Error: An accessed ressource is not available
-    RC_NOT_INITIALIZED,        //!< Error: An accessed ressource has not been initialized
-    RC_ALREADY_RUNNING,        //!< Error: Data acquisition: the acquisition loop is already running
-    RC_FEATURE_NOT_SUPPORTED,
-    RC_INCONSISTENT_DATA,
-    RC_TIMEOUT,                //!< Error: timeout occured
-    RC_READ_ERROR,             //!< Error: could not read
-    RC_WRITE_ERROR,            //!< Error: could not write
-    RC_INSUFFICIENT_RESOURCES, //!< Error: Insufficient ressources
-    RC_CHECKSUM_ERROR,
-    RC_NOT_ENOUGH_PARAMS,      //!< Error: not enough parameters on command line
-    RC_NO_PARAMS_EXPECTED,
-    RC_CMD_UNKNOWN,            //!< Error: unknown command on command line
-    RC_CMD_FORMAT_ERROR,       //!< Error: invalid format of command line parameters
-    RC_ACCESS_DENIED,
-    RC_ALREADY_OPEN,
-    RC_CMD_FAILED,
-    RC_CMD_ABORTED,
-    RC_INVALID_HANDLE,
-    RC_DEVICE_NOT_FOUND,
-    RC_DEVICE_NOT_OPENED,
-    RC_IO_ERROR,               //!< Error: Input/Output error like bus-off detected
-    RC_INVALID_PARAMETER,      //!< Error: invalid parameter on command line
-    RC_RANGE_ERROR,
-    RC_NO_DATAPIPE,
-    RC_INDEX_OUT_OF_BOUNDS,    //!< Error: A given index parameter is invalid
-    RC_HOMING_ERROR,
-    RC_AXIS_DISABLED,
-    RC_OVER_TEMPERATURE,
-    RC_MAX_COMMANDS_EXCEEDED,  //!< Error: cannot add more than CI_MAX_COMMANDS to interpreter / POSCON_MAX_OSCILLOSCOPE parameters to oscilloscope
-    RC_INVALID_PASSWORD,       //!< Error: invalid password given for change user command
-    RC_MAX_COMMANDLINE_EXCEEDED, //!< Error: the command line given is too long
-    RC_CRC_ERROR,              //!< Cyclic Redundancy Code error while receiving binary input
-    RC_NO_COMMAND,             //!< Not really an error: reading input did not yield a new command
+  RC_OK = 0,                 //!< Success, no error
+  RC_NOT_AVAILABLE,          //!< Error: An accessed ressource is not available
+  RC_NOT_INITIALIZED,        //!< Error: An accessed ressource has not been initialized
+  RC_ALREADY_RUNNING,        //!< Error: Data acquisition: the acquisition loop is already running
+  RC_FEATURE_NOT_SUPPORTED,
+  RC_INCONSISTENT_DATA,
+  RC_TIMEOUT,                //!< Error: timeout occured
+  RC_READ_ERROR,             //!< Error: could not read
+  RC_WRITE_ERROR,            //!< Error: could not write
+  RC_INSUFFICIENT_RESOURCES, //!< Error: Insufficient ressources
+  RC_CHECKSUM_ERROR,
+  RC_NOT_ENOUGH_PARAMS,      //!< Error: not enough parameters on command line
+  RC_NO_PARAMS_EXPECTED,
+  RC_CMD_UNKNOWN,            //!< Error: unknown command on command line
+  RC_CMD_FORMAT_ERROR,       //!< Error: invalid format of command line parameters
+  RC_ACCESS_DENIED,
+  RC_ALREADY_OPEN,
+  RC_CMD_FAILED,
+  RC_CMD_ABORTED,
+  RC_INVALID_HANDLE,
+  RC_DEVICE_NOT_FOUND,
+  RC_DEVICE_NOT_OPENED,
+  RC_IO_ERROR,               //!< Error: Input/Output error like bus-off detected
+  RC_INVALID_PARAMETER,      //!< Error: invalid parameter on command line
+  RC_RANGE_ERROR,
+  RC_NO_DATAPIPE,
+  RC_INDEX_OUT_OF_BOUNDS,    //!< Error: A given index parameter is invalid
+  RC_HOMING_ERROR,
+  RC_AXIS_DISABLED,
+  RC_OVER_TEMPERATURE,
+  RC_MAX_COMMANDS_EXCEEDED,  //!< Error: cannot add more than CI_MAX_COMMANDS to interpreter / POSCON_MAX_OSCILLOSCOPE parameters to oscilloscope
+  RC_INVALID_PASSWORD,       //!< Error: invalid password given for change user command
+  RC_MAX_COMMANDLINE_EXCEEDED, //!< Error: the command line given is too long
+  RC_CRC_ERROR,              //!< Cyclic Redundancy Code error while receiving binary input
+  RC_NO_COMMAND,             //!< Not really an error: reading input did not yield a new command
 
-    RC_INTERNAL,               //!< Error: callback function reports internal error
-    RC_UNKNOWN_ERROR,          //!< Error: unknown error
+  RC_INTERNAL,               //!< Error: callback function reports internal error
+  RC_UNKNOWN_ERROR,          //!< Error: unknown error
 
-    // Dont forget to add new enums to ReturnCodeToString() too.
-    RC_DIMENSION          //!< End marker and dimension
+  // Dont forget to add new enums to ReturnCodeToString() too.
+  RC_DIMENSION          //!< End marker and dimension
 } SDH__attribute__((__packed__));
 
 //! typedef for eCommandCodeEnum, see there

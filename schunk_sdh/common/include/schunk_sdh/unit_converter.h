@@ -75,127 +75,127 @@ NAMESPACE_SDH_START
 class VCC_EXPORT cUnitConverter
 {
 public:
-    /*!
-      Constructor of cUnitConverter class.
+  /*!
+    Constructor of cUnitConverter class.
 
-       At construction time the conversion parameters - a \a factor
-       and an \a offset - must be provided along with elements that
-       describe the unit of a value
+     At construction time the conversion parameters - a \a factor
+     and an \a offset - must be provided along with elements that
+     describe the unit of a value
 
-       \param _kind   - a string describing the kind of unit to be converted (something like "angle" or "time")
-       \param _name   - the name of the external unit (something like "degrees" or "milliseconds")
-       \param _symbol - the symbol of the external unit (something like "deg" or "ms")
-       \param _factor - the conversion factor from internal to external units
-       \param _offset - the conversion offset from internal to external units
-       \param _decimal_places - A usefull number of decimal places for printing values in the external unit system
+     \param _kind   - a string describing the kind of unit to be converted (something like "angle" or "time")
+     \param _name   - the name of the external unit (something like "degrees" or "milliseconds")
+     \param _symbol - the symbol of the external unit (something like "deg" or "ms")
+     \param _factor - the conversion factor from internal to external units
+     \param _offset - the conversion offset from internal to external units
+     \param _decimal_places - A usefull number of decimal places for printing values in the external unit system
 
-       \attention
-         The strings given _kind, _name and _symbol are \b NOT copied,
-         just their address is stored <hr>
-    */
-    cUnitConverter( char const* _kind, char const* _name, char const* _symbol, double _factor = 1.0, double _offset = 0.0, int _decimal_places=1 );
+     \attention
+       The strings given _kind, _name and _symbol are \b NOT copied,
+       just their address is stored <hr>
+  */
+  cUnitConverter(char const* _kind, char const* _name, char const* _symbol, double _factor = 1.0, double _offset = 0.0, int _decimal_places = 1);
 
-    //----------------------------------------------------------------------
-    /*!
-        Convert single value \a internal given in internal units into external units.
-        Returns \a internal * #factor + #offset
-    */
-    double ToExternal( double internal ) const;
+  //----------------------------------------------------------------------
+  /*!
+      Convert single value \a internal given in internal units into external units.
+      Returns \a internal * #factor + #offset
+  */
+  double ToExternal(double internal) const;
 
-    //----------------------------------------------------------------------
-    /*!
-        Convert values in simple array \a internal, each given in
-        internal units into external units.  Returns a simple array
-        with each valid element converted with \a internal[i] *
-        #factor + #offset
+  //----------------------------------------------------------------------
+  /*!
+      Convert values in simple array \a internal, each given in
+      internal units into external units.  Returns a simple array
+      with each valid element converted with \a internal[i] *
+      #factor + #offset
 
-        Only valid entries of the \a internal vector are converted.
-    */
-    cSimpleVector ToExternal( cSimpleVector& internal ) const;
-
-
-    //----------------------------------------------------------------------
-    /*!
-        Convert values in vector \a internal, each given in
-        internal units into external units.  Returns a vector
-        with each element converted with \a internal[i] *
-        #factor + #offset
-    */
-    std::vector<double> ToExternal( std::vector<double> const& internal ) const;
+      Only valid entries of the \a internal vector are converted.
+  */
+  cSimpleVector ToExternal(cSimpleVector& internal) const;
 
 
-    //----------------------------------------------------------------------
-    /*!
-        Convert value \a external given in external units into internal units.
-        Returns (\a external - #offset) / #factor
-    */
-    double ToInternal( double external ) const;
-
-    //----------------------------------------------------------------------
-    /*!
-        Convert values in simple array \a external, each given in
-        external units into internal units.  Returns a simple array
-        with each valid element converted with \a external[i] *
-        #factor + #offset
-
-        Only valid entries of the \a external vector are converted.
-    */
-    cSimpleVector ToInternal( cSimpleVector& external ) const;
+  //----------------------------------------------------------------------
+  /*!
+      Convert values in vector \a internal, each given in
+      internal units into external units.  Returns a vector
+      with each element converted with \a internal[i] *
+      #factor + #offset
+  */
+  std::vector<double> ToExternal(std::vector<double> const& internal) const;
 
 
-    //----------------------------------------------------------------------
-    /*!
-        Convert values in vector \a external, each given in
-        external units into internal units.  Returns a vector
-        with each valid element converted with \a external[i] *
-        #factor + #offset
-    */
-    std::vector<double> ToInternal( std::vector<double> const& external ) const;
+  //----------------------------------------------------------------------
+  /*!
+      Convert value \a external given in external units into internal units.
+      Returns (\a external - #offset) / #factor
+  */
+  double ToInternal(double external) const;
 
-    //----------------------------------------------------------------------
-    //! Return the kind of unit converted (something like "angle" or "time")
-    char const* GetKind( void ) const;
+  //----------------------------------------------------------------------
+  /*!
+      Convert values in simple array \a external, each given in
+      external units into internal units.  Returns a simple array
+      with each valid element converted with \a external[i] *
+      #factor + #offset
 
-    //----------------------------------------------------------------------
-    //! Return the name of the external unit (something like "degrees" or "milliseconds")
-    char const* GetName( void ) const;
+      Only valid entries of the \a external vector are converted.
+  */
+  cSimpleVector ToInternal(cSimpleVector& external) const;
 
-    //----------------------------------------------------------------------
-    //! Return the symbol of the external unit (something like "deg" or "ms")
-    char const* GetSymbol( void ) const;
 
-    //----------------------------------------------------------------------
+  //----------------------------------------------------------------------
+  /*!
+      Convert values in vector \a external, each given in
+      external units into internal units.  Returns a vector
+      with each valid element converted with \a external[i] *
+      #factor + #offset
+  */
+  std::vector<double> ToInternal(std::vector<double> const& external) const;
 
-    //! Return the conversion factor from internal to external units
-    double GetFactor( void ) const;
+  //----------------------------------------------------------------------
+  //! Return the kind of unit converted (something like "angle" or "time")
+  char const* GetKind(void) const;
 
-    //----------------------------------------------------------------------
-    //! Return the conversion offset from internal to external units
-    double GetOffset( void ) const;
+  //----------------------------------------------------------------------
+  //! Return the name of the external unit (something like "degrees" or "milliseconds")
+  char const* GetName(void) const;
 
-    //----------------------------------------------------------------------
-    //! Return the number of decimal places for printing values in the external unit system
-    int GetDecimalPlaces( void ) const;
+  //----------------------------------------------------------------------
+  //! Return the symbol of the external unit (something like "deg" or "ms")
+  char const* GetSymbol(void) const;
+
+  //----------------------------------------------------------------------
+
+  //! Return the conversion factor from internal to external units
+  double GetFactor(void) const;
+
+  //----------------------------------------------------------------------
+  //! Return the conversion offset from internal to external units
+  double GetOffset(void) const;
+
+  //----------------------------------------------------------------------
+  //! Return the number of decimal places for printing values in the external unit system
+  int GetDecimalPlaces(void) const;
 
 
 protected:
-    //! the kind of unit to be converted (something like "angle" or "time")
-    char const* kind;
+  //! the kind of unit to be converted (something like "angle" or "time")
+  char const* kind;
 
-    //! the name of the external unit (something like "degrees" or "milliseconds")
-    char const* name;
+  //! the name of the external unit (something like "degrees" or "milliseconds")
+  char const* name;
 
-    //! the symbol of the external unit (something like "deg" or "ms")
-    char const* symbol;
+  //! the symbol of the external unit (something like "deg" or "ms")
+  char const* symbol;
 
-    //! the conversion factor from internal to external units
-    double factor;
+  //! the conversion factor from internal to external units
+  double factor;
 
-    //! the conversion offset from internal to external units
-    double offset;
+  //! the conversion offset from internal to external units
+  double offset;
 
-    //! A usefull number of decimal places for printing values in the external unit system
-    int decimal_places;
+  //! A usefull number of decimal places for printing values in the external unit system
+  int decimal_places;
 
 }; // cUnitConverter
 //======================================================================
@@ -206,7 +206,7 @@ extern cUnitConverter const uc_identity;
 
 //----------------------------------------------------------------------
 //! Type of a pointer to a function like 'double SDH::cUnitConverter::ToExternal( double ) const' or 'double SDH::cUnitConverter::ToInternal( double ) const'
-typedef double (cUnitConverter::*pDoubleUnitConverterFunction) ( double ) const;
+typedef double(cUnitConverter::*pDoubleUnitConverterFunction)(double) const;
 
 
 //! Type of a pointer to a function like 'double cUnitConverter::ToExternal( double )' or 'cUnitConverter::ToInternal( double )'

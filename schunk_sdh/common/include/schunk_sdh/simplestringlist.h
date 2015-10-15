@@ -71,60 +71,61 @@ class VCC_EXPORT cSimpleStringList
 {
 public:
 
-    //! the index of the current line. For empty cSimpleStringLists this is -1.
-    int current_line;
+  //! the index of the current line. For empty cSimpleStringLists this is -1.
+  int current_line;
 
 
-    //! anonymous enum instead of define macros
-    enum {
-        eMAX_LINES = 256,
-        eMAX_CHARS = 256,
-    };
+  //! anonymous enum instead of define macros
+  enum
+  {
+    eMAX_LINES = 256,
+    eMAX_CHARS = 256,
+  };
 
-    //! Default constructor: init members
-    cSimpleStringList();
-
-
-    //! Return the current line
-    char* CurrentLine();
+  //! Default constructor: init members
+  cSimpleStringList();
 
 
-    //! Return the next line, this increases current_line
-    char* NextLine();
+  //! Return the current line
+  char* CurrentLine();
 
 
-    //! Return number of lines stored
-    int Length() const;
+  //! Return the next line, this increases current_line
+  char* NextLine();
 
 
-    //! return ptr to line with index.
-    /*!
-      if index < 0 then the numbering starts from the end,
-      thus [-1] gives the last line, [-2] the next to last, ...
-    */
-    char* operator[]( int index );
-
-    //! return ptr to line with index.
-    /*!
-      if index < 0 then the numbering starts from the end,
-      thus [-1] gives the last line, [-2] the next to last, ...
-    */
-    char const* operator[]( int index ) const;
+  //! Return number of lines stored
+  int Length() const;
 
 
-    //! reset list
-    void Reset();
+  //! return ptr to line with index.
+  /*!
+    if index < 0 then the numbering starts from the end,
+    thus [-1] gives the last line, [-2] the next to last, ...
+  */
+  char* operator[](int index);
+
+  //! return ptr to line with index.
+  /*!
+    if index < 0 then the numbering starts from the end,
+    thus [-1] gives the last line, [-2] the next to last, ...
+  */
+  char const* operator[](int index) const;
+
+
+  //! reset list
+  void Reset();
 
 protected:
-    //! a fixed length array of lines with fixed length
-    char line[ eMAX_LINES ][ eMAX_CHARS ];
+  //! a fixed length array of lines with fixed length
+  char line[ eMAX_LINES ][ eMAX_CHARS ];
 
 }; // cSimpleStringList
 //-----------------------------------------------------------------
 
 
 //! Output of cSimpleStringList objects in 'normal' output streams.
-VCC_EXPORT std::ostream& operator<<( std::ostream& stream, cSimpleStringList const& ssl );
+VCC_EXPORT std::ostream& operator<<(std::ostream& stream, cSimpleStringList const& ssl);
 
 
 //-----------------------------------------------------------------
