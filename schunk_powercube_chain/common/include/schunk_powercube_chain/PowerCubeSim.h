@@ -90,7 +90,7 @@ using namespace std;
 %{
 	#include "PowerCubeSim.h"
 %}
-#endif 
+#endif
 
 class PowerCubeSim;
 
@@ -105,10 +105,10 @@ typedef struct
 class PowerCubeSim
 {
 	public:
-		
+
 		PowerCubeSim();
 		~PowerCubeSim();
-		
+
 
 		bool Init(PowerCubeCtrlParams * params);
 
@@ -118,65 +118,65 @@ class PowerCubeSim
 
 		int Close(){return true;}
 		// Arm-Ansteuerung:
-		
+
 
 		/// @brief same as MoveJointSpace, but final angles should by reached simultaniously!
 		/// Returns the time that the movement will take
 		bool MoveJointSpaceSync(const std::vector<double>& Angle);
-				
+
 		/// @brief Moves all cubes by the given velocities
 		bool MoveVel(const std::vector<double>& vel);
-		
+
 		/// @brief Stops the Manipulator immediately
 		bool Stop();
-		
+
 		///////////////////////////////////////////
 		// Funktionen zum setzen von Parametern: //
 		///////////////////////////////////////////
-		
+
 		/// @brief Sets the maximum angular velocity (rad/s) for the Joints, use with care!
 		/// A Value of 0.5 is already pretty fast, you probably don't want anything more than one...
 		bool setMaxVelocity(double radpersec);
-		
+
 		bool setMaxVelocity(const std::vector<double>& radpersec);
 
 		/// @brief Sets the maximum angular acceleration (rad/s^2) for the Joints, use with care!
 		/// A Value of 0.5 is already pretty fast, you probably don't want anything more than one...
 		bool setMaxAcceleration(double radPerSecSquared);
 		bool setMaxAcceleration(const std::vector<double>& radPerSecSquared);
-		
+
 		////////////////////////////////////////////
 		// hier die Funktionen zur Statusabfrage: //
 		////////////////////////////////////////////
-	
+
 
 		/// @brief Returns the current Joint Angles
 		bool getConfig(std::vector<double>& result);
-		
+
 		/// @brief Returns the current Angular velocities (Rad/s)
 		bool getJointVelocities(std::vector<double>& result);
 
 		void setCurrentAngles(std::vector<double> Angles);
 
 		void setCurrentJointVelocities(std::vector<double> Angles);
-		
+
 		/// @brief Returns true if any of the Joints are still moving
 		/// Should also return true if Joints are accelerating or decelerating
 		bool statusMoving();
 		bool statusMoving(int cubeNo);
-		
+
 		/// @brief Returns true if any of the Joints are decelerating
 		bool statusDec();
-		
+
 		/// @brief Returs true if any of the Joints are accelerating
 		bool statusAcc();
 
 		/// @brief Looks for connected Modules and returns their Ids in a vector
 		//vector<int> getModuleMap(int dev);
-		
+
 		/// @brief Waits until all Modules are homed, writes status comments to out.
 		//void HomingDone();
-		
+
                 typedef enum
                 {
                         PC_CTRL_OK = 0,
@@ -195,30 +195,30 @@ class PowerCubeSim
 	        std::vector<double>  getCurrentAngularMaxAccel() {return m_CurrentAngularMaxAccel;}
 	    void millisleep(unsigned int milliseconds) const;
 	protected:
-		
+
 		/// @brief Tells the Modules not to start moving until PCubel_startMotionAll is called
 		//void waitForSync();
 		/// @brief Execute move commands immediately from now on:
 		//void dontWaitForSync();
-		/// @brief Returns the time for a ramp-move about dtheta with v, a would take, assuming the module is currently moving at vnowClose 
+		/// @brief Returns the time for a ramp-move about dtheta with v, a would take, assuming the module is currently moving at vnowClose
 		double timeRampMove(double dtheta, double vnow, double v, double a);
 
 		int startSimulatedMovement(std::vector<double> target);
 
 
-		//void* SimThreadRoutine (void*); 	
-	
-	
+		//void* SimThreadRoutine (void*);
+
+
 		#ifdef COB3
 		Manipulator * m_Obj_Manipulator;
 #endif
-		
+
 		int m_DOF;
 		int m_Initialized;
 		int m_NumOfModules;
 		int m_Dev;
 		vector<int> m_IdModules;
-		
+
 		std::vector<double> m_maxVel;
 		std::vector<double> m_maxAcc;
 
@@ -234,7 +234,7 @@ class PowerCubeSim
 
 
 		//vector<unsigned long> startConf;
-		
+
 		std::string m_ErrorMessage;
 
 		float maxAcc;
@@ -244,7 +244,7 @@ class PowerCubeSim
 		pthread_mutex_t  m_Movement_Mutex;
 		pthread_t  * m_SimThreadID;
 		SimThreadArgs ** m_SimThreadArgs;
-		
+
 };
 
 

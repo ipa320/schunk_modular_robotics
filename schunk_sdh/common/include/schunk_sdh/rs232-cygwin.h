@@ -71,8 +71,8 @@ NAMESPACE_SDH_START
 class cRS232Exception: public cSerialBaseException
 {
 public:
-  cRS232Exception( cMsg const & _msg )
-    : cSerialBaseException( "cRS232Exception", _msg )
+  cRS232Exception(cMsg const & _msg)
+    : cSerialBaseException("cRS232Exception", _msg)
   {}
 };
 //======================================================================
@@ -85,38 +85,38 @@ class cRS232 : public cSerialBase
 {
 
 protected:
-    //! the RS232 portnumber to use
-    int port;
+  //! the RS232 portnumber to use
+  int port;
 
-    //! the sprintf format string to generate the device name from the port, see Constructor
-    std::string device_format_string;
+  //! the sprintf format string to generate the device name from the port, see Constructor
+  std::string device_format_string;
 
-    //! the baudrate in bit/s
-    unsigned long baudrate;
+  //! the baudrate in bit/s
+  unsigned long baudrate;
 
-    //! the file descriptor of the RS232 port
-    int fd;
+  //! the file descriptor of the RS232 port
+  int fd;
 
-    //! Translate a baudrate given as unsigned long into a baudrate code for struct termios
-    tcflag_t BaudrateToBaudrateCode( unsigned long baudrate )
-    throw (cRS232Exception*);
+  //! Translate a baudrate given as unsigned long into a baudrate code for struct termios
+  tcflag_t BaudrateToBaudrateCode(unsigned long baudrate)
+  throw (cRS232Exception*);
 
-    int status;
+  int status;
 
-    termios io_set_old;
+  termios io_set_old;
 
 public:
-    /*!
-      Constructor: constructs an object to communicate with an %SDH via RS232
+  /*!
+    Constructor: constructs an object to communicate with an %SDH via RS232
 
-      \param _port     - rs232 device number: 0='COM1'='/dev/ttyS0', 1='COM2'='/dev/ttyS1', ...
-      \param _baudrate - the baudrate in bit/s
-      \param _timeout  - the timeout in seconds
-      \param _device_format_string - a format string (C string) for generating the device name, like "/dev/ttyS%d" (default) or "/dev/ttyUSB%d".
-                                     Must contain a %d where the port number should be inserted.
-                                     This char array is duplicated on construction
-    */
-  cRS232( int _port, unsigned long _baudrate, double _timeout, char const* _device_format_string = "/dev/ttyS%d" );
+    \param _port     - rs232 device number: 0='COM1'='/dev/ttyS0', 1='COM2'='/dev/ttyS1', ...
+    \param _baudrate - the baudrate in bit/s
+    \param _timeout  - the timeout in seconds
+    \param _device_format_string - a format string (C string) for generating the device name, like "/dev/ttyS%d" (default) or "/dev/ttyUSB%d".
+                                   Must contain a %d where the port number should be inserted.
+                                   This char array is duplicated on construction
+  */
+  cRS232(int _port, unsigned long _baudrate, double _timeout, char const* _device_format_string = "/dev/ttyS%d");
 
   /*!
    *  Open the device as configured by the parameters given to the constructor
@@ -130,16 +130,16 @@ public:
    *   - #SDH_USE_BINARY_COMMUNICATION
    *   <br><b>=> Resolved in %SDHLibrary 0.0.2.2</b>
   */
-  void Open( void )
-      throw (cRS232Exception*);
+  void Open(void)
+  throw (cRS232Exception*);
 
   //! Return true if port to RS232 is open
-  bool IsOpen( void )
-      throw();
+  bool IsOpen(void)
+  throw();
 
   //! Close the previously opened rs232 port.
-  void Close( void )
-      throw (cRS232Exception*);
+  void Close(void)
+  throw (cRS232Exception*);
 
   //! Write data to a previously opened port.
   /*!
@@ -150,8 +150,8 @@ public:
 
       \return the number of bytes actually written
   */
-  int write( char const *ptr, int len=0 )
-      throw (cRS232Exception*);
+  int write(char const *ptr, int len = 0)
+  throw (cRS232Exception*);
 
   /*!
     Read data from device. This function waits until \a max_time_us us passed or
@@ -161,13 +161,13 @@ public:
     If the \a return_on_less_data is false, data is only read from serial line, if at least
     \a size bytes are available.
    */
-  ssize_t Read( void *data, ssize_t size, long timeout_us, bool return_on_less_data )
-      throw (cRS232Exception*);
+  ssize_t Read(void *data, ssize_t size, long timeout_us, bool return_on_less_data)
+  throw (cRS232Exception*);
 
   //! overloaded from cSerialBase::UseCRC16 since we want to use a CRC16 to protect binary RS232 communication
   virtual bool UseCRC16()
   {
-      return true;
+    return true;
   }
 
 };

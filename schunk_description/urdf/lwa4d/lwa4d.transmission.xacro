@@ -1,78 +1,29 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+  <xacro:macro name="schunk_lwa4d_SimpleTransmission" params="jname number">
+    <transmission name="${jname}_${number}_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${jname}_${number}_joint">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+        <hardwareInterface>VelocityJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${jname}_${number}_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+
   <xacro:macro name="schunk_lwa4d_transmission" params="name">
 
-    <transmission name="${name}_1_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_1_joint">
-        <hardwareInterface>VelocityJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="${name}_1_motor">
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-  
-    <transmission name="${name}_2_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_2_joint">
-        <hardwareInterface>VelocityJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="${name}_2_motor">
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-  
-    <transmission name="${name}_3_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_3_joint">
-        <hardwareInterface>VelocityJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="${name}_3_motor">
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-  
-    <transmission name="${name}_4_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_4_joint">
-        <hardwareInterface>VelocityJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="${name}_4_motor">
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-  
-    <transmission name="${name}_5_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_5_joint">
-        <hardwareInterface>VelocityJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="${name}_5_motor">
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-  
-    <transmission name="${name}_6_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_6_joint">
-        <hardwareInterface>VelocityJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="${name}_6_motor">
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
+    <xacro:schunk_lwa4d_SimpleTransmission jname="${name}" number="1"></xacro:schunk_lwa4d_SimpleTransmission>
+    <xacro:schunk_lwa4d_SimpleTransmission jname="${name}" number="2"></xacro:schunk_lwa4d_SimpleTransmission>
+    <xacro:schunk_lwa4d_SimpleTransmission jname="${name}" number="3"></xacro:schunk_lwa4d_SimpleTransmission>
+    <xacro:schunk_lwa4d_SimpleTransmission jname="${name}" number="4"></xacro:schunk_lwa4d_SimpleTransmission>
+    <xacro:schunk_lwa4d_SimpleTransmission jname="${name}" number="5"></xacro:schunk_lwa4d_SimpleTransmission>
+    <xacro:schunk_lwa4d_SimpleTransmission jname="${name}" number="6"></xacro:schunk_lwa4d_SimpleTransmission>
+    <xacro:schunk_lwa4d_SimpleTransmission jname="${name}" number="7"></xacro:schunk_lwa4d_SimpleTransmission>
 
-    <transmission name="${name}_7_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${name}_7_joint">
-        <hardwareInterface>VelocityJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="${name}_7_motor">
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-  
   </xacro:macro>
 
 </robot>

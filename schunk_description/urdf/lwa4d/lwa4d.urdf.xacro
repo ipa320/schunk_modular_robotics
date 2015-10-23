@@ -1,49 +1,63 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <property name="safety_offset" value="0.02"/>
 
   <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.gazebo.xacro"/>
   <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.transmission.xacro"/>
 
-    
-  <xacro:macro name="schunk_lwa4d" params="parent name *origin arm_1_ref arm_2_ref arm_3_ref arm_4_ref arm_5_ref arm_6_ref arm_7_ref">
+  <xacro:macro name="schunk_lwa4d" params="parent name *origin has_podest">
 
-    <!-- joint between base_link and arm_base_link -->
-    <joint name="${name}_base_joint" type="fixed">
-      <insert_block name="origin"/>
-      <parent link="${parent}"/>
-      <child link="${name}_base_link"/>
-    </joint>
+    <xacro:if value="${has_podest}">
+      <!-- joint between base_link and lwa4p_extended_connector_link -->
+      <joint name="${name}_podest_joint" type="fixed">
+        <insert_block name="origin" />
+        <parent link="${parent}"/>
+        <child link="${name}_podest_link"/>
+      </joint>
+      <link name="${name}_podest_link">
+        <xacro:default_inertial/>
+        <visual>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <geometry>
+            <cylinder radius="0.03" length="0.05"/>
+          </geometry>
+        </visual>
 
-     <link name="${name}_base_link">
+        <collision>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <geometry>
+            <cylinder radius="0.03" length="0.05"/>
+          </geometry>
+        </collision>
+      </link>
+
+      <joint name="${name}_base_joint" type="fixed">
+        <origin xyz="0 0 0.175" rpy="0 ${M_PI} 0" />
+        <parent link="${name}_podest_link"/>
+        <child link="${name}_base_link"/>
+      </joint>
+    </xacro:if>
+
+    <xacro:unless value="${has_podest}">
+      <!-- joint between base_link and lwa4p_extended_connector_link -->
+      <joint name="${name}_base_joint" type="fixed">
+        <insert_block name="origin" />
+        <parent link="${parent}"/>
+        <child link="${name}_base_link"/>
+      </joint>
+    </xacro:unless>
+
+    <link name="${name}_base_link">
       <xacro:default_inertial/>
-<!--
-      <xacro:cylinder_inertial radius="0.045" length="0.03" mass="3.6">
-        <origin xyz="0 0 0.015" rpy="0 0 0"/>
-       </xacro:cylinder_inertial>
--->
-       <visual>
-        <origin xyz="0 0 0.015" rpy="0 0 0"/>
-         <geometry>
-          <cylinder radius="0.045" length="0.03"/>
-         </geometry>
-         <material name="Schunk/Black"/>
-       </visual>
-       <collision>
-        <origin xyz="0 0 0.015" rpy="0 0 0"/>
-         <geometry>
-          <cylinder radius="0.045" length="0.03"/>
-         </geometry>
-       </collision>
     </link>
 
-    <!-- joint between arm_0_link and arm_1_link -->
+    <!-- joint between arm_base_link and arm_1_link -->
     <joint name="${name}_1_joint" type="revolute">
-      <origin xyz="0 0 0.15" rpy="0 -${M_PI} 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <parent link="${name}_base_link"/>
       <child link="${name}_1_link"/>
       <axis xyz="0 0 1"/>
-      <calibration rising="${arm_1_ref}"/>
-      <limit effort="216" velocity="0.43633" lower="-${M_PI}" upper="${M_PI}"/>
+      <limit effort="216" velocity="0.43633" lower="${-M_PI+safety_offset}" upper="${M_PI-safety_offset}"/>
     </joint>
 
     <link name="${name}_1_link">
@@ -74,8 +88,7 @@
       <parent link="${name}_1_link"/>
       <child link="${name}_2_link"/>
       <axis xyz="0 0 1"/>
-      <calibration rising="${arm_2_ref}"/>      
-      <limit effort="216" velocity="0.43633" lower="-${M_PI}" upper="${M_PI}"/>      
+      <limit effort="216" velocity="0.43633" lower="${-2.14 + safety_offset}" upper="${2.14 - safety_offset}"/>
     </joint>
 
     <link name="${name}_2_link">
@@ -100,14 +113,13 @@
       </collision>
     </link>
 
-    <!-- joint between arm_2_link and arm_3_link -->  
+    <!-- joint between arm_2_link and arm_3_link -->
     <joint name="${name}_3_joint" type="revolute">
       <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
       <parent link="${name}_2_link"/>
       <child link="${name}_3_link"/>
       <axis xyz="0 0 1"/>
-      <calibration rising="${arm_3_ref}"/>
-      <limit effort="81.5" velocity="0.4189" lower="-${M_PI}" upper="${M_PI}"/>
+      <limit effort="81.5" velocity="0.4189" lower="${-M_PI + safety_offset}" upper="${M_PI - safety_offset}"/>
     </joint>
 
     <link name="${name}_3_link">
@@ -115,7 +127,7 @@
 <!--
       <xacro:cylinder_inertial radius="0.06" length="0.2" mass="2.0">
         <origin xyz="0.0 0 -0.2" rpy="0 0 0"/>
-      </xacro:cylinder_inertial> 
+      </xacro:cylinder_inertial>
 -->
       <visual>
         <origin xyz="0 0 -0.39" rpy="0 0 ${M_PI}"/>
@@ -138,8 +150,7 @@
       <parent link="${name}_3_link"/>
       <child link="${name}_4_link"/>
       <axis xyz="0 0 1"/>
-      <calibration rising="${arm_4_ref}"/>
-      <limit effort="81.5" velocity="0.4189" lower="-${M_PI}" upper="${M_PI}"/>      
+      <limit effort="81.5" velocity="0.4189" lower="${-2.18 + safety_offset}" upper="${2.18 - safety_offset}"/>
     </joint>
 
     <link name="${name}_4_link">
@@ -170,8 +181,7 @@
       <parent link="${name}_4_link"/>
       <child link="${name}_5_link"/>
       <axis xyz="0 0 1"/>
-      <calibration rising="${arm_5_ref}"/>
-      <limit effort="20.7" velocity="0.43633" lower="-${M_PI}" upper="${M_PI}"/>
+      <limit effort="20.7" velocity="0.43633" lower="${-M_PI + safety_offset}" upper="${M_PI - safety_offset}"/>
     </joint>
 
     <link name="${name}_5_link">
@@ -202,8 +212,7 @@
       <parent link="${name}_5_link"/>
       <child link="${name}_6_link"/>
       <axis xyz="0 0 1"/>
-      <calibration rising="${arm_6_ref}"/>
-      <limit effort="15" velocity="1.2566" lower="-2.0943951" upper="2.0943951"/>
+      <limit effort="15" velocity="1.2566" lower="${-2.09 + safety_offset}" upper="${2.09 - safety_offset}"/>
     </joint>
 
     <link name="${name}_6_link">
@@ -234,8 +243,7 @@
       <parent link="${name}_6_link"/>
       <child link="${name}_7_link"/>
       <axis xyz="0 0 1"/>
-      <calibration rising="${arm_7_ref}"/>      
-      <limit effort="15" velocity="1.2566" lower="-2.0943951" upper="2.0943951"/>
+      <limit effort="15" velocity="1.2566" lower="${-2.96 + safety_offset}" upper="${2.96 - safety_offset}"/>
     </joint>
 
     <link name="${name}_7_link">

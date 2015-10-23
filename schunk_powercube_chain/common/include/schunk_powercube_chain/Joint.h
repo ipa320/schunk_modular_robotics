@@ -89,9 +89,9 @@
 #define DEGS_PER_RAD 57.29577951
 #define RADS_PER_DEG 0.017453292
 
-/* if for some reason (faster performance) you want this class to not perform 
+/* if for some reason (faster performance) you want this class to not perform
    rangechecking, define JOINT_NO_RANGECHECK in your config or makefile!       */
-   
+
 // #define JOINT_NO_RANGECHECK
 
 /*******************************************************************************
@@ -133,7 +133,7 @@ class Joint
 public:
 
 	/* constructors: */
-	
+
 	/* empty Joint, no elements: */
     Joint();
     /* joint of size NrJoints, zero=false: uninitialized, zero=true -> all elements zero: */
@@ -142,17 +142,17 @@ public:
 	Joint(const Joint& joints);
 	/* size NrJoints, content copied from d: */
 	Joint(unsigned int NrJoints, const Real d[]);
-    
+
     /* destructor: */
     virtual ~Joint();
-    
+
     /* adjust the size of the Joint: */
 	void setNrJoints(unsigned int NrJoints);
 	/* make all elements zero: */
 	void zero();
 
     /* element access (write): */
-    
+
 	/* set element i to value d: */
 	void set(unsigned int i,  Real d);
 	Real& operator[](unsigned int i);
@@ -160,9 +160,9 @@ public:
 	void set(unsigned int NrJoints, Real *d);
 	/* copy constructor: */
 	//void set(unsigned int const Joint& _rhs);
-	
+
 	/* element access (read): */
-    
+
     /* return element i: */
 	Real get(unsigned int i) const;
 	Real operator[](unsigned int i) const;
@@ -178,16 +178,16 @@ public:
 	/* Return Index of largest/smallest component: */
 	unsigned int getMaxInd() const;
 	unsigned int getMinInd() const;
-    
+
     /* calculate this + (j2-this)*f: */
 	Joint interpolate( const Joint& j2, Real f ) const;
 	/* set this joint to j1 + (j2-j1)*f: */
 	static Joint interpolate( const Joint& j1, const Joint& j2, Real f );
-	
+
 	/* convert the Joint from Deg to Rad or vice versa: */
 	void toRad();
 	void toDeg();
-	
+
 	/* define various operators: */
 
 	/* operator= */
@@ -195,23 +195,23 @@ public:
 	
 	/* if length(this - rhs) < JOINT_EPSILON, they are considered equal: */
 	bool operator==(const Joint& rhs) const;
-    
+
     /* operators +, -, *, / */
 	Joint operator-(const Joint& rhs) const;
 	Joint operator+(const Joint& rhs) const;
 	Joint operator*(Real s) const;
 	Joint operator/(Real s) const;
-	
+
 	void operator+=(const Joint& rhs);
 	void operator-=(const Joint& rhs);
 	void operator*=(Real s);
 	void operator/=(Real s);
-	
+
 	/* get euklidian norm (length), squared or normal */
 	/* (not taking the root saves computation time) */
 	Real lengthSqr() const;
 	Real length() const;
-    
+
     /* return string which looks like: (0.000, 1.000, 2.000, ...) */
     /* if convert is true, the values will be converted to degrees */ 
 	std::string toString(bool convert = false) const;
@@ -219,15 +219,15 @@ public:
 	void fromString(unsigned int nrjoints, const char* str);
 	void fromString(const char* str);
 
-	
+
 	/* input / output */
-	
+
 	/* operator<< is not a member function and defined below the class definition */
 	/* same for operator>> */
-	
+
 	/* if for some reason printf should be used rather than operator<< use this: */
 	void print();
-	
+
 	/* for compatibility with older code: */
 	unsigned int getNrJoints() const { return size(); }
 
@@ -280,7 +280,7 @@ inline Joint<Real>::Joint(unsigned int NrJoints, bool _zero)
 {
 	m_NrJoints = NrJoints;
 	m_Joints = new Real[m_NrJoints];
-	
+
 	if (_zero)
 		zero();
 }
@@ -291,7 +291,7 @@ inline Joint<Real>::Joint(const Joint<Real>& rhs)
 {
 	m_NrJoints = rhs.m_NrJoints;
 	m_Joints = new Real[rhs.m_NrJoints];
-	
+
 	for (unsigned int i = 0; i < m_NrJoints; i++)
 		m_Joints[i] = rhs.m_Joints[i];
 }
@@ -314,16 +314,16 @@ inline Joint<Real>::~Joint()
 	if (m_Joints)
 		delete[] m_Joints;
 }
-    
+
 /* adjust the size of the Joint: */
 template <class Real>
 inline void Joint<Real>::setNrJoints(unsigned int NrJoints)
 {
 	/* keep old values, if smaller than before cutoff, if larger fill with zeros: */
 
-	Real* old_m_Joints = m_Joints;	
+	Real* old_m_Joints = m_Joints;
 	m_Joints = new Real[NrJoints];
-	
+
 	for (unsigned int i = 0; i < NrJoints; i++)
 	{
 		if (i < m_NrJoints)
@@ -392,7 +392,7 @@ template <class Real>
 inline Real Joint<Real>::get(unsigned int i) const
 {
 	#ifndef JOINT_NO_RANGECHECK
-	if ((m_Joints==NULL) || (i >= m_NrJoints) ) 
+	if ((m_Joints==NULL) || (i >= m_NrJoints) )
 		throw Joint_Exception(__FILE__, __LINE__, "tried to acces an element out of Joint range!");
 	#endif
 
@@ -411,7 +411,7 @@ template <class Real>
 inline void Joint<Real>::get(unsigned int NrJoints, Real* d) const
 {
 	#ifndef JOINT_NO_RANGECHECK
-	if ((m_Joints==NULL) || (NrJoints > m_NrJoints) ) 
+	if ((m_Joints==NULL) || (NrJoints > m_NrJoints) )
 		throw Joint_Exception(__FILE__, __LINE__, "tried to acces an element out of Joint range!");
 	#endif
 
@@ -510,12 +510,12 @@ inline Joint<Real> Joint<Real>::interpolate( const Joint& j2, Real f ) const
 	if ((m_Joints == NULL) || (j2.size() != m_NrJoints) )
 		throw Joint_Exception(__FILE__, __LINE__, "Joint dimensions mismatch in interpolate!");
 	#endif
-	
+
 	Joint<Real> result(m_NrJoints);
 	
 	for (unsigned int i = 0; i < m_NrJoints; i++)
 		result[i] = m_Joints[i] + ( j2[i] - m_Joints[i] ) * f;
-	
+
 	return result;
 }
 
@@ -527,12 +527,12 @@ inline Joint<Real> Joint<Real>::interpolate( const Joint& j1, const Joint& j2, R
 	if ( j1.size() != j2.size() )
 		throw Joint_Exception(__FILE__, __LINE__, "Joint dimensions mismatch in interpolate!");
 	#endif
-	
+
 	Joint<Real> result(j1.size());
-	
+
 	for (unsigned int i = 0; i < j1.size(); i++)
 		result[i] = j1[i] + f * (j2[i] - j1[i]);
-	
+
 	return result;
 }
 
@@ -564,7 +564,7 @@ inline Joint<Real>& Joint<Real>::operator=(const Joint<Real>& joint)
 
 	for (unsigned int i = 0; i < m_NrJoints; i++)
 		m_Joints[i] = joint[i];
-		
+
 	return *this;
 }
 
@@ -709,7 +709,7 @@ inline Real Joint<Real>::length() const
 {
 	return sqrt( lengthSqr() );
 }
-    
+
 /* return string which looks like: (0.000, 1.000, 2.000, ...) */
 /* if convert is true, the values will be converted to degrees */ 
 template <class Real>
@@ -778,7 +778,7 @@ inline void Joint<Real>::fromString(const char* str)
             pch = strtok (NULL, ",");
         }
 	}
-	
+
 	setNrJoints( vec.size() );
 	for (unsigned int i=0; i < m_NrJoints; i++)
 		m_Joints[i] = vec[i];
@@ -813,7 +813,7 @@ inline std::istream& operator>>(std::istream& _is, Joint<Real>& joint)
 	joint.fromString(c_str);
 	return _is;
 }
-	
+
 
 #endif
 
