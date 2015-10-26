@@ -110,7 +110,7 @@
 
     <!-- joint between arm_1_link and arm_2_link -->
     <joint name="${name}_2_joint" type="revolute">
-      <origin xyz="0 0 0.0915" rpy="1.5708 0 0"/>
+      <origin xyz="0 0 0.0915" rpy="${M_PI/2} 0 0"/>
       <parent link="${name}_1_link"/>
       <child link="${name}_2_link"/>
       <axis xyz="0 0 1"/>
@@ -146,7 +146,7 @@
 
     <!-- joint between arm_2_link and arm_3_link -->
     <joint name="${name}_3_joint" type="revolute">
-      <origin xyz="0 0 0" rpy="-1.5708 0 0"/>
+      <origin xyz="0 0 0" rpy="-${M_PI/2} 0 0"/>
       <parent link="${name}_2_link"/>
       <child link="${name}_3_link"/>
       <axis xyz="0 0 1"/>
@@ -182,7 +182,7 @@
 
     <!-- joint between arm_3_link and arm_4_link -->
     <joint name="${name}_4_joint" type="revolute">
-      <origin xyz="0 0 0.45360" rpy="1.5708 0 0" />
+      <origin xyz="0 0 0.45360" rpy="${M_PI/2} 0 0" />
       <parent link="${name}_3_link"/>
       <child link="${name}_4_link"/>
       <axis xyz="0 0 1" />
@@ -218,7 +218,7 @@
 
     <!-- joint between arm_4_link and arm_5_link -->
     <joint name="${name}_5_joint" type="revolute">
-      <origin xyz="0 0 0" rpy="-1.5708 0 0" />
+      <origin xyz="0 0 0" rpy="-${M_PI/2} 0 0" />
       <parent link="${name}_4_link"/>
       <child link="${name}_5_link"/>
       <axis xyz="0 0 1" />
@@ -254,7 +254,7 @@
 
     <!-- joint between arm_5_link and arm_6_link -->
     <joint name="${name}_6_joint" type="revolute">
-      <origin xyz="0 0 0.2986" rpy="1.5708 0 0" />
+      <origin xyz="0 0 0.2986" rpy="${M_PI/2} 0 0" />
       <parent link="${name}_5_link"/>
       <child link="${name}_6_link"/>
       <axis xyz="0 0 1" />
@@ -290,7 +290,7 @@
 
     <!-- joint between arm_6_link and arm_7_link -->
     <joint name="${name}_7_joint" type="revolute">
-      <origin xyz="0 0 0" rpy="-1.5708 0 0" />
+      <origin xyz="0 0 0" rpy="-${M_PI/2} 0 0" />
       <parent link="${name}_6_link"/>
       <child link="${name}_7_link"/>
       <axis xyz="0 0 1" />
