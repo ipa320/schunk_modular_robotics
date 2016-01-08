@@ -59,6 +59,7 @@
 
 // ROS includes
 #include <ros/ros.h>
+#include <tf/transform_broadcaster.h>
 
 // own includes
 #include <schunk_powercube_chain/PowerCubeCtrl.h>
@@ -72,21 +73,23 @@
 
 #define Ready4MoveStep 4638
 
+#define DEG 57.295779524
+
 /*
  * \brief Constructor
  */
 PowerCubeCtrl::PowerCubeCtrl(PowerCubeCtrlParams * params)
 {
-  m_mutex = PTHREAD_MUTEX_INITIALIZER;
+	m_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-  m_CANDeviceOpened = false;
-  m_Initialized = false;
+	m_CANDeviceOpened = false;
+	m_Initialized = false;
 
-  m_params = params;
+	m_params = params;
 
-  m_horizon = 0.01; // sec
+	m_horizon = 0.01; // sec
 
-  m_last_time_pub = ros::Time::now();
+	m_last_time_pub = ros::Time::now();
 
 	m_pc_status = PC_CTRL_OK;
 }
@@ -96,16 +99,16 @@ PowerCubeCtrl::PowerCubeCtrl(PowerCubeCtrlParams * params)
  */
 PowerCubeCtrl::~PowerCubeCtrl()
 {
-  // stop all components
-  Stop();
+	// stop all components
+	Stop();
 
-  // close CAN device
-  if (m_CANDeviceOpened)
-    {
-      pthread_mutex_lock(&m_mutex);
-      PCube_closeDevice(m_DeviceHandle);
-      pthread_mutex_unlock(&m_mutex);
-    }
+	// close CAN device
+	if (m_CANDeviceOpened)
+	{
+		pthread_mutex_lock(&m_mutex);
+		PCube_closeDevice(m_DeviceHandle);
+		pthread_mutex_unlock(&m_mutex);
+	}
 }
 
 /// ToDo: Check brief
@@ -349,32 +352,32 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 
 		}
 
-  // modules should be initialized now
-  m_pc_status = PC_CTRL_OK;
-  m_Initialized = true;
+	// modules should be initialized now
+	m_pc_status = PC_CTRL_OK;
+	m_Initialized = true;
 
-  /// check if modules are in normal state
-  std::vector<std::string> errorMessages;
-  PC_CTRL_STATUS status;
+	/// check if modules are in normal state
+	std::vector<std::string> errorMessages;
+	PC_CTRL_STATUS status;
 
-  // update status variables
-  updateStates();
+	// update status variables
+	updateStates();
 
-  // grep updated status
-  getStatus(status, errorMessages);
+	// grep updated status
+	getStatus(status, errorMessages);
 
-  // homing dependant on moduletype and if already homed
-  bool successful = false;
-  successful = doHoming();
-  if (!successful)
-    {
-      std::cout << "PowerCubeCtrl:Init: homing not successful, aborting ...\n";
-      return false;
-    }
+	// homing dependant on moduletype and if already homed
+	bool successful = false;
+	successful = doHoming();
+	if (!successful)
+	{
+		std::cout << "PowerCubeCtrl:Init: homing not successful, aborting ...\n";
+		return false;
+	}
 
-  // All modules initialized successfully
-  m_pc_status = PC_CTRL_OK;
-  return true;
+	// All modules initialized successfully
+	m_pc_status = PC_CTRL_OK;
+	return true;
 }
 
 /*!
@@ -399,8 +402,161 @@ bool PowerCubeCtrl::Close()
       return false;
     }
 }
+/*!
+ * \brief Move joints with calculated velocities and reach synchronously final position
+ *
+ * \param velocities Vector
+ */
+bool PowerCubeCtrl::MoveJointSpaceSync(const std::vector<double>& target_pos)
+{
+	PCTRL_CHECK_INITIALIZED();
 
-/*
+	unsigned int DOF = m_params->GetDOF();
+	std::vector<int> ModulIDs = m_params->GetModuleIDs();
+
+	std::vector<double> m_maxVel = m_params->GetMaxVel();
+	std::vector<double> m_maxAcc = m_params->GetMaxAcc();
+
+	std::cout << "Starting MoveJointSpaceSync(Jointd Angle) ... " << std::endl;
+
+// 	printf("0target: %f \n", target_pos[0]); 		//angegebenes Ziel für tilt
+// 	printf("1target: %f \n", target_pos[1]); 		//angegebenes Ziel für pan
+
+	// Questions about method: Felix.Geibel@gmx.de
+	std::vector<double> acc(DOF);
+	std::vector<double> vel(DOF);
+	std::vector<double> posnow;
+	std::vector<double> velnow;
+	double TG = 0;
+
+	try
+	{
+		// Ermittle Joint, der bei max Geschw. und Beschl. am längsten braucht:
+		int DOF = DOF;
+
+		if (!getJointAngles(posnow))
+			return false;
+
+		if (!getJointVelocities(velnow))
+			return false;
+
+
+// 		printf("0posnow: %f \n", posnow[0]);
+// 		printf("1posnow: %f \n", posnow[1]);
+// 		printf("0velnow: %f \n", velnow[0]);
+// 		printf("1velnow: %f \n", velnow[1]);
+
+		///Sende Transformation als Simulationsframe
+		tf::Vector3 p_vec = tf::Vector3(0, 0, 0);
+		tf::Quaternion p_rot;
+		//ACHTUNG: Vorzeichenwechsel, da PowerCube-Koordinatensystem umgekehrt zu Basiskoordinatensystem
+		//R.. P..Tilt Y..Pan
+		p_rot.setRPY(0, -posnow[0], -posnow[1]);
+
+		static tf::TransformBroadcaster br;
+		tf::Transform pointTransform;
+		pointTransform.setOrigin(p_vec);
+		pointTransform.setRotation(p_rot);
+		br.sendTransform(tf::StampedTransform(pointTransform, ros::Time::now(), "powercube_init_pos", "pw_70"));
+		///
+
+		std::vector<double> times(DOF);
+		for (int i=0; i < DOF; i++)
+		{
+			RampCommand rm(posnow[i], velnow[i], target_pos[i], m_maxAcc[i], m_maxVel[i]);
+			times[i] = rm.getTotalTime();
+		}
+// 		printf("0times: %f \n", times[0]);   //Gesamtzeit die für tilt Bewegung benoetigt
+// 		printf("1times: %f \n", times[1]);   //Gesamtzeit die für pan Bewegung benoetigt
+
+		// determine the joint index that has the greates value for time
+		int furthest = 0;
+		double max = times[0];
+	    for (int i=1; i<DOF; i++)
+	    {
+		    if (times[i] > max)
+		    {
+			    max = times[i];
+			    furthest = i;
+		    }
+	    }
+// 	    printf("furthest: %d \n", furthest);	//0=tilt 1=pan fuer die Achse die laenger braucht
+
+		RampCommand rm_furthest(posnow[furthest], velnow[furthest], target_pos[furthest], m_maxAcc[furthest], m_maxVel[furthest]);
+
+		double T1 = rm_furthest.T1();
+		double T2 = rm_furthest.T2();
+		double T3 = rm_furthest.T3();
+// 		printf("furthest_T1: %f \n", T1); //T1 und T3 gleicher Wert, T2 = 0.00
+// 		printf("furthest_T2: %f \n", T2);
+// 		printf("furthest_T3: %f \n", T3);
+		// Gesamtzeit:
+		TG = T1 + T2 + T3;
+
+		// Jetzt Geschwindigkeiten und Beschl. für alle:
+		acc[furthest] = m_maxAcc[furthest];		//maximale Beschleunigung fuer furthest
+		vel[furthest] = m_maxVel[furthest];		//maximale Geschwindigkeit fuer furthest
+// 		printf("furthest_a: %f \n", acc[furthest]);
+// 		printf("furthest_v: %f \n", vel[furthest]);
+
+		for (int i = 0; i < DOF; i++)
+		{
+			if (i != furthest)
+			{
+				double a; double v;
+				// a und v berechnen:
+				RampCommand::calculateAV(			//TODO Berechnungsfehler! In dieser Methode wird die Geschw. und Beschl. falsch berechnet!
+					posnow[i],
+					velnow[i],
+					target_pos[i],
+					TG, T3,
+					m_maxAcc[i],
+					m_maxVel[i],
+					a,
+					v);
+
+				acc[i] = a;
+				vel[i] = v;
+// 				printf("i_a: %f \n", acc[i]);
+// 				printf("i_v: %f \n", vel[i]);
+			}
+		}
+	}
+	catch(...)
+	{
+		return false;
+	}
+
+	// Send motion commands to hardware
+	std::ostringstream errorMsg;
+	int ret = 0;
+	bool ok = true;
+
+	//PCube_setDeviceDebug(m_Dev, 1, 2, -1);
+	for (int i=0; i < DOF; i++) {
+		if (fabs(posnow[i]-target_pos[i]) > 1e-3) {
+			double v = fabs(vel[i]);
+			double a = fabs(acc[i]);
+			ret = PCube_moveRamp(m_DeviceHandle, ModulIDs[i], target_pos[i], v, a);
+			if (ret != 0) {
+				errorMsg << "Module " << ModulIDs[i] << " PCube_moveRamp returned " << ret << std::endl;
+				m_ErrorMessage = errorMsg.str();
+				ok = false;
+			}
+		}
+	}
+
+	ret = PCube_startMotionAll(m_DeviceHandle);
+	if (ret != 0) {
+		errorMsg << "PCube_startMotionAll returned " << ret << std::endl;
+		m_ErrorMessage = errorMsg.str();
+		ok = false;
+	}
+
+	return ok;
+}
+
+/*!
  * \brief Move joints with calculated velocities
  *
  * Calculating positions and times by desired value of the cob_trajectory_controller
@@ -924,17 +1080,17 @@ bool PowerCubeCtrl::setSyncMotion()
   {
 		for (int i = 0; i < m_params->GetDOF(); i++)
 		{
-	  	unsigned long confword;
+			unsigned long confword;
 
-	  	/// get config
-	  	pthread_mutex_lock(&m_mutex);
-	  	PCube_getConfig(m_DeviceHandle, m_params->GetModuleID(i), &confword);
-	  	pthread_mutex_unlock(&m_mutex);
+			/// get config
+			pthread_mutex_lock(&m_mutex);
+			PCube_getConfig(m_DeviceHandle, m_params->GetModuleID(i), &confword);
+			pthread_mutex_unlock(&m_mutex);
 
-	  	/// set config to synchronous
-	  	pthread_mutex_lock(&m_mutex);
-	  	int ret = PCube_setConfig(m_DeviceHandle, m_params->GetModuleID(i), confword | CONFIGID_MOD_SYNC_MOTION);
-	  	pthread_mutex_unlock(&m_mutex);
+			/// set config to synchronous
+			pthread_mutex_lock(&m_mutex);
+			int ret = PCube_setConfig(m_DeviceHandle, m_params->GetModuleID(i), confword | CONFIGID_MOD_SYNC_MOTION);
+			pthread_mutex_unlock(&m_mutex);
 			if (ret!=0)
 			{
 				std::ostringstream errorMsg;
@@ -986,63 +1142,61 @@ bool PowerCubeCtrl::setASyncMotion()
  */
 bool PowerCubeCtrl::updateStates()
 {
-  PCTRL_CHECK_INITIALIZED();
+	PCTRL_CHECK_INITIALIZED();
 
-  unsigned int DOF = m_params->GetDOF();
-  unsigned long state;
-  PC_CTRL_STATUS pc_status = PC_CTRL_ERR;
-  std::vector<std::string> ErrorMessages;
-  std::vector<double> Offsets = m_params->GetOffsets();
-  std::ostringstream errorMsg;
+	unsigned long state;
+	PC_CTRL_STATUS pc_status = PC_CTRL_ERR;
+	std::vector<std::string> ErrorMessages;
+	std::vector<double> Offsets = m_params->GetOffsets();
+	std::ostringstream errorMsg;
 
-  unsigned char dio;
-  float position;
-  int ret = 0;
+	unsigned char dio;
+	float position;
+	int ret = 0;
 
-  for (unsigned int i = 0; i < DOF; i++)
-    {
-      state = m_status[i];
-      pthread_mutex_lock(&m_mutex);
-      ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
-      pthread_mutex_unlock(&m_mutex);
-
-      if (ret != 0)
+	for (unsigned int i = 0; i < m_params->GetDOF(); i++)
 	{
-	  //m_pc_status = PC_CTRL_ERR;
-	  ROS_DEBUG("Error on com in UpdateStates");
-	  return true;
-	  //errorMsg << "State: Error com with Module [" <<  i << "]";
-	  //ErrorMessages[i] = errorMsg.str();
-	}
-      else
-	{
-	  ROS_DEBUG("Module %i, State: %li, Time: %f",i, state, ros::Time::now().toSec());
+		state = m_status[i];
+		pthread_mutex_lock(&m_mutex);
+		ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
+		pthread_mutex_unlock(&m_mutex);
 
-	  m_status[i] = state;
-	  m_dios[i] = dio;
-	  m_positions[i] = position + Offsets[i];
-	}
+		if (ret != 0)
+		{
+			//m_pc_status = PC_CTRL_ERR;
+			ROS_DEBUG("Error on com in UpdateStates");
+			return true;
+			//errorMsg << "State: Error com with Module [" <<  i << "]";
+			//ErrorMessages[i] = errorMsg.str();
+		}
+		else
+		{
+			ROS_DEBUG("Module %i, State: %li, Time: %f",i, state, ros::Time::now().toSec());
 
-    }
+			m_status[i] = state;
+			m_dios[i] = dio;
+			m_positions[i] = position + Offsets[i];
+		}
+	}
 
 	/*
-  double delta_t = ros::Time::now().toSec() - m_last_time_pub.toSec();
-  m_last_time_pub = ros::Time::now();
+	double delta_t = ros::Time::now().toSec() - m_last_time_pub.toSec();
+	m_last_time_pub = ros::Time::now();
 
-  updateVelocities(m_positions, delta_t);
+	updateVelocities(m_positions, delta_t);
 	*/
 
-  // evaluate state for translation for diagnostics msgs
-  getStatus(pc_status, ErrorMessages);
+	// evaluate state for translation for diagnostics msgs
+	getStatus(pc_status, ErrorMessages);
 
-  for (unsigned int i=0; i<ErrorMessages.size(); i++)
-  {
+	for (unsigned int i=0; i<ErrorMessages.size(); i++)
+	{
 		m_ErrorMessage.clear();
 		m_ErrorMessage.assign("");
-    m_ErrorMessage.append(ErrorMessages[i]);
-  }
+	m_ErrorMessage.append(ErrorMessages[i]);
+	}
 
-  return true;
+	return true;
 }
 
 /*!
@@ -1050,19 +1204,19 @@ bool PowerCubeCtrl::updateStates()
  */
 bool PowerCubeCtrl::getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& errorMessages)
 {
-  unsigned int DOF = m_params->GetDOF();
-  std::vector<int> ModuleIDs = m_params->GetModuleIDs();
+	unsigned int DOF = m_params->GetDOF();
+	std::vector<int> ModuleIDs = m_params->GetModuleIDs();
 
 	std::vector<PC_CTRL_STATUS> StatusArray;
 	StatusArray.resize(DOF);
 
-  errorMessages.clear();
-  errorMessages.resize(DOF);
+	errorMessages.clear();
+	errorMessages.resize(DOF);
 
-  status = PC_CTRL_OK;
+	status = PC_CTRL_OK;
 
-  for (unsigned int i = 0; i < DOF; i++)
-  {
+	for (unsigned int i = 0; i < DOF; i++)
+	{
 		std::ostringstream errorMsg;
 
 		if (m_status[i] & STATEID_MOD_POWERFAULT)
@@ -1087,14 +1241,14 @@ bool PowerCubeCtrl::getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& 
 			}
 			StatusArray[i] = PC_CTRL_POW_VOLT_ERR;
 		}
-    else if (m_status[i] & STATEID_MOD_TOW_ERROR)
+	else if (m_status[i] & STATEID_MOD_TOW_ERROR)
 		{
 			errorMsg << "Error in Module " << ModuleIDs[i] << ": ";
 			errorMsg << "The servo loop was not able to follow the target position!";
 			errorMessages[i] = errorMsg.str();
 			StatusArray[i] = PC_CTRL_ERR;
 		}
-    else if (m_status[i] & STATEID_MOD_ERROR)
+	else if (m_status[i] & STATEID_MOD_ERROR)
 		{
 			// STOP the motion for each module
 			pthread_mutex_lock(&m_mutex);
@@ -1106,14 +1260,14 @@ bool PowerCubeCtrl::getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& 
 			errorMessages[i] = errorMsg.str();
 			StatusArray[i] = PC_CTRL_ERR;
 		}
-    else if (m_pc_status & PC_CTRL_ERR)
+	else if (m_pc_status & PC_CTRL_ERR)
 		{
 			Stop(); // stop all motion
 			errorMsg << "PowerCubeCtrl is in global error state";
 			errorMessages[i] = errorMsg.str();
 			StatusArray[i] =  PC_CTRL_ERR;
 		}
-    else
+	else
 		{
 			errorMsg << "Module with Id " << ModuleIDs[i];
 			errorMsg << ": Status OK.";
@@ -1124,7 +1278,7 @@ bool PowerCubeCtrl::getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& 
 
 	// search for worst status
 	for (unsigned int i = 0; i < DOF; i++)
-  {
+	{
 		if ((int)StatusArray[i] <= (int)status)
 		{
 			status = StatusArray[i];
@@ -1133,7 +1287,7 @@ bool PowerCubeCtrl::getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& 
 
 	m_pc_status = status;
 
-  return true;
+	return true;
 }
 
 /*!
@@ -1182,6 +1336,60 @@ std::vector<double> PowerCubeCtrl::getAccelerations()
 {
   /// ToDo: calculate new accelerations before returning
   return m_accelerations;
+}
+
+/*!
+ * \brief Gets the current joint angles from device
+ */
+bool PowerCubeCtrl::getJointAngles(std::vector<double>& result)
+{
+	PCTRL_CHECK_INITIALIZED();
+
+	std::vector<int> ModulIDs = m_params->GetModuleIDs();
+
+	int ret = 0;
+	float pos;
+
+	for (int i=0; i < m_params->GetDOF(); i++)
+	{
+		pthread_mutex_lock(&m_mutex);
+		ret = PCube_getPos(m_DeviceHandle, ModulIDs[i], &pos);
+		pthread_mutex_unlock(&m_mutex);
+		if (ret != 0) {
+			std::cout << "PCubeCtrl::getConfig(): getPos(" << ModulIDs[i] << ") return " << ret << std::endl;
+			return false;
+		}
+		result[i] = pos;
+	}
+
+	return true;
+}
+
+/*!
+ * \brief Gets the current joint angular velocities from device
+ */
+bool PowerCubeCtrl::getJointVelocities(std::vector<double>& result)
+{
+	PCTRL_CHECK_INITIALIZED();
+
+	std::vector<int> ModulIDs = m_params->GetModuleIDs();
+
+	int ret = 0;
+	float vel;
+
+	for (int i=0; i < m_params->GetDOF(); i++)
+	{
+		pthread_mutex_lock(&m_mutex);
+		ret = PCube_getVel(m_DeviceHandle, ModulIDs[i], &vel);
+		pthread_mutex_unlock(&m_mutex);
+		if (ret != 0) {
+			std::cout << "PCubeCtrl::getConfig(): getVel(" << ModulIDs[i] << ") return " << ret << std::endl;
+			return false;
+		}
+		result[i] = vel;
+	}
+
+	return true;
 }
 
 /*!

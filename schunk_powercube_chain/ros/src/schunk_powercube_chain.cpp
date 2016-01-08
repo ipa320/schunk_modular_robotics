@@ -392,7 +392,43 @@ public:
    */
   void topicCallback_CommandPos(const std_msgs::Float64MultiArray::ConstPtr& msg)
   {
-    ROS_WARN("Received new position command. Skipping command: Position commands currently not implemented");
+    ROS_DEBUG("Received new position command");
+    if (!initialized_)
+    {
+      ROS_WARN("Skipping command: powercubes not initialized");
+      publishState(false);
+      return;
+    }
+
+    if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK)
+    {
+      publishState(false);
+      return;
+    }
+
+    PowerCubeCtrl::PC_CTRL_STATUS status;
+    std::vector<std::string> errorMessages;
+    pc_ctrl_->getStatus(status, errorMessages);
+
+     /// check dimensions
+    if (msg->data.size() != pc_params_->GetDOF())
+    {
+      ROS_ERROR("Skipping command: Commanded positionss and DOF are not same dimension.");
+      return;
+    }
+
+    /// command positions to powercubes
+    if (!pc_ctrl_->MoveJointSpaceSync(msg->data))
+    {
+      error_ = true;
+      error_msg_ = pc_ctrl_->getErrorMessage();
+      ROS_ERROR("Skipping command: %s",pc_ctrl_->getErrorMessage().c_str());
+      return;
+    }
+
+    ROS_DEBUG("Executed position command");
+
+    publishState(false);
   }
 
   /*!
@@ -422,10 +458,8 @@ public:
     std::vector<std::string> errorMessages;
     pc_ctrl_->getStatus(status, errorMessages);
 
-    unsigned int DOF = pc_params_->GetDOF();
-
     /// check dimensions
-    if (msg->data.size() != DOF)
+    if (msg->data.size() != pc_params_->GetDOF())
     {
       ROS_ERROR("Skipping command: Commanded velocities and DOF are not same dimension.");
       return;
@@ -434,7 +468,7 @@ public:
     /// command velocities to powercubes
     if (!pc_ctrl_->MoveVel(msg->data))
     {
-       error_ = true;
+      error_ = true;
       error_msg_ = pc_ctrl_->getErrorMessage();
       ROS_ERROR("Skipping command: %s",pc_ctrl_->getErrorMessage().c_str());
       return;

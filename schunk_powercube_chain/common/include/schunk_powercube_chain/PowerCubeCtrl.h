@@ -133,7 +133,7 @@ public:
 	/*!
 	 * \brief Send position goals to powercubes, the final angles will be reached simultaneously
 	 */
-	bool MoveJointSpaceSync(const std::vector<double>& angles);
+	bool MoveJointSpaceSync(const std::vector<double>& target_pos);
 
 	/*!
 	 * \brief Moves all cubes by the given velocities
@@ -242,6 +242,16 @@ public:
 	std::vector<double> getAccelerations();
 
 	/*!
+	 * @brief get the current joint angles
+	 */
+	bool getJointAngles(std::vector<double>& result);
+
+	/*!
+	 * @brief get the current joint velocities (Rad/s)
+	 */
+	bool getJointVelocities(std::vector<double>& result);
+
+	/*!
 	 * \brief Waits until all Modules are homed.
 	 *
 	 * Homes only Schunk PW-Modules or PRL-Modules don't need to be homed.
@@ -268,6 +278,10 @@ protected:
 	std::deque< std::vector<double> > m_cached_pos;
 	std::vector<double> m_velocities;
 	std::vector<double> m_accelerations;
+
+	std::vector<double> m_CurrentAngles;
+	std::vector<double> m_CurrentAngularVel;
+	void millisleep(unsigned int milliseconds) const;
 
 	double m_horizon;
 
