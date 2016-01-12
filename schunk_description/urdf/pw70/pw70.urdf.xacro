@@ -77,13 +77,6 @@
 	  -->
     </link>
 
-	<joint name="${name}_tool_joint" type="fixed" >
-	  <origin xyz="0 0 0" rpy="0 0 0"/>
-      <parent link="${name}_tilt_joint" />
-      <child link="${name}_tool_link" />
-      <xacro:insert_block name="origin" />
-    </joint>
-
   <!-- extensions -->
   <xacro:schunk_pw70_gazebo name="${name}" />
   <xacro:schunk_pw70_transmission name="${name}" />
