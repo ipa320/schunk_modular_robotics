@@ -1,48 +1,48 @@
 
 /******************************************************************************
- * 
- * Copyright (c) 2012 
- * 
+ *
+ * Copyright (c) 2012
+ *
  * SCHUNK GmbH & Co. KG
- *  
- * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
- * 
+ *
+ * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ *
  * Project name: Drivers for "Amtec M5 Protocol" Electronics V4
- *                                                                        
- * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
- * 
+ *
+ * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ *
  * Email:robotics@schunk.com
- * 
- * ToDo: 
- * 
- * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
- * 
- * Redistribution and use in source and binary forms, with or without 
- * modification, are permitted provided that the following conditions are met: 
- * 
- *  * Redistributions of source code must retain the above copyright 
- *    notice, this list of conditions and the following disclaimer. 
- *  * Redistributions in binary form must reproduce the above copyright 
- *    notice, this list of conditions and the following disclaimer in the 
- *    documentation and/or other materials provided with the distribution. 
- *  * Neither the name of SCHUNK GmbH & Co. KG nor the names of its 
- *    contributors may be used to endorse or promote products derived from 
- *    this software without specific prior written permission. 
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Lesser General Public License LGPL as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or (at your option) any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Lesser General Public License LGPL for more details. 
- * 
- * You should have received a copy of the GNU Lesser General Public 
- * License LGPL along with this program. 
+ *
+ * ToDo:
+ *
+ * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  * Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *  * Neither the name of SCHUNK GmbH & Co. KG nor the names of its
+ *    contributors may be used to endorse or promote products derived from
+ *    this software without specific prior written permission.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License LGPL as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License LGPL for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License LGPL along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  ******************************************************************************/
 
 
@@ -152,7 +152,7 @@ int CPCanDevice::setBaudRate()
 
         debug(0,"entering CPCanDevice::setBaudRate()...\n");
 	warning("PCan Device must be reset to set the new baud rate!\n");
-	
+
 	int iRetVal = 0;
 	m_iErrorState = 0;
 
@@ -175,7 +175,7 @@ int CPCanDevice::setBaudRate()
 			break;
 	}
 
-	
+
 	if (m_bInitFlag)
 	{
 		CAN_Close(m_handle);
@@ -188,7 +188,7 @@ int CPCanDevice::setBaudRate()
 		getDeviceError(iRetVal);
 		m_iErrorState = ERRID_DEV_INITERROR;
 		return m_iErrorState;
-	}	
+	}
         else
         {
           debug(0,"PCanDevice: setting baud rate to %d\n",m_iBaudRate);
@@ -218,7 +218,7 @@ int CPCanDevice::clearReadQueue()
 {
 	int iRetVal = 0;
 	TPCANRdMsg TPCMsg;
-	
+
         debug(0,"entering CPCanDevice::clearReadQueue()...\n");
         TPCMsg.Msg.LEN = 8;
 	TPCMsg.Msg.MSGTYPE = 0;
@@ -226,14 +226,14 @@ int CPCanDevice::clearReadQueue()
 
 	m_iErrorState = 0;
 	do
-	{	
-		//iRetVal = canRead(m_hDevice, &clESDProtocolMessage, &iNumberOfMessages, NULL);			
+	{
+		//iRetVal = canRead(m_hDevice, &clESDProtocolMessage, &iNumberOfMessages, NULL);
 	        debug(0,"Trying to read messages ...");
                 iRetVal = LINUX_CAN_Read_Timeout(m_handle, &TPCMsg, m_uiTimeOut);
                 debug(0," 0x%04x\n",iRetVal);
 
 	}while( iRetVal != CAN_ERR_QRCVEMPTY ) ;
-	
+
 	return m_iErrorState;
 }
 
@@ -243,7 +243,7 @@ int CPCanDevice::reinit(unsigned char ucBaudRateId)
 {
 
 	int  iRetVal = 0;
-	
+
 	m_iErrorState = 0;
 	if(!m_bInitFlag)
 	{
@@ -284,7 +284,7 @@ int CPCanDevice::reinit(unsigned char ucBaudRateId)
 		m_iErrorState = ERRID_DEV_EXITERROR;
 	}
 	m_bInitFlag = false;
-	iRetVal = canOpen(	
+	iRetVal = canOpen(
 				m_iDeviceId,			// Net
 				0,						// Mode
 				m_uiQueueSize,			// TX Queue
@@ -369,7 +369,7 @@ int CPCanDevice::reinit(unsigned char ucBaudRateId)
                 m_bInitFlag = true;
         }
 
-	
+
 	updateModuleIdMap();
 	return m_iErrorState;
 }
@@ -379,7 +379,7 @@ int CPCanDevice::reinit(unsigned char ucBaudRateId)
 int CPCanDevice::readDevice(CProtocolMessage& rclProtocolMessage)
 {
 	int iRetVal = 0;
-	
+
 	TPCANRdMsg TPCMsg;
 	TPCMsg.Msg.LEN = 8;
 	TPCMsg.Msg.MSGTYPE = 0;
@@ -424,12 +424,12 @@ int CPCanDevice::writeDevice(CProtocolMessage& rclProtocolMessage)
 {
 	int iRetVal = 0;
 	TPCANMsg TPCMsg;
-	
+
 	TPCMsg.MSGTYPE = MSGTYPE_STANDARD;
 	m_iErrorState = 0;
 	TPCMsg.ID = rclProtocolMessage.m_uiMessageId;
         printMessage(rclProtocolMessage,WRITE);
-                                                                              
+
 	TPCMsg.LEN =  rclProtocolMessage.m_ucMessageLength;
 	if(rclProtocolMessage.m_bRTRFlag)
 		TPCMsg.MSGTYPE = MSGTYPE_RTR;
@@ -563,7 +563,7 @@ int CPCanDevice::init(const char* acInitString)
 {
 	InitializeCriticalSection(&m_csDevice);
 	int iRetVal = 0;
-	m_uiTimeOut =6;
+	m_uiTimeOut = 20;
         m_iNoOfRetries = 10;
 	char* pcToken;
 	char acString[128];
@@ -600,16 +600,16 @@ int CPCanDevice::init(const char* acInitString)
 	}
 
 
-	
-	
+
+
 	m_iDeviceId = atoi(pcToken);
 	//std::cout << m_iDeviceId << std::endl;
 
 
 	strncpy(m_DeviceName,pcToken,12);
-	
+
 	/*
-	
+
 	if (m_iDeviceId == 0)
 	{
 		strcpy(m_DeviceName,"/dev/pcan32");
@@ -639,7 +639,7 @@ int CPCanDevice::init(const char* acInitString)
 		printf("Warning: currently only support for 2 devices!\n");
 	}
 	*/
-	
+
 	//printf("Device %s: %s\n",pcToken,m_DeviceName);
 
 
@@ -730,7 +730,7 @@ int CPCanDevice::init(const char* acInitString)
 		m_iErrorState = ERRID_DEV_INITERROR;
 		return m_iErrorState;
 	}
-	
+
 
 	m_iErrorState = setBaudRate();
 	if(m_iErrorState != 0)
@@ -769,7 +769,7 @@ int CPCanDevice::exit()
         debug(0,"Total number of interrupts: %d",Diag.dwIRQcounter);
         debug(0,"Total number of errors: %d",Diag.dwErrorCounter);
         debug(0,"Error flag: 0x%04x",Diag.wErrorFlag);
-        
+
 	if(!m_bInitFlag)
 	{
 		warning("exit:device not initialized");
@@ -806,8 +806,8 @@ int CPCanDevice::waitForStartMotionAll()
 	m_iErrorState = 0;
 
 	do
-	{	
-		//iRetVal = canRead(m_hSyncDevice, &clESDProtocolMessage, &iNumberOfMessages, NULL);			
+	{
+		//iRetVal = canRead(m_hSyncDevice, &clESDProtocolMessage, &iNumberOfMessages, NULL);
 		iRetVal = LINUX_CAN_Read_Timeout(m_handle, &TPCMsg, m_uiTimeOut);
 		if(iRetVal != CAN_ERR_OK)
 		{
