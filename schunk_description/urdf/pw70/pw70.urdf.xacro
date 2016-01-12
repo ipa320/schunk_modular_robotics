@@ -33,7 +33,7 @@
       <parent link="${name}_base_link" />
       <child link="${name}_pan_link" />
       <axis xyz="0 0 1" />
-	  <!--<limit effort="10" lower="-0.001" upper="0.061" velocity="2.0"/>-->
+	  <limit effort="2.0" velocity="${2 * M_PI}" lower="${-7/3 * M_PI}" upper="${7/3 * M_PI}"/>
     </joint>
 
     <link name="${name}_pan_link">
@@ -58,8 +58,7 @@
       <parent link="${name}_pan_link" />
       <child link="${name}_tilt_link" />
       <axis xyz="0 1 0" />
-	  <!--<mimic joint="${name}_finger_left_joint" multiplier="1" offset="0"/>
-	  <limit effort="10" lower="-0.001" upper="0.061" velocity="2.0"/>-->
+	  <limit effort="12.0" velocity="4.1" lower="${-4/6 * M_PI}" upper="${4/6 * M_PI}"/>
     </joint>
 
     <link name="${name}_tilt_link">
