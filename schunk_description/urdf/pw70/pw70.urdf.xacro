@@ -7,9 +7,9 @@
   <xacro:macro name="schunk_pw70" params="parent name *origin">
 
     <joint name="${name}_base_joint" type="fixed" >
+      <xacro:insert_block name="origin" />
       <parent link="${parent}" />
       <child link="${name}_base_link" />
-      <xacro:insert_block name="origin" />
     </joint>
 
     <link name="${name}_base_link">
@@ -33,7 +33,8 @@
       <parent link="${name}_base_link" />
       <child link="${name}_pan_link" />
       <axis xyz="0 0 1" />
-	  <limit effort="2.0" velocity="${2 * M_PI}" lower="${-7/3 * M_PI}" upper="${7/3 * M_PI}"/>
+	  <limit effort="200" velocity="${2 * M_PI}" lower="${-7/3 * M_PI}" upper="${7/3 * M_PI}"/>
+	  <calibration rising="0.0"/>
     </joint>
 
     <link name="${name}_pan_link">
@@ -59,6 +60,7 @@
       <child link="${name}_tilt_link" />
       <axis xyz="0 1 0" />
 	  <limit effort="12.0" velocity="4.1" lower="${-4/6 * M_PI}" upper="${4/6 * M_PI}"/>
+	  <calibration rising="0.0"/>
     </joint>
 
     <link name="${name}_tilt_link">
