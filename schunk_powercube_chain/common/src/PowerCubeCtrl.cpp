@@ -219,8 +219,8 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 			else if ((ret != 0) && (reset_try == (max_tries-1)))
 			{
 				std::ostringstream errorMsg;
-      	errorMsg << "Could not reset module " << ModulIDs.at(i) << " during init. Errorcode during reset: " << ret << " Try to init once more.";
-      	m_ErrorMessage = errorMsg.str();
+				errorMsg << "Could not reset module " << ModulIDs.at(i) << " during init. Errorcode during reset: " << ret << " Try to init once more.";
+				m_ErrorMessage = errorMsg.str();
 				return false;
 			}
 			else
@@ -231,13 +231,13 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams * params)
 
 		}
 	}
-	std::cout << "number of moduleIDs" << ModulIDs.size() << std::endl;
+	std::cout << "number of moduleIDs " << ModulIDs.size() << std::endl;
 
   /// check number of modules connected to the bus
   pthread_mutex_lock(&m_mutex);
   int number_of_modules = PCube_getModuleCount(m_DeviceHandle);
   pthread_mutex_unlock(&m_mutex);
-  std::cout << "found " << number_of_modules << " modules." << std::endl;
+  std::cout << "Found " << number_of_modules << " modules." << std::endl;
 
   /// Check if the modules are connected
   for (int i = 0; i < DOF; i++)

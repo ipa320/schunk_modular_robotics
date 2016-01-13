@@ -79,6 +79,28 @@
 	  -->
     </link>
 
+	<joint name="${name}_tool_joint" type="fixed" >
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="${name}_tilt_link" />
+      <child link="${name}_tool_link" />
+    </joint>
+
+    <link name="${name}_tool_link">
+      <xacro:default_inertial/>
+	  <!--
+      <visual>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/pw70/pw70_tilt.dae" />
+        </geometry>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/pw70/pw70_tilt.stl" />
+        </geometry>
+      </collision>
+	  -->
+    </link>
+
   <!-- extensions -->
   <xacro:schunk_pw70_gazebo name="${name}" />
   <xacro:schunk_pw70_transmission name="${name}" />

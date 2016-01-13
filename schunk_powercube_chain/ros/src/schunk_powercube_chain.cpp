@@ -145,11 +145,11 @@ public:
     topicSub_CommandVel_ = n_.subscribe("joint_group_velocity_controller/command", 1, &PowerCubeChainNode::topicCallback_CommandVel, this);
 
     /// implementation of service servers
-    srvServer_Init_ = n_.advertiseService("driver/init", &PowerCubeChainNode::srvCallback_Init, this);
-    srvServer_Stop_ = n_.advertiseService("driver/stop", &PowerCubeChainNode::srvCallback_Stop, this);
-    srvServer_Recover_ = n_.advertiseService("driver/recover", &PowerCubeChainNode::srvCallback_Recover, this);
-    srvServer_SetOperationMode_ = n_.advertiseService("driver/set_operation_mode", &PowerCubeChainNode::srvCallback_SetOperationMode, this);
-    topicPub_OperationMode_ = n_.advertise<std_msgs::String> ("driver/current_operationmode", 1);
+    srvServer_Init_ = n_private_.advertiseService("driver/init", &PowerCubeChainNode::srvCallback_Init, this);
+    srvServer_Stop_ = n_private_.advertiseService("driver/stop", &PowerCubeChainNode::srvCallback_Stop, this);
+    srvServer_Recover_ = n_private_.advertiseService("driver/recover", &PowerCubeChainNode::srvCallback_Recover, this);
+    srvServer_SetOperationMode_ = n_private_.advertiseService("driver/set_operation_mode", &PowerCubeChainNode::srvCallback_SetOperationMode, this);
+    topicPub_OperationMode_ = n_private_.advertise<std_msgs::String> ("driver/current_operationmode", 1);
 
     initialized_ = false;
     stopped_ = true;
