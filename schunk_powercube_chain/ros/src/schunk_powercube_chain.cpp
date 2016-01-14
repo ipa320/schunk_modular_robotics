@@ -396,13 +396,13 @@ public:
     if (!initialized_)
     {
       ROS_WARN("Skipping command: powercubes not initialized");
-      publishState(false);
+      publishState();
       return;
     }
 
     if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK)
     {
-      publishState(false);
+      publishState();
       return;
     }
 
@@ -428,7 +428,7 @@ public:
 
     ROS_DEBUG("Executed position command");
 
-    publishState(false);
+    publishState();
   }
 
   /*!
@@ -443,13 +443,13 @@ public:
     if (!initialized_)
     {
       ROS_WARN("Skipping command: powercubes not initialized");
-      publishState(false);
+      publishState();
       return;
     }
 
     if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK)
     {
-      publishState(false);
+      publishState();
       return;
     }
 
@@ -476,7 +476,7 @@ public:
 
     ROS_DEBUG("Executed velocity command");
 
-    publishState(false);
+    publishState();
   }
 
   /*!
@@ -613,14 +613,13 @@ public:
    * Published to "/joint_states" as "sensor_msgs/JointState"
    * Published to "state" as "control_msgs/JointTrajectoryControllerState"
    */
-  void publishState(bool update=true)
+  void publishState()
   {
     if (initialized_)
     {
       ROS_DEBUG("publish state");
 
-      if(update)
-      {pc_ctrl_->updateStates();}
+      pc_ctrl_->updateStates();
 
       sensor_msgs::JointState joint_state_msg;
       joint_state_msg.header.stamp = ros::Time::now();
