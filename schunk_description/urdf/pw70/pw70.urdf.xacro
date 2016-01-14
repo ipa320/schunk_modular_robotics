@@ -6,13 +6,13 @@
 
   <xacro:macro name="schunk_pw70" params="parent name *origin">
 
-    <joint name="${name}_base_joint" type="fixed" >
+    <joint name="${name}_joint" type="fixed" >
       <xacro:insert_block name="origin" />
       <parent link="${parent}" />
-      <child link="${name}_base_link" />
+      <child link="${name}_link" />
     </joint>
 
-    <link name="${name}_base_link">
+    <link name="${name}_link">
       <xacro:default_inertial/>
 	  <!--
       <visual>
@@ -30,9 +30,9 @@
 
     <joint name="${name}_pan_joint" type="revolute" >
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <parent link="${name}_base_link" />
+      <parent link="${name}_link" />
       <child link="${name}_pan_link" />
-      <axis xyz="0 0 1" />
+      <axis xyz="0 0 -1" />
 	  <limit effort="200" velocity="${2 * M_PI}" lower="${-7/3 * M_PI}" upper="${7/3 * M_PI}"/>
 	  <calibration rising="0.0"/>
     </joint>
@@ -55,10 +55,10 @@
 
 
     <joint name="${name}_tilt_joint" type="revolute" >
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0.0951" rpy="0 0 0"/>
       <parent link="${name}_pan_link" />
       <child link="${name}_tilt_link" />
-      <axis xyz="0 1 0" />
+      <axis xyz="0 -1 0" />
 	  <limit effort="12.0" velocity="4.1" lower="${-4/6 * M_PI}" upper="${4/6 * M_PI}"/>
 	  <calibration rising="0.0"/>
     </joint>
@@ -80,7 +80,7 @@
     </link>
 
 	<joint name="${name}_tool_joint" type="fixed" >
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0.07" rpy="0 0 0"/>
       <parent link="${name}_tilt_link" />
       <child link="${name}_tool_link" />
     </joint>
