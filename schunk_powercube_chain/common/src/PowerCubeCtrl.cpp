@@ -419,46 +419,23 @@ bool PowerCubeCtrl::MoveJointSpaceSync(const std::vector<double>& target_pos)
 
 	std::cout << "Starting MoveJointSpaceSync(Jointd Angle) ... " << std::endl;
 
-// 	printf("0target: %f \n", target_pos[0]); 		//angegebenes Ziel für tilt
-// 	printf("1target: %f \n", target_pos[1]); 		//angegebenes Ziel für pan
-
 	// Questions about method: Felix.Geibel@gmx.de
 	std::vector<double> acc(DOF);
 	std::vector<double> vel(DOF);
-	std::vector<double> posnow;
-	std::vector<double> velnow;
+	std::vector<double> posnow(DOF);
+	std::vector<double> velnow(DOF);
 	double TG = 0;
 
 	try
 	{
-		// Ermittle Joint, der bei max Geschw. und Beschl. am längsten braucht:
-		int DOF = DOF;
-
-		if (!getJointAngles(posnow))
+		// Calcute the joint which need longest time to the goal
+		if (!getJointAngles(posnow)) {
 			return false;
+		}
 
-		if (!getJointVelocities(velnow))
+		if (!getJointVelocities(velnow)) {
 			return false;
-
-
-// 		printf("0posnow: %f \n", posnow[0]);
-// 		printf("1posnow: %f \n", posnow[1]);
-// 		printf("0velnow: %f \n", velnow[0]);
-// 		printf("1velnow: %f \n", velnow[1]);
-
-		///Sende Transformation als Simulationsframe
-		tf::Vector3 p_vec = tf::Vector3(0, 0, 0);
-		tf::Quaternion p_rot;
-		//ACHTUNG: Vorzeichenwechsel, da PowerCube-Koordinatensystem umgekehrt zu Basiskoordinatensystem
-		//R.. P..Tilt Y..Pan
-		p_rot.setRPY(0, -posnow[0], -posnow[1]);
-
-		static tf::TransformBroadcaster br;
-		tf::Transform pointTransform;
-		pointTransform.setOrigin(p_vec);
-		pointTransform.setRotation(p_rot);
-		br.sendTransform(tf::StampedTransform(pointTransform, ros::Time::now(), "powercube_init_pos", "pw_70"));
-		///
+		}
 
 		std::vector<double> times(DOF);
 		for (int i=0; i < DOF; i++)
@@ -466,8 +443,6 @@ bool PowerCubeCtrl::MoveJointSpaceSync(const std::vector<double>& target_pos)
 			RampCommand rm(posnow[i], velnow[i], target_pos[i], m_maxAcc[i], m_maxVel[i]);
 			times[i] = rm.getTotalTime();
 		}
-// 		printf("0times: %f \n", times[0]);   //Gesamtzeit die für tilt Bewegung benoetigt
-// 		printf("1times: %f \n", times[1]);   //Gesamtzeit die für pan Bewegung benoetigt
 
 		// determine the joint index that has the greates value for time
 		int furthest = 0;
@@ -480,24 +455,17 @@ bool PowerCubeCtrl::MoveJointSpaceSync(const std::vector<double>& target_pos)
 			    furthest = i;
 		    }
 	    }
-// 	    printf("furthest: %d \n", furthest);	//0=tilt 1=pan fuer die Achse die laenger braucht
 
 		RampCommand rm_furthest(posnow[furthest], velnow[furthest], target_pos[furthest], m_maxAcc[furthest], m_maxVel[furthest]);
 
 		double T1 = rm_furthest.T1();
 		double T2 = rm_furthest.T2();
 		double T3 = rm_furthest.T3();
-// 		printf("furthest_T1: %f \n", T1); //T1 und T3 gleicher Wert, T2 = 0.00
-// 		printf("furthest_T2: %f \n", T2);
-// 		printf("furthest_T3: %f \n", T3);
-		// Gesamtzeit:
+		// Sum of times:
 		TG = T1 + T2 + T3;
 
-		// Jetzt Geschwindigkeiten und Beschl. für alle:
-		acc[furthest] = m_maxAcc[furthest];		//maximale Beschleunigung fuer furthest
-		vel[furthest] = m_maxVel[furthest];		//maximale Geschwindigkeit fuer furthest
-// 		printf("furthest_a: %f \n", acc[furthest]);
-// 		printf("furthest_v: %f \n", vel[furthest]);
+		acc[furthest] = m_maxAcc[furthest];		//maximal acceleration for furthest
+		vel[furthest] = m_maxVel[furthest];		//maximal speed for furthest
 
 		for (int i = 0; i < DOF; i++)
 		{
