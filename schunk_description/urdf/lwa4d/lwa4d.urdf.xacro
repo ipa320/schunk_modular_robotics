@@ -5,7 +5,7 @@
   <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.gazebo.xacro"/>
   <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.transmission.xacro"/>
 
-  <xacro:macro name="schunk_lwa4d" params="parent name *origin has_podest">
+  <xacro:macro name="schunk_lwa4d" params="parent name *origin has_podest invert:=1">
 
     <xacro:if value="${has_podest}">
       <!-- joint between base_link and lwa4p_extended_connector_link -->
@@ -55,7 +55,7 @@
       <origin xyz="0 0 0" rpy="0 0 0" />
       <parent link="${name}_base_link"/>
       <child link="${name}_1_link"/>
-      <axis xyz="0 0 1"/>
+      <axis xyz="0 0 ${invert}"/>
       <limit effort="216" velocity="0.43633" lower="${-M_PI+safety_offset}" upper="${M_PI-safety_offset}"/>
     </joint>
 
@@ -84,7 +84,7 @@
       <origin xyz="0 0 0.240" rpy="-${M_PI/2} -${M_PI/2} 0"/>
       <parent link="${name}_1_link"/>
       <child link="${name}_2_link"/>
-      <axis xyz="0 0 1"/>
+      <axis xyz="0 0 ${invert}"/>
       <limit effort="216" velocity="0.43633" lower="${-2.14 + safety_offset}" upper="${2.14 - safety_offset}"/>
     </joint>
 
@@ -113,7 +113,7 @@
       <origin xyz="0 0 0" rpy="${M_PI/2} 0 ${M_PI/2}"/>
       <parent link="${name}_2_link"/>
       <child link="${name}_3_link"/>
-      <axis xyz="0 0 1"/>
+      <axis xyz="0 0 ${invert}"/>
       <limit effort="81.5" velocity="0.4189" lower="${-M_PI + safety_offset}" upper="${M_PI - safety_offset}"/>
     </joint>
 
@@ -142,7 +142,7 @@
       <origin xyz="0 0 0.328" rpy="-${M_PI/2} -${M_PI/2} 0"/>
       <parent link="${name}_3_link"/>
       <child link="${name}_4_link"/>
-      <axis xyz="0 0 1"/>
+      <axis xyz="0 0 ${invert}"/>
       <limit effort="81.5" velocity="0.4189" lower="${-2.18 + safety_offset}" upper="${2.18 - safety_offset}"/>
     </joint>
 
@@ -171,7 +171,7 @@
       <origin xyz="0 0 0" rpy="${M_PI/2} 0 ${M_PI/2}"/>
       <parent link="${name}_4_link"/>
       <child link="${name}_5_link"/>
-      <axis xyz="0 0 1"/>
+      <axis xyz="0 0 ${invert}"/>
       <limit effort="20.7" velocity="0.43633" lower="${-M_PI + safety_offset}" upper="${M_PI - safety_offset}"/>
     </joint>
 
