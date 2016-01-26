@@ -13,7 +13,11 @@
       <axis xyz="0 0 -1" />
     </xacro:unless>
   </xacro:macro>
-    
+  
+  <!-- invert_* is a xacro parameter to be used to adapt the urdf according to your hardware setup. 
+       use invert_*:=true if you configured your hardware to follow DH-convention, i.e. motors have been inverted in the firmware. 
+       use invert_*:=false if you are using factory settings, i.e. motors are not inverted in the firmware.
+       The default follows the DH-convention -->
   <xacro:macro name="schunk_lwa4d" params="parent name *origin has_podest invert_j1:=true invert_j2:=true invert_j3:=true invert_j4:=true invert_j5:=true invert_j6:=true invert_j7:=true">
     
     <xacro:if value="${has_podest}">
