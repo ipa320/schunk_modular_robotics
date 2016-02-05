@@ -4,9 +4,22 @@
 
   <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.gazebo.xacro"/>
   <xacro:include filename="$(find schunk_description)/urdf/lwa4d/lwa4d.transmission.xacro"/>
-
-  <xacro:macro name="schunk_lwa4d" params="parent name *origin has_podest">
-
+  
+  <xacro:macro name="axis_config" params="invert">
+    <xacro:if value="${invert}">
+      <axis xyz="0 0 1" />
+    </xacro:if>
+    <xacro:unless value="${invert}">
+      <axis xyz="0 0 -1" />
+    </xacro:unless>
+  </xacro:macro>
+  
+  <!-- invert_* is a xacro parameter to be used to adapt the urdf according to your hardware setup. 
+       use invert_*:=true if  motors are inverted in the firmware. 
+       use invert_*:=false if motors are not inverted in the firmware.
+  -->
+  <xacro:macro name="schunk_lwa4d_custom" params="parent name *origin has_podest invert_j1 invert_j2 invert_j3 invert_j4 invert_j5 invert_j6 invert_j7">
+    
     <xacro:if value="${has_podest}">
       <!-- joint between base_link and lwa4p_extended_connector_link -->
       <joint name="${name}_podest_joint" type="fixed">
@@ -55,7 +68,7 @@
       <origin xyz="0 0 0" rpy="0 0 0" />
       <parent link="${name}_base_link"/>
       <child link="${name}_1_link"/>
-      <axis xyz="0 0 1"/>
+      <xacro:axis_config invert="${invert_j1}"/>
       <limit effort="216" velocity="0.43633" lower="${-M_PI+safety_offset}" upper="${M_PI-safety_offset}"/>
     </joint>
 
@@ -84,7 +97,7 @@
       <origin xyz="0 0 0.240" rpy="-${M_PI/2} -${M_PI/2} 0"/>
       <parent link="${name}_1_link"/>
       <child link="${name}_2_link"/>
-      <axis xyz="0 0 1"/>
+      <xacro:axis_config invert="${invert_j2}"/>
       <limit effort="216" velocity="0.43633" lower="${-2.14 + safety_offset}" upper="${2.14 - safety_offset}"/>
     </joint>
 
@@ -113,7 +126,7 @@
       <origin xyz="0 0 0" rpy="${M_PI/2} 0 ${M_PI/2}"/>
       <parent link="${name}_2_link"/>
       <child link="${name}_3_link"/>
-      <axis xyz="0 0 1"/>
+      <xacro:axis_config invert="${invert_j3}"/>
       <limit effort="81.5" velocity="0.4189" lower="${-M_PI + safety_offset}" upper="${M_PI - safety_offset}"/>
     </joint>
 
@@ -142,7 +155,7 @@
       <origin xyz="0 0 0.328" rpy="-${M_PI/2} -${M_PI/2} 0"/>
       <parent link="${name}_3_link"/>
       <child link="${name}_4_link"/>
-      <axis xyz="0 0 1"/>
+      <xacro:axis_config invert="${invert_j4}"/>
       <limit effort="81.5" velocity="0.4189" lower="${-2.18 + safety_offset}" upper="${2.18 - safety_offset}"/>
     </joint>
 
@@ -171,7 +184,7 @@
       <origin xyz="0 0 0" rpy="${M_PI/2} 0 ${M_PI/2}"/>
       <parent link="${name}_4_link"/>
       <child link="${name}_5_link"/>
-      <axis xyz="0 0 1"/>
+      <xacro:axis_config invert="${invert_j5}"/>
       <limit effort="20.7" velocity="0.43633" lower="${-M_PI + safety_offset}" upper="${M_PI - safety_offset}"/>
     </joint>
 
@@ -200,7 +213,7 @@
       <origin xyz="0 0 0.323" rpy="-${M_PI/2} -${M_PI/2} 0"/>
       <parent link="${name}_5_link"/>
       <child link="${name}_6_link"/>
-      <axis xyz="0 0 1"/>
+      <xacro:axis_config invert="${invert_j6}"/>
       <limit effort="15" velocity="1.2566" lower="${-2.09 + safety_offset}" upper="${2.09 - safety_offset}"/>
     </joint>
 
@@ -229,7 +242,7 @@
       <origin xyz="0 0 0" rpy="${M_PI/2} 0 ${M_PI/2}"/>
       <parent link="${name}_6_link"/>
       <child link="${name}_7_link"/>
-      <axis xyz="0 0 1"/>
+      <xacro:axis_config invert="${invert_j7}"/>
       <limit effort="15" velocity="1.2566" lower="${-2.96 + safety_offset}" upper="${2.96 - safety_offset}"/>
     </joint>
 
@@ -267,6 +280,24 @@
     <xacro:schunk_lwa4d_gazebo name="${name}"/>
     <xacro:schunk_lwa4d_transmission name="${name}"/>
 
+  </xacro:macro>
+  
+  <!-- use_factory_setings is a xacro parameter to be used to adapt the urdf according to your hardware setup. 
+       use_factory_settings:=true if you have not modified the schunk firmware. 
+       use_factory_settings:=false if you have modified the schunk firmware to follow DH parameters (you have inverted the PRL+ motors j1-j5)
+       if you are using custom firmware settings, use schunk_lwa4d_custom
+  -->
+  <xacro:macro name="schunk_lwa4d" params="parent name *origin has_podest use_factory_settings:=false">
+    <xacro:if value="${use_factory_settings}">
+      <xacro:schunk_lwa4d_custom parent="${parent}" name="${name}" has_podest="${has_podest}" invert_j1="false" invert_j2="false" invert_j3="false" invert_j4="false" invert_j5="false" invert_j6="true" invert_j7="true">
+        <xacro:insert_block name="origin" />
+      </xacro:schunk_lwa4d_custom>
+    </xacro:if>
+    <xacro:unless value="${use_factory_settings}">
+      <xacro:schunk_lwa4d_custom parent="${parent}" name="${name}" has_podest="${has_podest}" invert_j1="true" invert_j2="true" invert_j3="true" invert_j4="true" invert_j5="true" invert_j6="true" invert_j7="true">
+        <xacro:insert_block name="origin" />
+      </xacro:schunk_lwa4d_custom>
+    </xacro:unless>
   </xacro:macro>
 
 </robot>
