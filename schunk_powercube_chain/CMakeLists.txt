@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(schunk_powercube_chain)
 
-find_package(catkin REQUIRED COMPONENTS cob_srvs control_msgs diagnostic_msgs libntcan libpcan roscpp schunk_libm5api sensor_msgs std_msgs std_srvs trajectory_msgs urdf)
+find_package(catkin REQUIRED COMPONENTS cob_srvs control_msgs diagnostic_msgs libntcan libpcan roscpp schunk_libm5api sensor_msgs std_msgs std_srvs trajectory_msgs tf urdf)
 
 catkin_package()
 

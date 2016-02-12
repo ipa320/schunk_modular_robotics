@@ -145,11 +145,11 @@ public:
     topicSub_CommandVel_ = n_.subscribe("joint_group_velocity_controller/command", 1, &PowerCubeChainNode::topicCallback_CommandVel, this);
 
     /// implementation of service servers
-    srvServer_Init_ = n_.advertiseService("driver/init", &PowerCubeChainNode::srvCallback_Init, this);
-    srvServer_Stop_ = n_.advertiseService("driver/stop", &PowerCubeChainNode::srvCallback_Stop, this);
-    srvServer_Recover_ = n_.advertiseService("driver/recover", &PowerCubeChainNode::srvCallback_Recover, this);
-    srvServer_SetOperationMode_ = n_.advertiseService("driver/set_operation_mode", &PowerCubeChainNode::srvCallback_SetOperationMode, this);
-    topicPub_OperationMode_ = n_.advertise<std_msgs::String> ("driver/current_operationmode", 1);
+    srvServer_Init_ = n_private_.advertiseService("driver/init", &PowerCubeChainNode::srvCallback_Init, this);
+    srvServer_Stop_ = n_private_.advertiseService("driver/stop", &PowerCubeChainNode::srvCallback_Stop, this);
+    srvServer_Recover_ = n_private_.advertiseService("driver/recover", &PowerCubeChainNode::srvCallback_Recover, this);
+    srvServer_SetOperationMode_ = n_private_.advertiseService("driver/set_operation_mode", &PowerCubeChainNode::srvCallback_SetOperationMode, this);
+    topicPub_OperationMode_ = n_private_.advertise<std_msgs::String> ("driver/current_operationmode", 1);
 
     initialized_ = false;
     stopped_ = true;
@@ -392,7 +392,43 @@ public:
    */
   void topicCallback_CommandPos(const std_msgs::Float64MultiArray::ConstPtr& msg)
   {
-    ROS_WARN("Received new position command. Skipping command: Position commands currently not implemented");
+    ROS_DEBUG("Received new position command");
+    if (!initialized_)
+    {
+      ROS_WARN("Skipping command: powercubes not initialized");
+      publishState();
+      return;
+    }
+
+    if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK)
+    {
+      publishState();
+      return;
+    }
+
+    PowerCubeCtrl::PC_CTRL_STATUS status;
+    std::vector<std::string> errorMessages;
+    pc_ctrl_->getStatus(status, errorMessages);
+
+     /// check dimensions
+    if (msg->data.size() != pc_params_->GetDOF())
+    {
+      ROS_ERROR("Skipping command: Commanded positionss and DOF are not same dimension.");
+      return;
+    }
+
+    /// command positions to powercubes
+    if (!pc_ctrl_->MoveJointSpaceSync(msg->data))
+    {
+      error_ = true;
+      error_msg_ = pc_ctrl_->getErrorMessage();
+      ROS_ERROR("Skipping command: %s",pc_ctrl_->getErrorMessage().c_str());
+      return;
+    }
+
+    ROS_DEBUG("Executed position command");
+
+    publishState();
   }
 
   /*!
@@ -407,13 +443,13 @@ public:
     if (!initialized_)
     {
       ROS_WARN("Skipping command: powercubes not initialized");
-      publishState(false);
+      publishState();
       return;
     }
 
     if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK)
     {
-      publishState(false);
+      publishState();
       return;
     }
 
@@ -422,10 +458,8 @@ public:
     std::vector<std::string> errorMessages;
     pc_ctrl_->getStatus(status, errorMessages);
 
-    unsigned int DOF = pc_params_->GetDOF();
-
     /// check dimensions
-    if (msg->data.size() != DOF)
+    if (msg->data.size() != pc_params_->GetDOF())
     {
       ROS_ERROR("Skipping command: Commanded velocities and DOF are not same dimension.");
       return;
@@ -434,7 +468,7 @@ public:
     /// command velocities to powercubes
     if (!pc_ctrl_->MoveVel(msg->data))
     {
-       error_ = true;
+      error_ = true;
       error_msg_ = pc_ctrl_->getErrorMessage();
       ROS_ERROR("Skipping command: %s",pc_ctrl_->getErrorMessage().c_str());
       return;
@@ -442,7 +476,7 @@ public:
 
     ROS_DEBUG("Executed velocity command");
 
-    publishState(false);
+    publishState();
   }
 
   /*!
@@ -579,14 +613,13 @@ public:
    * Published to "/joint_states" as "sensor_msgs/JointState"
    * Published to "state" as "control_msgs/JointTrajectoryControllerState"
    */
-  void publishState(bool update=true)
+  void publishState()
   {
     if (initialized_)
     {
       ROS_DEBUG("publish state");
 
-      if(update)
-      {pc_ctrl_->updateStates();}
+      pc_ctrl_->updateStates();
 
       sensor_msgs::JointState joint_state_msg;
       joint_state_msg.header.stamp = ros::Time::now();

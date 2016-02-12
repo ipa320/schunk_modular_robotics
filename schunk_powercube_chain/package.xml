@@ -28,6 +28,7 @@
   <depend>std_msgs</depend>
   <depend>std_srvs</depend>
   <depend>trajectory_msgs</depend>
+  <depend>tf</depend>
   <depend>urdf</depend>
 
 </package>
