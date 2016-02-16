@@ -47,17 +47,17 @@ set_property(TARGET SDHLibrary PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/
 
 add_executable(${PROJECT_NAME} ros/src/sdh.cpp)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX -DWITH_ESD_CAN")
-add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencpp)
+add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(${PROJECT_NAME} SDHLibrary ${catkin_LIBRARIES})
 
 add_executable(sdh_only ros/src/sdh_only.cpp)
 set_target_properties(sdh_only PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX -DWITH_ESD_CAN")
-add_dependencies(sdh_only ${PROJECT_NAME}_gencpp)
+add_dependencies(sdh_only ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(sdh_only SDHLibrary ${catkin_LIBRARIES})
 
 add_executable(dsa_only ros/src/dsa_only.cpp)
 set_target_properties(dsa_only PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX")
-add_dependencies(dsa_only ${PROJECT_NAME}_gencpp)
+add_dependencies(dsa_only ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(dsa_only SDHLibrary ${catkin_LIBRARIES})
 
 ### INSTALL ###
