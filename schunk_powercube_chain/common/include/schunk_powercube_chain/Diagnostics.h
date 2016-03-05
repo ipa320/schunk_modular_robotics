@@ -72,16 +72,15 @@
  * The error code namespace is used to lookup an error is there are multiple
  * error code LUTs, as it is common in larger libraries.
  */
-class ErrorcodeReport						// Errorcode from library
+class ErrorcodeReport  // Errorcode from library
 {
-	public:
-	bool Code_Exists; 						// true when errorcode returned
-	int ErrorCode;							// code number
-	std::string Errorcode_Namespace;		// namespace of the code (for lookup)
+public:
+  bool Code_Exists;                 // true when errorcode returned
+  int ErrorCode;                    // code number
+  std::string Errorcode_Namespace;  // namespace of the code (for lookup)
 
-	/// Constructor
-	ErrorcodeReport():
-		Code_Exists(false), ErrorCode(0), Errorcode_Namespace("") {};
+  /// Constructor
+  ErrorcodeReport() : Code_Exists(false), ErrorCode(0), Errorcode_Namespace(""){};
 };
 
 /*!
@@ -93,17 +92,16 @@ class ErrorcodeReport						// Errorcode from library
  */
 class DiagnosticStatus
 {
-	public:
-	short Level; 							// 0 = OK, 1 = WARN, 2=ERROR
-	std::string Message; 					// Description of the error
-	std::string Recommendation;				// Possible solutions for the user
-	ErrorcodeReport Errorcode_Report; 		// Errorcode that is returned from a function
+public:
+  short Level;                       // 0 = OK, 1 = WARN, 2=ERROR
+  std::string Message;               // Description of the error
+  std::string Recommendation;        // Possible solutions for the user
+  ErrorcodeReport Errorcode_Report;  // Errorcode that is returned from a function
 
-	std::chrono::time_point<std::chrono::system_clock> Time; 	// time when status is reported
+  std::chrono::time_point<std::chrono::system_clock> Time;  // time when status is reported
 
-	/// Constructor
-	DiagnosticStatus():
-		Level(0), Message(""), Recommendation(""), Time(std::chrono::system_clock::now()) {};
+  /// Constructor
+  DiagnosticStatus() : Level(0), Message(""), Recommendation(""), Time(std::chrono::system_clock::now()){};
 };
 
 /*!
@@ -115,211 +113,204 @@ class DiagnosticStatus
  */
 class Diagnosics
 {
-
-	/*TODO:	- select format for errorlookups (.h, .txt, yaml)
-	 * 		- implement report status
-	 * 		- implement read methodes
-	 * 		- implement QueLength methodes
-	 */
+  /*TODO:	- select format for errorlookups (.h, .txt, yaml)
+   * 		- implement report status
+   * 		- implement read methodes
+   * 		- implement QueLength methodes
+   */
 public:
+  /// Constructor
+  Diagnosics()
+  {
+    m_StatusQueLength = 5;  // 5 is default value
 
-	/// Constructor
-	Diagnosics()
-	{
-		m_StatusQueLength = 5; 		// 5 is default value
+    // initialize member variabeles
+    m_StatusList = new std::deque<DiagnosticStatus>[m_StatusQueLength];
 
-		// initialize member variabeles
-		m_StatusList = new std::deque<DiagnosticStatus>[m_StatusQueLength];
+    // initialize default ok return value (default 0)
+    m_Default_Ok_Value = 0;
 
-		// initialize default ok return value (default 0)
-		m_Default_Ok_Value = 0;
+    // TODO: read in errorcode lists
+  }
 
-		//TODO: read in errorcode lists
+  /// Destructor
+  ~Diagnosics()
+  {
+    delete m_StatusList;
+  };
 
-	}
+  /*******************************************|
+  | 			Useage interface				|
+  |*******************************************/
 
-	/// Destructor
-	~Diagnosics()
-	{
-		delete m_StatusList;
-	};
+  /// Report a Status
 
-	/*******************************************|
-	| 			Useage interface				|
-	|*******************************************/
+  /*!
+   * \brief for simple status report by hand
+   */
+  void ReportStatus(short Level, std::string Message)
+  {
+    DiagnosticStatus NewStatus;
 
-	/// Report a Status
+    NewStatus.Level = Level;
+    NewStatus.Time = std::chrono::system_clock::now();
+    NewStatus.Message = Message;
 
-	/*!
- 	 * \brief for simple status report by hand
-	 */
-	void ReportStatus(short Level, std::string Message)
-	{
-		DiagnosticStatus NewStatus;
+    m_StatusList->push_front(NewStatus);
+    m_StatusList->pop_back();
+  }
 
-		NewStatus.Level = Level;
-		NewStatus.Time = std::chrono::system_clock::now();
-		NewStatus.Message = Message;
+  /*!
+   * \brief for simple status report by hand with problem solution
+   */
+  void ReportStatus(short Level, std::string Message, std::string Recommendation)
+  {
+    DiagnosticStatus NewStatus;
 
-		m_StatusList->push_front(NewStatus);
-		m_StatusList->pop_back();
-	}
+    NewStatus.Level = Level;
+    NewStatus.Time = std::chrono::system_clock::now();
+    NewStatus.Message = Message;
+    NewStatus.Message = Recommendation;
 
-	/*!
- 	 * \brief for simple status report by hand with problem solution
-	 */
-	void ReportStatus(short Level, std::string Message, std::string Recommendation)
-	{
-		DiagnosticStatus NewStatus;
+    m_StatusList->push_front(NewStatus);
+    m_StatusList->pop_back();
+  }
 
-		NewStatus.Level = Level;
-		NewStatus.Time = std::chrono::system_clock::now();
-		NewStatus.Message = Message;
-		NewStatus.Message = Recommendation;
+  /*!
+   * \brief report with manually set level for a errorcode and additional comments
+   */
+  void ReportStatus(short Level, int Errorcode, std::string Errorcode_Namespace, std::string Recommendation)
+  {
+    DiagnosticStatus NewStatus;
 
-		m_StatusList->push_front(NewStatus);
-		m_StatusList->pop_back();
-	}
+    NewStatus.Level = Level;
+    NewStatus.Time = std::chrono::system_clock::now();
 
-	/*!
- 	 * \brief report with manually set level for a errorcode and additional comments
-	 */
-	void ReportStatus(short Level, int Errorcode, std::string Errorcode_Namespace, std::string Recommendation)
-	{
-		DiagnosticStatus NewStatus;
+    // TODO: generate message from errorcode
 
-		NewStatus.Level = Level;
-		NewStatus.Time = std::chrono::system_clock::now();
+    NewStatus.Message = Recommendation;
 
-		//TODO: generate message from errorcode
+    m_StatusList->push_front(NewStatus);
+    m_StatusList->pop_back();
+  }
 
-		NewStatus.Message = Recommendation;
+  /*!
+   * \brief automatic report of status by errorcode. Can be used for return values of library functions.
+   */
+  void ReportStatus(int Errorcode, std::string Errorcode_Namespace)
+  {
+    DiagnosticStatus NewStatus;
 
-		m_StatusList->push_front(NewStatus);
-		m_StatusList->pop_back();
-	}
+    // TODO: get message from errorcodelist
 
-	/*!
- 	 * \brief automatic report of status by errorcode. Can be used for return values of library functions.
-	 */
-	void ReportStatus(int Errorcode, std::string Errorcode_Namespace)
-	{
-		DiagnosticStatus NewStatus;
+    NewStatus.Time = std::chrono::system_clock::now();
 
-		//TODO: get message from errorcodelist
+    m_StatusList->push_front(NewStatus);
+    m_StatusList->pop_back();
+  }
 
-		NewStatus.Time = std::chrono::system_clock::now();
+  /// Read the status
 
-		m_StatusList->push_front(NewStatus);
-		m_StatusList->pop_back();
-	}
+  /*!
+   * \brief Outputs the actual status to the passed pointers.
+   *
+   * string arguments are resized for the message
+   */
+  void ReadActualStatus(short* Level, std::string* Message, std::string* Recommendation)
+  {
+    DiagnosticStatus ActualStatus = m_StatusList->at(0);
 
+    // resize strings for the size of the upcoming message
+    Message->clear();
+    Recommendation->clear();
 
-	/// Read the status
+    // write output
+    Level = (short*)ActualStatus.Level;
+    Message->append(ActualStatus.Message);
+    Recommendation->append(ActualStatus.Recommendation);
+  }
 
-	/*!
- 	 * \brief Outputs the actual status to the passed pointers.
-	 *
-	 * string arguments are resized for the message
-	 */
-	void ReadActualStatus(short* Level, std::string* Message, std::string* Recommendation)
-	{
-		DiagnosticStatus ActualStatus = m_StatusList->at(0);
+  /*!
+   * \brief Retuns the actual status level.
+   */
+  int ReadActualStatusLevel()
+  {
+    DiagnosticStatus ActualStatus = m_StatusList->at(0);
+    return ActualStatus.Level;
+  }
 
-		// resize strings for the size of the upcoming message
-		Message->clear();
-		Recommendation->clear();
+  /*!
+   * \brief Retuns the actual status message.
+   */
+  std::string ReadActualStatusMessage()
+  {
+    DiagnosticStatus ActualStatus = m_StatusList->at(0);
+    return ActualStatus.Message;
+  }
 
-		// write output
-		Level = (short*) ActualStatus.Level;
-		Message->append(ActualStatus.Message);
-		Recommendation->append(ActualStatus.Recommendation);
-	}
+  /*!
+   * \brief Retuns the actual status recommendation.
+   */
+  std::string ReadActualStatusRecommendation()
+  {
+    DiagnosticStatus ActualStatus = m_StatusList->at(0);
+    return ActualStatus.Recommendation;
+  }
 
-	/*!
- 	 * \brief Retuns the actual status level.
-	 */
-	int ReadActualStatusLevel()
-	{
-		DiagnosticStatus ActualStatus = m_StatusList->at(0);
-		return ActualStatus.Level;
-	}
+  /*******************************************|
+  | 			Configurations					|
+  |*******************************************/
 
-	/*!
- 	 * \brief Retuns the actual status message.
-	 */
-	std::string ReadActualStatusMessage()
-	{
-		DiagnosticStatus ActualStatus = m_StatusList->at(0);
-		return ActualStatus.Message;
-	}
+  /// status que length
 
-	/*!
- 	 * \brief Retuns the actual status recommendation.
-	 */
-	std::string ReadActualStatusRecommendation()
-	{
-		DiagnosticStatus ActualStatus = m_StatusList->at(0);
-		return ActualStatus.Recommendation;
-	}
+  /*!
+   * \brief returns the Status que length right now
+   */
+  int GetActualStatusQueLength()
+  {
+    return m_StatusQueLength;
+  }
 
-	/*******************************************|
-	| 			Configurations					|
-	|*******************************************/
+  /*!
+   * \brief Sets the maximal length of status history that can be read. Default is 5 elements.
+   */
+  void SetMaxStatusQueLength(int StatusQueLength)
+  {
+    m_StatusQueLength = StatusQueLength;
+  }
 
-	/// status que length
+  /*!
+   * \brief Gets the maximal length of status history that can be read.
+   */
+  int GetMaxStatusQueLength()
+  {
+    return m_StatusQueLength;
+  }
 
-	/*!
- 	 * \brief returns the Status que length right now
-	 */
-	int GetActualStatusQueLength()
-	{
-		return m_StatusQueLength;
-	}
+  /// Default ok value read/write
 
-	/*!
- 	 * \brief Sets the maximal length of status history that can be read. Default is 5 elements.
-	 */
-	void SetMaxStatusQueLength(int StatusQueLength)
-	{
-		m_StatusQueLength = StatusQueLength;
-	}
+  /*!
+   * \brief returns the actual default ok value
+   */
+  int GetDefaultOKValue()
+  {
+    return m_Default_Ok_Value = 0;
+  }
 
-	/*!
- 	 * \brief Gets the maximal length of status history that can be read.
-	 */
-	int GetMaxStatusQueLength()
-	{
-		return m_StatusQueLength;
-	}
-
-
-	/// Default ok value read/write
-
-	/*!
- 	 * \brief returns the actual default ok value
-	 */
-	int GetDefaultOKValue()
-	{
-		return m_Default_Ok_Value = 0;
-	}
-
-	/*!
- 	 * \brief sets a new default ok value
-	 */
-	void SetDefaultOKValue(int Default_Ok_Value)
-	{
-		m_Default_Ok_Value = Default_Ok_Value;
-	}
+  /*!
+   * \brief sets a new default ok value
+   */
+  void SetDefaultOKValue(int Default_Ok_Value)
+  {
+    m_Default_Ok_Value = Default_Ok_Value;
+  }
 
 private:
+  std::deque<DiagnosticStatus>* m_StatusList;  // List that holds the last status messages in a deque
 
-	std::deque<DiagnosticStatus> *m_StatusList;	// List that holds the last status messages in a deque
-
-	int m_StatusQueLength; 						// maximal length of status que
-	int m_Default_Ok_Value;						// is used for check if return value needs to
-												// be reported
-
+  int m_StatusQueLength;   // maximal length of status que
+  int m_Default_Ok_Value;  // is used for check if return value needs to
+                           // be reported
 };
 
 #endif
