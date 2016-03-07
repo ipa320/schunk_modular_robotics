@@ -705,7 +705,7 @@ bool PowerCubeCtrl::Recover()
   for (unsigned int i = 0; i < DOF; i++)
   {
     pthread_mutex_lock(&m_mutex);
-    ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
+    ret = getPositionAndStatus(i, &state, &dio, &position);
     pthread_mutex_unlock(&m_mutex);
     if (ret != 0)
 		{
@@ -755,7 +755,6 @@ bool PowerCubeCtrl::Recover()
   if ((status != PC_CTRL_OK))
   {
 	  m_ErrorMessage.assign("");
-
     for (int i = 0; i < m_params->GetDOF(); i++)
 		{
 		  m_ErrorMessage.append(errorMessages[i]);
@@ -1003,7 +1002,7 @@ bool PowerCubeCtrl::updateStates()
     {
       state = m_status[i];
       pthread_mutex_lock(&m_mutex);
-      ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
+      ret = getPositionAndStatus(i, &state, &dio, &position);
       pthread_mutex_unlock(&m_mutex);
 
       if (ret != 0)
@@ -1022,7 +1021,6 @@ bool PowerCubeCtrl::updateStates()
 	  m_dios[i] = dio;
 	  m_positions[i] = position + Offsets[i];
 	}
-
     }
 
 	/*
@@ -1213,7 +1211,7 @@ bool PowerCubeCtrl::doHoming()
   for (unsigned int i = 0; i < DOF; i++)
     {
 	pthread_mutex_lock(&m_mutex);
-	ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
+	ret = getPositionAndStatus(i, &state, &dio, &position);
 	pthread_mutex_unlock(&m_mutex);
 
 	// check and init m_position variable for trajectory controller
@@ -1348,6 +1346,26 @@ bool PowerCubeCtrl::doHoming()
   return true;
 }
 
+bool PowerCubeCtrl::getPositionAndStatus(int i, unsigned long* state, unsigned char* dio, float* position)
+{
+    int ret = 0;
+
+    if(m_version[i]>VERSION_ELECTR3_FIRST or (m_version[i]>VERSION_ELECTR2_FIRST and    m_version[i]<VERSION_ELECTR2_LAST))
+    {
+        ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), state, dio, position);
+    }
+    else
+    {
+        ret = PCube_getPos(m_DeviceHandle, m_params->GetModuleID(i), position);
+        ret |= PCube_getModuleState(m_DeviceHandle, m_params->GetModuleID(i), state);
+        unsigned long puiValue;
+        ret |= PCube_getDioData(m_DeviceHandle, m_params->GetModuleID(i), &puiValue);
+        *dio = (unsigned char)puiValue;
+    }
+
+    return ret;
+}
+
 /*!
  * \brief Setup errors for diagnostics
  */
@@ -1355,3 +1373,5 @@ bool m_TranslateError2Diagnosics(std::ostringstream* errorMsg)
 {
   return true;
 }
+
+

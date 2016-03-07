@@ -60,6 +60,10 @@
 #ifndef __POWER_CUBE_CTRL_H_
 #define __POWER_CUBE_CTRL_H_
 
+#define VERSION_ELECTR3_FIRST 0x3518
+#define VERSION_ELECTR2_LAST  0x3000
+#define VERSION_ELECTR2_FIRST 0x2518
+
 // standard includes
 #include <iostream>
 #include <sstream>
@@ -275,6 +279,7 @@ protected:
 
 	std::string m_ErrorMessage;
 
+    bool getPositionAndStatus(int module_id, unsigned long* state, unsigned char* dio, float* position);
 };
 
 #endif
