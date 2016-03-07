@@ -152,12 +152,14 @@ public:
    * \param name Name for the actionlib server
    */
   SdhNode() :
-      as_(nh_, "joint_trajectory_controller/follow_joint_trajectory", boost::bind(&SdhNode::executeCB, this, _1), true), action_name_(
+      as_(nh_, "joint_trajectory_controller/follow_joint_trajectory", boost::bind(&SdhNode::executeCB, this, _1), false), action_name_(
           "follow_joint_trajectory")
   {
     nh_private_ = ros::NodeHandle("~");
     pi_ = 3.1415926;
     isError_ = false;
+
+    as_.start();
   }
 
   /*!
