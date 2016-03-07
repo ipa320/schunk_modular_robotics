@@ -150,43 +150,37 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams* params)
   }
   std::cout << std::endl;
 
-  std::cout << std::endl
-            << "maxVel: ";
+  std::cout << std::endl << "maxVel: ";
   for (int i = 0; i < DOF; i++)
   {
     std::cout << MaxVel[i] << " ";
   }
 
-  std::cout << std::endl
-            << "maxAcc: ";
+  std::cout << std::endl << "maxAcc: ";
   for (int i = 0; i < DOF; i++)
   {
     std::cout << MaxAcc[i] << " ";
   }
 
-  std::cout << std::endl
-            << "upperLimits: ";
+  std::cout << std::endl << "upperLimits: ";
   for (int i = 0; i < DOF; i++)
   {
     std::cout << UpperLimits[i] << " ";
   }
 
-  std::cout << std::endl
-            << "lowerLimits: ";
+  std::cout << std::endl << "lowerLimits: ";
   for (int i = 0; i < DOF; i++)
   {
     std::cout << LowerLimits[i] << " ";
   }
 
-  std::cout << std::endl
-            << "offsets: ";
+  std::cout << std::endl << "offsets: ";
   for (int i = 0; i < DOF; i++)
   {
     std::cout << Offsets[i] << " ";
   }
 
-  std::cout << std::endl
-            << "=========================================================================== " << std::endl;
+  std::cout << std::endl << "=========================================================================== " << std::endl;
   std::ostringstream InitStr;
   InitStr << CanModule << ":" << CanDevice << "," << CanBaudrate;
   std::cout << "initstring = " << InitStr.str().c_str() << std::endl;
