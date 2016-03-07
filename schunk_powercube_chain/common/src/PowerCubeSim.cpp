@@ -658,9 +658,7 @@ void* SimThreadRoutine(void* threadArgs)
         else if ((simulatedTime > t) && (simulatedTime <= 2 * t))
         {
           // deltaPhi = maxVel *simulatedTime - 0.5*maxAccel*(simulatedTime -t)*(simulatedTime-t);
-          deltaPhi =
-              maxAccel * t * deltaT -
-              0.5 * maxAccel * ((n * deltaT - t) * (n * deltaT - t) - ((n - 1) * deltaT - t) * ((n - 1) * deltaT - t));
+          deltaPhi = maxAccel * t * deltaT - 0.5 * maxAccel * ((n * deltaT - t) * (n * deltaT - t) - ((n - 1) * deltaT - t) * ((n - 1) * deltaT - t));
           currVels[cubeNo] = maxAccel * t - maxAccel * (simulatedTime - t);
           std::cout << "Phase 2 ->";
         }

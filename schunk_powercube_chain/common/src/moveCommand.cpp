@@ -460,11 +460,9 @@ void RampCommand::calculateAV(double x0, double v0, double xtarget, double time,
         if (4 * delta * delta - 4 * delta * TG * v0 + 2 * TG * TG * v0 * v0 >= 0)
           /// Root does not make any problems.
           if (delta * v0 > 0)
-            acc = (-2.0 * delta + TG * v0 + sqrt(4 * delta * delta - 4 * delta * TG * v0 + 2 * TG * TG * v0 * v0)) /
-                  (TG * TG);
+            acc = (-2.0 * delta + TG * v0 + sqrt(4 * delta * delta - 4 * delta * TG * v0 + 2 * TG * TG * v0 * v0)) / (TG * TG);
           else
-            acc = (-2.0 * delta + TG * v0 - sqrt(4 * delta * delta - 4 * delta * TG * v0 + 2 * TG * TG * v0 * v0)) /
-                  (TG * TG);
+            acc = (-2.0 * delta + TG * v0 - sqrt(4 * delta * delta - 4 * delta * TG * v0 + 2 * TG * TG * v0 * v0)) / (TG * TG);
         else
           /// Root reports some issues, temporary solution:
           acc = amax;

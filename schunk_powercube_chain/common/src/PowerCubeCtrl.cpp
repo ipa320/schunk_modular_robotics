@@ -63,11 +63,11 @@
 // own includes
 #include <schunk_powercube_chain/PowerCubeCtrl.h>
 
-#define PCTRL_CHECK_INITIALIZED()                                                                                      \
-  if (isInitialized() == false)                                                                                        \
-  {                                                                                                                    \
-    m_ErrorMessage.assign("Manipulator not initialized.");                                                             \
-    return false;                                                                                                      \
+#define PCTRL_CHECK_INITIALIZED()                          \
+  if (isInitialized() == false)                            \
+  {                                                        \
+    m_ErrorMessage.assign("Manipulator not initialized."); \
+    return false;                                          \
   }
 
 #define Ready4MoveStep 4638
@@ -216,8 +216,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams* params)
       else if ((ret != 0) && (reset_try == (max_tries - 1)))
       {
         std::ostringstream errorMsg;
-        errorMsg << "Could not reset module " << ModulIDs.at(i) << " during init. Errorcode during reset: " << ret
-                 << " Try to init once more.";
+        errorMsg << "Could not reset module " << ModulIDs.at(i) << " during init. Errorcode during reset: " << ret << " Try to init once more.";
         m_ErrorMessage = errorMsg.str();
         return false;
       }
@@ -309,8 +308,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams* params)
     {
       if (type != TYPEID_MOD_ROTARY)
       {
-        std::cout << "wrong module type configured. Type must be rotary axis. Use Windows configuration software to "
-                     "change type." << std::endl;
+        std::cout << "wrong module type configured. Type must be rotary axis. Use Windows configuration software to change type." << std::endl;
         return false;
       }
     }
@@ -348,8 +346,7 @@ bool PowerCubeCtrl::Init(PowerCubeCtrlParams* params)
     }
 
     /// otherwise success
-    std::cout << "Found module " << std::dec << ModulIDs[i] << " Serial: " << serNo << " Version: " << std::hex << verNo
-              << std::endl;
+    std::cout << "Found module " << std::dec << ModulIDs[i] << " Serial: " << serNo << " Version: " << std::hex << verNo << std::endl;
   }
 
   // modules should be initialized now
@@ -509,8 +506,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 
       // TODO: add ros_warn
 
-      ROS_INFO("Velocity %f exceeds limit %f for axis %i. moving with max velocity %f instead", velocities[i],
-               maxVels[i], i, maxVels[i]);
+      ROS_INFO("Velocity %f exceeds limit %f for axis %i. moving with max velocity %f instead", velocities[i], maxVels[i], i, maxVels[i]);
     }
 
     /// check position limits
@@ -520,8 +516,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
     if ((target_pos[i] < LowerLimits[i] + Offsets[i]) && (velocities[i] < 0))
     {
       ROS_INFO("Skipping command: %f Target position exceeds lower limit (%f).", target_pos[i], LowerLimits[i]);
-      // target position is set to actual position and velocity to Null. So only movement in the non limit direction is
-      // possible.
+      // target position is set to actual position and velocity to Null. So only movement in the non limit direction is possible.
 
       pthread_mutex_lock(&m_mutex);
       PCube_haltModule(m_DeviceHandle, ModulIDs.at(i));
@@ -530,8 +525,7 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
       return true;
     }
 
-    // if target position is outer limits and the command velocity is in in direction away from working range, skip
-    // command
+    // if target position is outer limits and the command velocity is in in direction away from working range, skip command
     if ((target_pos[i] > UpperLimits[i] + Offsets[i]) && (velocities[i] > 0))
     {
       ROS_INFO("Skipping command: %f Target position exceeds upper limit (%f).", target_pos[i], UpperLimits[i]);
@@ -567,26 +561,21 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
 
   for (unsigned int i = 0; i < DOF; i++)
   {
-    // check module type sending command (PRL-Modules can be driven with moveStepExtended(), PW-Modules can only be
-    // driven with less safe moveVelExtended())
+    // check module type sending command (PRL-Modules can be driven with moveStepExtended(), PW-Modules can only be driven with less safe moveVelExtended())
     if ((m_ModuleTypes.at(i) == "PRL") && (m_version[i] >= Ready4MoveStep) && !m_params->GetUseMoveVel())
     {
-      // ROS_DEBUG("Modul_id = %i, ModuleType: %s, step=%f, time=%f", m_params->GetModuleID(i),
-      // m_ModuleTypes[i].c_str(), target_pos[i], target_time);
+      // ROS_DEBUG("Modul_id = %i, ModuleType: %s, step=%f, time=%f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), target_pos[i], target_time);
 
-      // ROS_INFO("Modul_id = %i, ModuleType: %s, step=%f, time4motion=%i [ms], target_time=%f, horizon: %f",
-      // m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), delta_pos[i], time4motion, target_time, m_horizon);
+      // ROS_INFO("Modul_id = %i, ModuleType: %s, step=%f, time4motion=%i [ms], target_time=%f, horizon: %f", m_params->GetModuleID(i), m_ModuleTypes[i].c_str(), delta_pos[i], time4motion, target_time, m_horizon);
 
       pthread_mutex_lock(&m_mutex);
-      ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), target_pos_horizon[i], time4motion,
-                                   &m_status[i], &m_dios[i], &pos);
+      ret = PCube_moveStepExtended(m_DeviceHandle, m_params->GetModuleID(i), target_pos_horizon[i], time4motion, &m_status[i], &m_dios[i], &pos);
       pthread_mutex_unlock(&m_mutex);
     }
     else  /// Types: PRL, PW, other
     {
       pthread_mutex_lock(&m_mutex);
-      ret = PCube_moveVelExtended(m_DeviceHandle, m_params->GetModuleID(i), velocities[i], &m_status[i], &m_dios[i],
-                                  &pos);
+      ret = PCube_moveVelExtended(m_DeviceHandle, m_params->GetModuleID(i), velocities[i], &m_status[i], &m_dios[i], &pos);
       pthread_mutex_unlock(&m_mutex);
     }
 
@@ -604,14 +593,12 @@ bool PowerCubeCtrl::MoveVel(const std::vector<double>& vel)
     m_positions[i] = (double)pos + delta_pos[i] + Offsets[i];
 
     pos_temp[i] = (double)pos;
-    // ROS_INFO("After cmd (%X) :m_positions[%i] %f = pos: %f + delta_pos[%i]: %f",m_status[i], i, m_positions[i], pos,
-    // i, delta_pos[i]);
+    // ROS_INFO("After cmd (%X) :m_positions[%i] %f = pos: %f + delta_pos[%i]: %f",m_status[i], i, m_positions[i], pos, i, delta_pos[i]);
   }
 
   updateVelocities(pos_temp, delta_t);
 
-  // std::cout << "vel_com: " << velocities[1] << " vel_hori: " << delta_pos_horizon[1]/	target_time_horizon << "
-  // vel_real[1]: " << m_velocities.at(1) << std::endl;
+  // std::cout << "vel_com: " << velocities[1] << " vel_hori: " << delta_pos_horizon[1]/target_time_horizon << " vel_real[1]: " << m_velocities.at(1) << std::endl;
 
   pthread_mutex_lock(&m_mutex);
   PCube_startMotionAll(m_DeviceHandle);
@@ -646,8 +633,7 @@ void PowerCubeCtrl::updateVelocities(std::vector<double> pos_temp, double delta_
 
   for (unsigned int i = 0; i < DOF; i++)
   {
-    m_velocities[i] = 1 / (6 * delta_t) *
-                      (-m_cached_pos[0][i] - (3 * m_cached_pos[1][i]) + (3 * m_cached_pos[2][i]) + m_cached_pos[3][i]);
+    m_velocities[i] = 1 / (6 * delta_t) * (-m_cached_pos[0][i] - (3 * m_cached_pos[1][i]) + (3 * m_cached_pos[2][i]) + m_cached_pos[3][i]);
     // m_velocities[i] = (m_cached_pos[3][i] - m_cached_pos[2][i])/delta_t;
     // m_velocities[i] = (pos_temp.at(i)-last_pos.at(i))/delta_t;
   }
@@ -1096,8 +1082,7 @@ bool PowerCubeCtrl::getStatus(PC_CTRL_STATUS& status, std::vector<std::string>& 
       else if (m_status[i] & STATEID_MOD_POW_INTEGRALERR)
       {
         errorMsg << "Error in Module " << ModuleIDs[i] << ": ";
-        errorMsg << "The drive has been overloaded and the servo loop has been disabled. Power must be switched off to "
-                    "reset this error.";
+        errorMsg << "The drive has been overloaded and the servo loop has been disabled. Power must be switched off to reset this error.";
         errorMessages[i] = errorMsg.str();
       }
       StatusArray[i] = PC_CTRL_POW_VOLT_ERR;
@@ -1235,8 +1220,7 @@ bool PowerCubeCtrl::doHoming()
     if ((position > UpperLimits[i] + Offsets[i]) || (position < LowerLimits[i] + Offsets[i]))
     {
       std::ostringstream errorMsg;
-      errorMsg << "Module " << ModuleIDs[i] << " has position " << position << " that is outside limits ("
-               << UpperLimits[i] + Offsets[i] << " <-> " << LowerLimits[i] + Offsets[i] << std::endl;
+      errorMsg << "Module " << ModuleIDs[i] << " has position " << position << " that is outside limits ("                << UpperLimits[i] + Offsets[i] << " <-> " << LowerLimits[i] + Offsets[i] << std::endl;
       if ((m_ModuleTypes.at(i) == "PW") || (m_ModuleTypes.at(i) == "other"))
       {
         std::cout << "Position error for PW-Module. Init is aborted. Try to reboot the robot." << std::endl;
@@ -1310,8 +1294,7 @@ bool PowerCubeCtrl::doHoming()
           if (ret != 0)
           {
             std::ostringstream errorMsg;
-            errorMsg << "Can't start homing for module " << ModuleIDs[i] << ", tried reset with no success, m5api "
-                                                                            "error code: " << ret;
+            errorMsg << "Can't start homing for module " << ModuleIDs[i] << ", tried reset with no success, m5api error code: " << ret;
             m_ErrorMessage = errorMsg.str();
             return false;
           }
