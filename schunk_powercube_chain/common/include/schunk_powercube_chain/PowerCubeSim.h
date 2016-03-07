@@ -84,11 +84,11 @@ using namespace std;
 //#define __LINUX__
 
 #ifdef SWIG
-% module PowerCubeSim % include "Source/Manipulation/Interfaces/armInterface.h" %
-{
-#include "PowerCubeSim.h"
-  %
-}
+%module PowerCubeSim
+%include "Source/Manipulation/Interfaces/armInterface.h"
+%{
+  #include "PowerCubeSim.h"
+%}
 #endif
 
 class PowerCubeSim;

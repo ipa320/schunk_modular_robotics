@@ -67,10 +67,7 @@ class simulatedMotor
 {
 public:
   simulatedMotor(double lowLimit, double upLimit, double maxAcc, double maxVel);
-  ~simulatedMotor()
-  {
-    ;
-  }
+  ~simulatedMotor() {;}
 
   /// @brief initializes the module, if an error occurs function returns false
   virtual bool init()

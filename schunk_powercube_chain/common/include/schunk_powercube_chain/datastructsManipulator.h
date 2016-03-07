@@ -67,11 +67,10 @@
 // using namespace std;
 
 #ifdef SWIG
-% module PowerCubeCtrl %
-{
-#include <schunk_powercube_chain/datastructsManipulator.h>
-  %
-}
+%module PowerCubeCtrl
+%{
+  #include <schunk_powercube_chain/datastructsManipulator.h>
+%}
 #endif
 
 /**

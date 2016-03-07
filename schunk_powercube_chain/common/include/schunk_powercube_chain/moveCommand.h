@@ -66,14 +66,8 @@
 class moveCommand
 {
 public:
-  moveCommand()
-  {
-    ;
-  }
-  virtual ~moveCommand()
-  {
-    ;
-  }
+  moveCommand() {;}
+  virtual ~moveCommand() {;}
 
   /////////////////////////////////////////////////////////////////////////
   //               Child Classes have to define these:                   //

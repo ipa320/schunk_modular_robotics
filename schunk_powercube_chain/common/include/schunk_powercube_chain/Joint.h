@@ -818,10 +818,12 @@ inline std::istream& operator>>(std::istream& _is, Joint<Real>& joint)
 #endif
 
 #ifdef SWIG
-% module Util % include Source / Manipulation / ManipUtil / datastructsManipulator.h % include Source / Manipulation /
-    ManipUtil / Trajectory.h %
-    {
-#include "Joint.h"
-     % } %
-    include "std_vector.i" % template(Jointd) Joint<double>;
+%module Util
+%include Source/Manipulation/ManipUtil/datastructsManipulator.h
+%include Source/Manipulation/ManipUtil/Trajectory.h
+%{
+  #include "Joint.h"
+%}
+%include "std_vector.i"
+%template(Jointd) Joint<double>;
 #endif
