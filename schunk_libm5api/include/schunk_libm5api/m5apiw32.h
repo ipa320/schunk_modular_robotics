@@ -80,13 +80,6 @@
 extern M5DLL_API int g_iM5DebugLevel;
 extern M5DLL_API int g_iM5DebugFile;
 extern M5DLL_API int g_iM5Debug;
-//-----------------------------------------------------------------------
-// PCube Module Versions ( some function do not work with all versions )
-//-----------------------------------------------------------------------
-#define ELECTRONIC_VERSION2_MIN 2518
-#define ELECTRONIC_VERSION2_MAX 2999
-#define ELECTRONIC_VERSION3_MIN 3518
-#define ELECTRONIC_VERSION3_MAX 3999
 
 //-----------------------------------------------------------------------
 // new PCube Module States

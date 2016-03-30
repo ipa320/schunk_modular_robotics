@@ -1224,26 +1224,12 @@ M5DLL_API int WINAPI PCube_getMaxDeltaPosInc( int iDeviceId, int iModuleId, long
 
 M5DLL_API int WINAPI PCube_getStateDioPos( int iDeviceId, int iModuleId, unsigned long* puiState, unsigned char* pucDio, float* pfPos )
 {	
-	unsigned short version;
-	int iRetVal=0;
-	iRetVal=PCube_getModuleVersion(iDeviceId,iModuleId,&version);
-	if (version> ELECTRONIC_VERSION2_MIN && version< ELECTRONIC_VERSION2_MAX && version> ELECTRONIC_VERSION3_MIN && version< ELECTRONIC_VERSION3_MAX )
-	{
-		if(0 > iDeviceId || iDeviceId >= g_apclDevice.size())
-		      return ERRID_DEV_WRONGDEVICEID;
-		if( g_apclDevice[iDeviceId] == NULL )
-		      return ERRID_DEV_NOTINITIALIZED;
+	if(0 > iDeviceId || iDeviceId >= g_apclDevice.size())
+		return ERRID_DEV_WRONGDEVICEID;
+	if( g_apclDevice[iDeviceId] == NULL )
+		return ERRID_DEV_NOTINITIALIZED;
 
-		iRetVal = g_apclDevice[iDeviceId]->getStateDioPos( iModuleId, puiState, pucDio, pfPos);
-	}
-	else
-	{
-		iRetVal = g_apclDevice[iDeviceId]->getPos(iModuleId, pfPos);
-		iRetVal &= g_apclDevice[iDeviceId]->getStateInternal(iModuleId, puiState);
-		unsigned long puiData;
-		iRetVal &= g_apclDevice[iDeviceId]->getDioData(iModuleId, &puiData);
-		*pucDio=(unsigned char)puiData;
-	}
+	int iRetVal = g_apclDevice[iDeviceId]->getStateDioPos( iModuleId, puiState, pucDio, pfPos);
 	
 	return iRetVal;
 }
