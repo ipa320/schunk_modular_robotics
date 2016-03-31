@@ -73,7 +73,7 @@
 #include <iostream>
 #include <cstdio>
 #include <libpcan/libpcan.h>
-#include "../Device/ProtocolDevice.h"
+#include "ProtocolDevice.h"
 
 //-----------------------------------------------
 

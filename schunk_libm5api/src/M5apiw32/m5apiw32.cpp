@@ -1230,7 +1230,7 @@ M5DLL_API int WINAPI PCube_getStateDioPos( int iDeviceId, int iModuleId, unsigne
 		return ERRID_DEV_NOTINITIALIZED;
 
 	int iRetVal = g_apclDevice[iDeviceId]->getStateDioPos( iModuleId, puiState, pucDio, pfPos);
-	
+
 	return iRetVal;
 }
 
