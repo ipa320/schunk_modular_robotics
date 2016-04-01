@@ -2,8 +2,8 @@
 Changelog for package schunk_powercube_chain
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.7 (2016-04-01)
+------------------
 * Merge pull request `#159 <https://github.com/ipa320/schunk_modular_robotics/issues/159>`_ from mas-group/calibration_fix
   Calibration fix + warning elimination
 * if calibration data is not available, set to 0.0 by default

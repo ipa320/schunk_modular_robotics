@@ -2,8 +2,8 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.7 (2016-04-01)
+------------------
 * do not use the autostart flag for the action sever and start it manually
   to get rid of the race condition warning
 * fix missing add_dependencies

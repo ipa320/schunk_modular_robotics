@@ -2,8 +2,8 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.7 (2016-04-01)
+------------------
 * Update lwa4p.urdf.xacro with joint speed limits.
 * Updated lwa4p urdf with manufacturer's specified joint limits.
 * added schunk_lwa4d_custom macro and changed setting to use_factory_settings to make it easier to add default/DH config
