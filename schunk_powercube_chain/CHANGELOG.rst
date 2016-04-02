@@ -2,6 +2,19 @@
 Changelog for package schunk_powercube_chain
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.7 (2016-04-01)
+------------------
+* Merge pull request `#159 <https://github.com/ipa320/schunk_modular_robotics/issues/159>`_ from mas-group/calibration_fix
+  Calibration fix + warning elimination
+* if calibration data is not available, set to 0.0 by default
+* Repaired "look strange" lines.
+* cout  with endl formatting reverted.
+* Repair auto-formatting according to comments
+* Reformating of whole package in ROS style except OROCOS  files.
+* Support for older Amtec modules. Electronic version 2.
+* fix missing add_dependencies
+* Contributors: Denis Štogl, Felix Messmer, Format Bot, Frederik Hegger, ipa-fxm
+
 0.6.6 (2015-09-01)
 ------------------
 

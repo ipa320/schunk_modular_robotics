@@ -2,6 +2,18 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.7 (2016-04-01)
+------------------
+* Update lwa4p.urdf.xacro with joint speed limits.
+* Updated lwa4p urdf with manufacturer's specified joint limits.
+* added schunk_lwa4d_custom macro and changed setting to use_factory_settings to make it easier to add default/DH config
+* added comment describing invert parameters
+* added axis invert macro and set up parameters for each joint -- defaults to dh convention
+* added 'invert' paramter to lwa4d xacro description, default value matches DH params, -1 matches default hardware configuration
+* fix meshes for lwa4p
+* fix lwa4d urdf - joint orientation according to convention
+* Contributors: Allison Thackston, William McMahan, ipa-fxm, wmcmahan
+
 0.6.6 (2015-09-01)
 ------------------
 

@@ -2,6 +2,21 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.7 (2016-04-01)
+------------------
+* do not use the autostart flag for the action sever and start it manually
+  to get rid of the race condition warning
+* fix missing add_dependencies
+* sdh_only.cpp mostly roslint compatible
+* dsa_only roslint compatible
+* schunk_sdh/ros/src/sdh.cpp less roslint issues
+* Whitespace formatting (C++ files)
+* Fix whitespaces in header files (automatic)
+* Added roslint to CMakeLists and package
+* Format
+* Format according to roscpp style guide, inline with https://github.com/ipa320/setup/blob/master/coding_introduction/CodingIntroduction.md#ros-coding-styles
+* Contributors: Wolfgang Merkt, demo, ipa-fxm
+
 0.6.6 (2015-09-01)
 ------------------
 
