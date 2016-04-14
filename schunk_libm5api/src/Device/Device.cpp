@@ -53,7 +53,7 @@
 #ifdef USE_PCAN
 #include "PCanDevice.h"
 #endif
-#ifdef USE_SCAN
+#ifdef USE_SOCKET_CAN
 #include "SocketCANDevice.h"
 #endif
 #if defined (_WIN32)
@@ -4822,7 +4822,7 @@ CDevice* newDevice(const char* acInitString)
 		return new CPCanDevice();
 	}
 #endif
-#ifdef USE_SCAN
+#ifdef USE_SOCKET_CAN
         if( strcmp( pcToken, "SCAN" ) == 0 )
 	{
 		return new SocketCANDevice();
