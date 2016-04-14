@@ -4823,7 +4823,7 @@ CDevice* newDevice(const char* acInitString)
 	}
 #endif
 #ifdef USE_SOCKET_CAN
-        if( strcmp( pcToken, "SCAN" ) == 0 )
+        if( strcmp( pcToken, "SOCEKTCAN" ) == 0 )
 	{
 		return new SocketCANDevice();
 	}

@@ -332,7 +332,7 @@ int SocketCANDevice::init(const char* acInitString) {
 		m_iErrorState = ERRID_DEV_BADINITSTRING;
 		return m_iErrorState;
 	}
-	if (strcmp(pcToken, "SCAN") != 0) {
+	if (strcmp(pcToken, "SOCKETCAN") != 0) {
 		m_iErrorState = ERRID_DEV_BADINITSTRING;
 		return m_iErrorState;
 	}
