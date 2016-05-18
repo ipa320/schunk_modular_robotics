@@ -20,56 +20,56 @@
      <visual>
           <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}" />
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A0_1.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A0_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/LightGrey" />
     </visual>
     <collision>
           <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}" />
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A0_1.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A0_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
 
     <visual>
           <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}" />
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A0_2.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A0_2.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/LightGrey" />
     </visual>
     <collision>
           <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}" />
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A0_2.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A0_2.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
 
     <visual>
           <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}" />
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A0_3.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A0_3.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/LightGrey" />
     </visual>
     <collision>
           <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}" />
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A0_3.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A0_3.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
 
     <visual>
           <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}" />
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A0_4.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A0_4.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/LightGrey" />
     </visual>
     <collision>
           <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A0_4.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A0_4.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
       </link>
@@ -117,14 +117,14 @@
     <visual>
       <origin rpy="0 0 -1.57079632679" xyz="0 0 -0.2053"/>
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A1.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A1.stl" scale="0.001 0.001 0.001" />
       </geometry>
        <material name="Schunk/Blue" />
     </visual>
     <collision>
       <origin rpy="0 0 -1.57079632679" xyz="0 0 -0.2053"/>
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A1.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
     </link>
@@ -152,14 +152,14 @@
     <visual>
       <origin rpy="0 1.57079632679 0" xyz="-0.2053 0 0"/>
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A2_1.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A2_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/LightGrey" />
     </visual>
     <collision>
       <origin rpy="0 1.57079632679 0" xyz="-0.2053 0 0"/>
      <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A2_1.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A2_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
 
@@ -167,14 +167,14 @@
     <visual>
       <origin rpy="1.57079632679 1.57079632679 0" xyz="0 0.2053 0"/>
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A2_2.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A2_2.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/LightGrey" />
     </visual>
     <collision>
       <origin rpy="1.57079632679 1.57079632679 0" xyz="0 0.2053 0"/>
      <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A2_2.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A2_2.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
 
@@ -183,14 +183,14 @@
     <visual>
       <origin rpy="1.57079632679 1.57079632679 0" xyz="0 0.2053 0"/>
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A2_3.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A2_3.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/LightGrey" />
     </visual>
     <collision>
       <origin rpy="1.57079632679 1.57079632679 0" xyz="0 0.2053 0"/>
      <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A2_3.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A2_3.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
     </link>
@@ -218,14 +218,14 @@
     <visual>
        <origin rpy="0 1.57079632679 -1.57079632679" xyz="0 0.5553 0 "/>      
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A3.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A3.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/Blue" />
     </visual>
     <collision>
        <origin rpy="0 1.57079632679 -1.57079632679" xyz="0 0.5553 0 "/>      
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A3.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A3.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
     </link>
@@ -253,7 +253,7 @@
     <visual>
       <origin rpy="0 3.14159265359 0" xyz="0 0 0.5553"/>      
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A4_1.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A4_1.stl" scale="0.001 0.001 0.001" />
  
       </geometry>
         <material name="Schunk/LightGrey" />
@@ -261,35 +261,35 @@
     <collision>
       <origin rpy="0 3.14159265359 0" xyz="0 0 0.5553"/>    
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A4_1.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A4_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
 
     <visual>
       <origin rpy="0 3.14159265359 -1.57079632679" xyz="0 0 0.5553"/>      
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A4_2.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A4_2.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/LightGrey" />
     </visual>
     <collision>
       <origin rpy="0 3.14159265359 -1.57079632679" xyz="0 0 0"/>    
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A4_2.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A4_2.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
 
     <visual>
       <origin rpy="0 3.14159265359 -1.57079632679" xyz="0 0 0.5553"/>      
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A4_3.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A4_3.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/LightGrey" />
     </visual>
     <collision>
       <origin rpy="0 3.14159265359 -1.57079632679" xyz="0 0 0.5553"/>    
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A4_3.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A4_3.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
     </link>
@@ -317,14 +317,14 @@
     <visual>
        <origin rpy="0 1.57079632679 -1.57079632679" xyz="0 0.8602 0"/>      
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A5.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A5.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/Blue" />
     </visual>
     <collision>
        <origin rpy="0 1.57079632679 -1.57079632679" xyz="0 0.8602 0"/>      
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A5.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A5.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
     </link>
@@ -352,42 +352,42 @@
     <visual>
       <origin rpy="0 3.14159265359 0" xyz="0 0 0.8602"/>
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A6_1.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A6_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/LightGrey" />
     </visual>
     <collision>
       <origin rpy="0 3.14159265359 0" xyz="0 0 0.8602"/>
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A6_1.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A6_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
 
     <visual>
       <origin rpy="0 3.14159265359 0" xyz="0 0 0.8602"/>
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A6_2.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A6_2.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/LightGrey" />
     </visual>
     <collision>
       <origin rpy="0 3.14159265359 0" xyz="0 0 0.8602"/>
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A6_2.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A6_2.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
 
     <visual>
       <origin rpy="0 3.14159265359 0" xyz="0 0 0.8602"/>
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A6_3.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A6_3.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/LightGrey" />
     </visual>
     <collision>
       <origin rpy="0 3.14159265359 0" xyz="0 0 0.8602"/>
       <geometry>
-        <mesh filename="package://industrial_kuka_ros/robot_description/meshes/LWA4P/A6_3.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://schunk_description/meshes/lwa4p/A6_3.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
     </link>
