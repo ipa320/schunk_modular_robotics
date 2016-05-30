@@ -563,7 +563,7 @@ int CPCanDevice::init(const char* acInitString)
 {
 	InitializeCriticalSection(&m_csDevice);
 	int iRetVal = 0;
-	m_uiTimeOut =6;
+	m_uiTimeOut = 100;
         m_iNoOfRetries = 10;
 	char* pcToken;
 	char acString[128];
