@@ -1248,7 +1248,7 @@ bool PowerCubeCtrl::doHoming()
     if ((m_ModuleTypes.at(i) == "PW") || (m_ModuleTypes.at(i) == "other"))
     {
       pthread_mutex_lock(&m_mutex);
-      ret = PCube_getStateDioPos(m_DeviceHandle, m_params->GetModuleID(i), &state, &dio, &position);
+      ret = getPositionAndStatus(i, &state, &dio, &position);
       pthread_mutex_unlock(&m_mutex);
 
       if (ret != 0)
