@@ -400,6 +400,135 @@ bool PowerCubeCtrl::Close()
   }
 }
 
+/*!
+ * \brief Move joints with calculated velocities and reach synchronously final position
+ *
+ * \param velocities Vector
+ */
+bool PowerCubeCtrl::MoveJointSpaceSync(const std::vector<double>& target_pos)
+{
+  PCTRL_CHECK_INITIALIZED();
+
+  unsigned int DOF = m_params->GetDOF();
+  std::vector<int> ModulIDs = m_params->GetModuleIDs();
+
+  std::vector<double> m_maxVel = m_params->GetMaxVel();
+  std::vector<double> m_maxAcc = m_params->GetMaxAcc();
+
+  std::cout << "Starting MoveJointSpaceSync(Jointd Angle) ... " << std::endl;
+
+  // Questions about method: Felix.Geibel@gmx.de
+  std::vector<double> acc(DOF);
+  std::vector<double> vel(DOF);
+  std::vector<double> posnow(DOF);
+  std::vector<double> velnow(DOF);
+  double TG = 0;
+
+  try
+  {
+    // Calcute the joint which need longest time to the goal
+    if (!getJointAngles(posnow))
+    {
+      return false;
+    }
+
+    if (!getJointVelocities(velnow))
+    {
+      return false;
+    }
+
+    std::vector<double> times(DOF);
+    for (int i = 0; i < DOF; i++)
+    {
+      RampCommand rm(posnow[i], velnow[i], target_pos[i], m_maxAcc[i], m_maxVel[i]);
+      times[i] = rm.getTotalTime();
+    }
+
+    // determine the joint index that has the greates value for time
+    int furthest = 0;
+    double max = times[0];
+    for (int i = 1; i < DOF; i++)
+    {
+      if (times[i] > max)
+      {
+        max = times[i];
+        furthest = i;
+      }
+    }
+
+    RampCommand rm_furthest(posnow[furthest], velnow[furthest], target_pos[furthest], m_maxAcc[furthest], m_maxVel[furthest]);
+
+    double T1 = rm_furthest.T1();
+    double T2 = rm_furthest.T2();
+    double T3 = rm_furthest.T3();
+    // Sum of times:
+    TG = T1 + T2 + T3;
+
+    acc[furthest] = m_maxAcc[furthest];     //maximal acceleration for furthest
+    vel[furthest] = m_maxVel[furthest];     //maximal speed for furthest
+
+    for (int i = 0; i < DOF; i++)
+    {
+      if (i != furthest)
+      {
+        double a;
+        double v;
+        // a und v berechnen:
+        RampCommand::calculateAV(           //TODO Berechnungsfehler! In dieser Methode wird die Geschw. und Beschl. falsch berechnet!
+          posnow[i],
+          velnow[i],
+          target_pos[i],
+          TG, T3,
+          m_maxAcc[i],
+          m_maxVel[i],
+          a,
+          v);
+
+        acc[i] = a;
+        vel[i] = v;
+        //              printf("i_a: %f \n", acc[i]);
+        //              printf("i_v: %f \n", vel[i]);
+      }
+    }
+  }
+  catch (...)
+  {
+    return false;
+  }
+
+  // Send motion commands to hardware
+  std::ostringstream errorMsg;
+  int ret = 0;
+  bool ok = true;
+
+  //PCube_setDeviceDebug(m_Dev, 1, 2, -1);
+  for (int i = 0; i < DOF; i++)
+  {
+    if (fabs(posnow[i] - target_pos[i]) > 1e-3)
+    {
+      double v = fabs(vel[i]);
+      double a = fabs(acc[i]);
+      ret = PCube_moveRamp(m_DeviceHandle, ModulIDs[i], target_pos[i], v, a);
+      if (ret != 0)
+      {
+        errorMsg << "Module " << ModulIDs[i] << " PCube_moveRamp returned " << ret << std::endl;
+        m_ErrorMessage = errorMsg.str();
+        ok = false;
+      }
+    }
+  }
+
+  ret = PCube_startMotionAll(m_DeviceHandle);
+  if (ret != 0)
+  {
+    errorMsg << "PCube_startMotionAll returned " << ret << std::endl;
+    m_ErrorMessage = errorMsg.str();
+    ok = false;
+  }
+
+  return ok;
+}
+
 /*
  * \brief Move joints with calculated velocities
  *
@@ -1182,6 +1311,62 @@ std::vector<double> PowerCubeCtrl::getAccelerations()
 {
   /// ToDo: calculate new accelerations before returning
   return m_accelerations;
+}
+
+/*!
+ * \brief Gets the current joint angles from device
+ */
+bool PowerCubeCtrl::getJointAngles(std::vector<double>& result)
+{
+  PCTRL_CHECK_INITIALIZED();
+
+  std::vector<int> ModulIDs = m_params->GetModuleIDs();
+
+  int ret = 0;
+  float pos;
+
+  for (int i = 0; i < m_params->GetDOF(); i++)
+  {
+    pthread_mutex_lock(&m_mutex);
+    ret = PCube_getPos(m_DeviceHandle, ModulIDs[i], &pos);
+    pthread_mutex_unlock(&m_mutex);
+    if (ret != 0)
+    {
+      std::cout << "PCubeCtrl::getConfig(): getPos(" << ModulIDs[i] << ") return " << ret << std::endl;
+      return false;
+    }
+    result[i] = pos;
+  }
+
+  return true;
+}
+
+/*!
+ * \brief Gets the current joint angular velocities from device
+ */
+bool PowerCubeCtrl::getJointVelocities(std::vector<double>& result)
+{
+  PCTRL_CHECK_INITIALIZED();
+
+  std::vector<int> ModulIDs = m_params->GetModuleIDs();
+
+  int ret = 0;
+  float vel;
+
+  for (int i = 0; i < m_params->GetDOF(); i++)
+  {
+    pthread_mutex_lock(&m_mutex);
+    ret = PCube_getVel(m_DeviceHandle, ModulIDs[i], &vel);
+    pthread_mutex_unlock(&m_mutex);
+    if (ret != 0)
+    {
+      std::cout << "PCubeCtrl::getConfig(): getVel(" << ModulIDs[i] << ") return " << ret << std::endl;
+      return false;
+    }
+    result[i] = vel;
+  }
+
+  return true;
 }
 
 /*!
