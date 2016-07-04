@@ -134,7 +134,7 @@
       <origin xyz="0 0 0" rpy="${-M_PI/2} 0 0"/>
       <parent link="${name}_1_link"/>
       <child link="${name}_2_link"/>
-      <axis xyz="0 0 1"/>
+      <axis xyz="0 0 -1"/>
       <limit effort="370" velocity="1.26" lower="${-2.967 + safety_offset}" upper="${2.967 - safety_offset}"/>
       <!--safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-2.09 + 0.01}" soft_upper_limit="${2.09 - 0.01}" /-->
     </joint>
@@ -235,7 +235,7 @@
       <origin xyz="0 0 0" rpy="${-M_PI/2} 0 0" />
       <parent link="${name}_3_link"/>
       <child link="${name}_4_link"/>
-      <axis xyz="0 0 1" />
+      <axis xyz="0 0 -1" />
       <limit effort="176" velocity="1.26" lower="${-2.967 + safety_offset}" upper="${2.967 - safety_offset}"/>
       <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.09 + 0.01}" soft_upper_limit="${2.09 - 0.01}" /-->
     </joint>
@@ -334,7 +334,7 @@
       <origin xyz="0 0 0" rpy="${-M_PI/2} 0 0" />
       <parent link="${name}_5_link"/>
       <child link="${name}_6_link"/>
-      <axis xyz="0 0 1" />
+      <axis xyz="0 0 -1" />
       <limit effort="20.1" velocity="1.26" lower="${-2.967 + safety_offset}" upper="${2.967 - safety_offset}" />
       <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.09 + 0.01}" soft_upper_limit="${2.09 - 0.01}" /-->
     </joint>
