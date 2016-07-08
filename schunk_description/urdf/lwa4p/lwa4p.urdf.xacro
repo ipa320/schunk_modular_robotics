@@ -392,17 +392,17 @@
     </collision>
     </link>
 
- <!-- flange -->
-    <joint name="${name}_7_joint" type="fixed">
+    <!-- flange -->
+    <joint name="${name}_tool_joint" type="fixed">
       <origin xyz="0 0 -0.0751" rpy="${M_PI} 0 0" />
       <parent link="${name}_6_link"/>
-      <child link="${name}_7_link"/>
+      <child link="${name}_tool_link"/>
       <axis xyz="0 0 1" />
       <limit effort="20.1" velocity="1.26" lower="${-2.967 + safety_offset}" upper="${2.967 - safety_offset}" />
       <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.09 + 0.01}" soft_upper_limit="${2.09 - 0.01}" /-->
     </joint>
 
-    <link name="${name}_7_link">
+    <link name="${name}_tool_link">
       <xacro:default_inertial/>
 <!--
       <inertial>
