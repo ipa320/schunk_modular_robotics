@@ -28,6 +28,7 @@ material Schunk/DarkGrey
 
 material Schunk/Black
 {
+    receive_shadows on
 	technique
 	{
 		pass
@@ -52,6 +53,7 @@ material Schunk/DarkGolden
 
 material Schunk/Blue
 {
+    receive_shadows on
 	technique
 	{
 		pass
@@ -60,4 +62,17 @@ material Schunk/Blue
 			diffuse 0.1 0.1 0.1 1
 		}
 	}
+}
+
+material Schunk/DarkBlue
+{
+    receive_shadows on
+    technique
+    {
+        pass
+        {
+            ambient 0.1 0.0 0.5 1.0
+            diffuse 0.1 0.1 0.1 1
+        }
+    }
 }

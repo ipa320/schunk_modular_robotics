@@ -20,5 +20,9 @@
   <material name="Schunk/Blue">
     <color rgba="0.0 0.0 0.8 1.0"/>
   </material>
+  
+  <material name="Schunk/DarkBlue">
+      <color rgba="0.05 0.0 0.4 1.0"/>
+  </material>
 
 </robot>
