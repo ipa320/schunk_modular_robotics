@@ -115,14 +115,14 @@
 -->
 
     <visual>
-      <origin rpy="0 0 -1.57079632679" xyz="0 0 -0.2053"/>
+      <origin rpy="0 0 ${-M_PI/2}" xyz="0 0 -0.2053"/>
       <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A1.stl" scale="0.001 0.001 0.001" />
       </geometry>
        <material name="Schunk/DarkGrey" />
     </visual>
     <collision>
-      <origin rpy="0 0 -1.57079632679" xyz="0 0 -0.2053"/>
+      <origin rpy="0 0 ${-M_PI/2}" xyz="0 0 -0.2053"/>
       <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A1.stl" scale="0.001 0.001 0.001" />
       </geometry>
@@ -150,14 +150,14 @@
 -->
 
     <visual>
-      <origin rpy="0 1.57079632679 0" xyz="-0.2053 0 0"/>
+      <origin rpy="0 ${M_PI/2} 0" xyz="-0.2053 0 0"/>
       <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A2_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/DarkBlue" />
     </visual>
     <collision>
-      <origin rpy="0 1.57079632679 0" xyz="-0.2053 0 0"/>
+      <origin rpy="0 ${M_PI/2} 0" xyz="-0.2053 0 0"/>
      <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A2_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
@@ -165,14 +165,14 @@
 
 
     <visual>
-      <origin rpy="1.57079632679 1.57079632679 0" xyz="0 0.2053 0"/>
+      <origin rpy="${M_PI/2} ${M_PI/2} 0" xyz="0 0.2053 0"/>
       <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A2_2.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/DarkBlue" />
     </visual>
     <collision>
-      <origin rpy="1.57079632679 1.57079632679 0" xyz="0 0.2053 0"/>
+      <origin rpy="${M_PI/2} ${M_PI/2} 0" xyz="0 0.2053 0"/>
      <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A2_2.stl" scale="0.001 0.001 0.001" />
       </geometry>
@@ -181,14 +181,14 @@
 
 
     <visual>
-      <origin rpy="1.57079632679 1.57079632679 0" xyz="0 0.2053 0"/>
+      <origin rpy="${M_PI/2} ${M_PI/2} 0" xyz="0 0.2053 0"/>
       <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A2_3.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/DarkBlue" />
     </visual>
     <collision>
-      <origin rpy="1.57079632679 1.57079632679 0" xyz="0 0.2053 0"/>
+      <origin rpy="${M_PI/2} ${M_PI/2} 0" xyz="0 0.2053 0"/>
      <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A2_3.stl" scale="0.001 0.001 0.001" />
       </geometry>
@@ -216,14 +216,14 @@
 -->
 
     <visual>
-       <origin rpy="0 1.57079632679 -1.57079632679" xyz="0 0.5553 0 "/>      
+       <origin rpy="0 ${M_PI/2} ${-M_PI/2}" xyz="0 0.5553 0 "/>
       <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A3.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/DarkGrey" />
     </visual>
     <collision>
-       <origin rpy="0 1.57079632679 -1.57079632679" xyz="0 0.5553 0 "/>      
+       <origin rpy="0 ${M_PI/2} ${-M_PI/2}" xyz="0 0.5553 0 "/>
       <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A3.stl" scale="0.001 0.001 0.001" />
       </geometry>
@@ -251,43 +251,43 @@
 -->
 
     <visual>
-      <origin rpy="0 ${M_PI} 0" xyz="0 0 0.5553"/>      
+      <origin rpy="0 ${M_PI} 0" xyz="0 0 0.5553"/>
       <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A4_1.stl" scale="0.001 0.001 0.001" />
- 
+
       </geometry>
         <material name="Schunk/DarkBlue" />
     </visual>
     <collision>
-      <origin rpy="0 ${M_PI} 0" xyz="0 0 0.5553"/>    
+      <origin rpy="0 ${M_PI} 0" xyz="0 0 0.5553"/>
       <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A4_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
 
     <visual>
-      <origin rpy="0 ${M_PI} -1.57079632679" xyz="0 0 0.5553"/>      
+      <origin rpy="0 ${M_PI} ${-M_PI/2}" xyz="0 0 0.5553"/>
       <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A4_2.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/DarkBlue" />
     </visual>
     <collision>
-      <origin rpy="0 ${M_PI} -1.57079632679" xyz="0 0 0"/>    
+      <origin rpy="0 ${M_PI} ${-M_PI/2}" xyz="0 0 0"/>
       <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A4_2.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
 
     <visual>
-      <origin rpy="0 ${M_PI} -1.57079632679" xyz="0 0 0.5553"/>      
+      <origin rpy="0 ${M_PI} ${-M_PI/2}" xyz="0 0 0.5553"/>
       <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A4_3.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/DarkBlue" />
     </visual>
     <collision>
-      <origin rpy="0 ${M_PI} -1.57079632679" xyz="0 0 0.5553"/>    
+      <origin rpy="0 ${M_PI} ${-M_PI/2}" xyz="0 0 0.5553"/>
       <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A4_3.stl" scale="0.001 0.001 0.001" />
       </geometry>
@@ -315,14 +315,14 @@
 -->
 
     <visual>
-       <origin rpy="0 1.57079632679 -1.57079632679" xyz="0 0.8602 0"/>      
+       <origin rpy="0 ${M_PI/2} ${-M_PI/2}" xyz="0 0.8602 0"/>
       <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A5.stl" scale="0.001 0.001 0.001" />
       </geometry>
         <material name="Schunk/DarkGrey" />
     </visual>
     <collision>
-       <origin rpy="0 1.57079632679 -1.57079632679" xyz="0 0.8602 0"/>      
+       <origin rpy="0 ${M_PI/2} ${-M_PI/2}" xyz="0 0.8602 0"/>
       <geometry>
         <mesh filename="package://schunk_description/meshes/lwa4p/A5.stl" scale="0.001 0.001 0.001" />
       </geometry>
