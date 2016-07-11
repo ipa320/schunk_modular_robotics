@@ -14,64 +14,65 @@
         <parent link="${parent}"/>
         <child link="${name}_podest_link"/>
       </joint>
+
       <link name="${name}_podest_link">
         <xacro:default_inertial/>
 
-     <visual>
+        <visual>
           <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}" />
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A0_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-        <material name="Schunk/DarkGrey" />
-    </visual>
-    <collision>
+          <geometry>
+            <mesh filename="package://schunk_description/meshes/lwa4p/A0_1.stl" scale="0.001 0.001 0.001" />
+          </geometry>
+          <material name="Schunk/DarkGrey" />
+        </visual>
+        <collision>
           <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}" />
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A0_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
+          <geometry>
+            <mesh filename="package://schunk_description/meshes/lwa4p/A0_1.stl" scale="0.001 0.001 0.001" />
+          </geometry>
+        </collision>
 
-    <visual>
+        <visual>
           <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}" />
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A0_2.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-        <material name="Schunk/DarkGrey" />
-    </visual>
-    <collision>
+          <geometry>
+            <mesh filename="package://schunk_description/meshes/lwa4p/A0_2.stl" scale="0.001 0.001 0.001" />
+          </geometry>
+          <material name="Schunk/DarkGrey" />
+        </visual>
+        <collision>
           <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}" />
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A0_2.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
+          <geometry>
+            <mesh filename="package://schunk_description/meshes/lwa4p/A0_2.stl" scale="0.001 0.001 0.001" />
+          </geometry>
+        </collision>
 
-    <visual>
+        <visual>
           <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}" />
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A0_3.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-        <material name="Schunk/DarkGrey" />
-    </visual>
-    <collision>
-          <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}" />
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A0_3.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
+          <geometry>
+            <mesh filename="package://schunk_description/meshes/lwa4p/A0_3.stl" scale="0.001 0.001 0.001" />
+          </geometry>
+            <material name="Schunk/DarkGrey" />
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}" />
+            <geometry>
+              <mesh filename="package://schunk_description/meshes/lwa4p/A0_3.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
 
-    <visual>
+        <visual>
           <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}" />
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A0_4.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-        <material name="Schunk/DarkGrey" />
-    </visual>
-    <collision>
+          <geometry>
+            <mesh filename="package://schunk_description/meshes/lwa4p/A0_4.stl" scale="0.001 0.001 0.001" />
+          </geometry>
+          <material name="Schunk/DarkGrey" />
+        </visual>
+        <collision>
           <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A0_4.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
+          <geometry>
+            <mesh filename="package://schunk_description/meshes/lwa4p/A0_4.stl" scale="0.001 0.001 0.001" />
+          </geometry>
+        </collision>
       </link>
 
       <joint name="${name}_base_joint" type="fixed">
@@ -79,6 +80,7 @@
         <parent link="${name}_podest_link"/>
         <child link="${name}_base_link"/>
       </joint>
+
     </xacro:if>
 
     <xacro:unless value="${has_podest}">
@@ -113,20 +115,19 @@
         <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
       </inertial>
 -->
-
-    <visual>
-      <origin rpy="0 0 ${-M_PI/2}" xyz="0 0 -0.2053"/>
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-       <material name="Schunk/DarkGrey" />
-    </visual>
-    <collision>
-      <origin rpy="0 0 ${-M_PI/2}" xyz="0 0 -0.2053"/>
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
+      <visual>
+        <origin xyz="0 0 -0.2053" rpy="0 0 ${-M_PI/2}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A1.stl" scale="0.001 0.001 0.001" />
+        </geometry>
+        <material name="Schunk/DarkGrey" />
+      </visual>
+      <collision>
+        <origin xyz="0 0 -0.2053" rpy="0 0 ${-M_PI/2}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A1.stl" scale="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
     </link>
 
     <!-- joint between arm_1_link and arm_2_link -->
@@ -148,51 +149,47 @@
         <inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.03" />
       </inertial>
 -->
-
-    <visual>
-      <origin rpy="0 ${M_PI/2} 0" xyz="-0.2053 0 0"/>
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A2_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
+      <visual>
+        <origin xyz="-0.2053 0 0" rpy="0 ${M_PI/2} 0"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A2_1.stl" scale="0.001 0.001 0.001" />
+        </geometry>
         <material name="Schunk/DarkBlue" />
-    </visual>
-    <collision>
-      <origin rpy="0 ${M_PI/2} 0" xyz="-0.2053 0 0"/>
-     <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A2_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
+      </visual>
+      <collision>
+        <origin xyz="-0.2053 0 0" rpy="0 ${M_PI/2} 0"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A2_1.stl" scale="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
 
-
-    <visual>
-      <origin rpy="${M_PI/2} ${M_PI/2} 0" xyz="0 0.2053 0"/>
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A2_2.stl" scale="0.001 0.001 0.001" />
-      </geometry>
+      <visual>
+        <origin xyz="0 0.2053 0" rpy="${M_PI/2} ${M_PI/2} 0"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A2_2.stl" scale="0.001 0.001 0.001" />
+        </geometry>
         <material name="Schunk/DarkBlue" />
-    </visual>
-    <collision>
-      <origin rpy="${M_PI/2} ${M_PI/2} 0" xyz="0 0.2053 0"/>
-     <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A2_2.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
+      </visual>
+      <collision>
+        <origin xyz="0 0.2053 0" rpy="${M_PI/2} ${M_PI/2} 0"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A2_2.stl" scale="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
 
-
-
-    <visual>
-      <origin rpy="${M_PI/2} ${M_PI/2} 0" xyz="0 0.2053 0"/>
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A2_3.stl" scale="0.001 0.001 0.001" />
-      </geometry>
+      <visual>
+        <origin xyz="0 0.2053 0" rpy="${M_PI/2} ${M_PI/2} 0"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A2_3.stl" scale="0.001 0.001 0.001" />
+        </geometry>
         <material name="Schunk/DarkBlue" />
-    </visual>
-    <collision>
-      <origin rpy="${M_PI/2} ${M_PI/2} 0" xyz="0 0.2053 0"/>
-     <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A2_3.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
+      </visual>
+      <collision>
+        <origin xyz="0 0.2053 0" rpy="${M_PI/2} ${M_PI/2} 0"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A2_3.stl" scale="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
     </link>
 
     <!-- joint between arm_2_link and arm_3_link -->
@@ -214,20 +211,19 @@
         <inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.03" />
       </inertial>
 -->
-
-    <visual>
-       <origin rpy="0 ${M_PI/2} ${-M_PI/2}" xyz="0 0.5553 0 "/>
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A3.stl" scale="0.001 0.001 0.001" />
-      </geometry>
+      <visual>
+        <origin xyz="0 0.5553 0" rpy="0 ${M_PI/2} ${-M_PI/2}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A3.stl" scale="0.001 0.001 0.001" />
+        </geometry>
         <material name="Schunk/DarkGrey" />
-    </visual>
-    <collision>
-       <origin rpy="0 ${M_PI/2} ${-M_PI/2}" xyz="0 0.5553 0 "/>
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A3.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
+      </visual>
+      <collision>
+        <origin xyz="0 0.5553 0" rpy="0 ${M_PI/2} ${-M_PI/2}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A3.stl" scale="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
     </link>
 
     <!-- joint between arm_3_link and arm_4_link -->
@@ -249,49 +245,47 @@
         <inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.03" />
       </inertial>
 -->
-
-    <visual>
-      <origin rpy="0 ${M_PI} 0" xyz="0 0 0.5553"/>
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A4_1.stl" scale="0.001 0.001 0.001" />
-
-      </geometry>
+      <visual>
+        <origin xyz="0 0 0.5553" rpy="0 ${M_PI} 0"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A4_1.stl" scale="0.001 0.001 0.001" />
+        </geometry>
         <material name="Schunk/DarkBlue" />
-    </visual>
-    <collision>
-      <origin rpy="0 ${M_PI} 0" xyz="0 0 0.5553"/>
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A4_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.5553" rpy="0 ${M_PI} 0"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A4_1.stl" scale="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
 
-    <visual>
-      <origin rpy="0 ${M_PI} ${-M_PI/2}" xyz="0 0 0.5553"/>
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A4_2.stl" scale="0.001 0.001 0.001" />
-      </geometry>
+      <visual>
+        <origin xyz="0 0 0.5553" rpy="0 ${M_PI} ${-M_PI/2}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A4_2.stl" scale="0.001 0.001 0.001" />
+        </geometry>
         <material name="Schunk/DarkBlue" />
-    </visual>
-    <collision>
-      <origin rpy="0 ${M_PI} ${-M_PI/2}" xyz="0 0 0"/>
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A4_2.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 ${M_PI} ${-M_PI/2}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A4_2.stl" scale="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
 
-    <visual>
-      <origin rpy="0 ${M_PI} ${-M_PI/2}" xyz="0 0 0.5553"/>
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A4_3.stl" scale="0.001 0.001 0.001" />
-      </geometry>
+      <visual>
+        <origin xyz="0 0 0.5553" rpy="0 ${M_PI} ${-M_PI/2}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A4_3.stl" scale="0.001 0.001 0.001" />
+        </geometry>
         <material name="Schunk/DarkBlue" />
-    </visual>
-    <collision>
-      <origin rpy="0 ${M_PI} ${-M_PI/2}" xyz="0 0 0.5553"/>
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A4_3.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.5553" rpy="0 ${M_PI} ${-M_PI/2}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A4_3.stl" scale="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
     </link>
 
     <!-- joint between arm_4_link and arm_5_link -->
@@ -313,20 +307,19 @@
         <inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.03" />
       </inertial>
 -->
-
-    <visual>
-       <origin rpy="0 ${M_PI/2} ${-M_PI/2}" xyz="0 0.8602 0"/>
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A5.stl" scale="0.001 0.001 0.001" />
-      </geometry>
+      <visual>
+        <origin xyz="0 0.8602 0" rpy="0 ${M_PI/2} ${-M_PI/2}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A5.stl" scale="0.001 0.001 0.001" />
+        </geometry>
         <material name="Schunk/DarkGrey" />
-    </visual>
-    <collision>
-       <origin rpy="0 ${M_PI/2} ${-M_PI/2}" xyz="0 0.8602 0"/>
-      <geometry>
-        <mesh filename="package://schunk_description/meshes/lwa4p/A5.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
+      </visual>
+      <collision>
+        <origin xyz="0 0.8602 0" rpy="0 ${M_PI/2} ${-M_PI/2}"/>
+        <geometry>
+          <mesh filename="package://schunk_description/meshes/lwa4p/A5.stl" scale="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
     </link>
 
     <!-- joint between arm_5_link and arm_6_link -->
@@ -348,35 +341,33 @@
         <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
       </inertial>
 -->
-
-        <visual>
-        <origin rpy="0 ${M_PI} 0" xyz="0 0 0.8602"/>
+      <visual>
+        <origin xyz="0 0 0.8602" rpy="0 ${M_PI} 0"/>
         <geometry>
-            <mesh filename="package://schunk_description/meshes/lwa4p/A6_1.stl" scale="0.001 0.001 0.001" />
+          <mesh filename="package://schunk_description/meshes/lwa4p/A6_1.stl" scale="0.001 0.001 0.001" />
         </geometry>
         <material name="Schunk/DarkGrey" />
-        </visual>
-        <collision>
-        <origin rpy="0 ${M_PI} 0" xyz="0 0 0.8602"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.8602" rpy="0 ${M_PI} 0"/>
         <geometry>
-            <mesh filename="package://schunk_description/meshes/lwa4p/A6_1.stl" scale="0.001 0.001 0.001" />
+          <mesh filename="package://schunk_description/meshes/lwa4p/A6_1.stl" scale="0.001 0.001 0.001" />
         </geometry>
-        </collision>
+      </collision>
 
-        <visual>
-        <origin rpy="0 ${M_PI} 0" xyz="0 0 0.8602"/>
+      <visual>
+        <origin xyz="0 0 0.8602" rpy="0 ${M_PI} 0"/>
         <geometry>
-            <mesh filename="package://schunk_description/meshes/lwa4p/A6_2.stl" scale="0.001 0.001 0.001" />
+          <mesh filename="package://schunk_description/meshes/lwa4p/A6_2.stl" scale="0.001 0.001 0.001" />
         </geometry>
         <material name="Schunk/Black" />
-        </visual>
-        <collision>
-        <origin rpy="0 ${M_PI} 0" xyz="0 0 0.8602"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.8602" rpy="0 ${M_PI} 0"/>
         <geometry>
-            <mesh filename="package://schunk_description/meshes/lwa4p/A6_2.stl" scale="0.001 0.001 0.001" />
+          <mesh filename="package://schunk_description/meshes/lwa4p/A6_2.stl" scale="0.001 0.001 0.001" />
         </geometry>
-        </collision>
-
+      </collision>
     </link>
 
     <!-- flange -->
@@ -389,7 +380,6 @@
     <link name="${name}_tool_link">
       <xacro:default_inertial/>
     </link>
-
 
     <!-- extensions -->
     <xacro:schunk_lwa4p_gazebo name="${name}" />
