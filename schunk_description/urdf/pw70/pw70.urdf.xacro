@@ -16,17 +16,17 @@
 
       <link name="${name}_link">
         <xacro:default_inertial/>
-	<visual>
+        <visual>
           <origin xyz="0 0 0.07" rpy="0 0 0" />
           <geometry>
             <mesh filename="package://schunk_description/meshes/pw70/pw70_square_holder.stl" />
           </geometry>
-        </visual>        
-<!--        <collision>
+        </visual>
+        <collision>
           <geometry>
             <mesh filename="package://schunk_description/meshes/pw70/pw70_square_holder.stl" />
           </geometry>
-        </collision>  -->
+        </collision>
       </link>
 
       <joint name="${name}_tilt_joint" type="revolute" >
@@ -45,12 +45,12 @@
           <geometry>
             <mesh filename="package://schunk_description/meshes/pw70/pw70_body.stl" />
           </geometry>
-        </visual>        
-<!--        <collision>
+        </visual>
+        <collision>
           <geometry>
             <mesh filename="package://schunk_description/meshes/pw70/pw70_body.stl" />
           </geometry>
-        </collision>-->
+        </collision>
       </link>
 
       <joint name="${name}_pan_joint" type="revolute" >
@@ -69,12 +69,12 @@
           <geometry>
             <mesh filename="package://schunk_description/meshes/pw70/pw70_round_holder.stl" />
           </geometry>
-        </visual>      
-<!--        <collision>
+        </visual>
+        <collision>
           <geometry>
             <mesh filename="package://schunk_description/meshes/pw70/pw70_round_holder.stl" />
           </geometry>
-        </collision>-->
+        </collision>
       </link>
 
       <joint name="${name}_tool_joint" type="fixed" >
@@ -84,7 +84,7 @@
       </joint>
 
       <link name="${name}_tool_link">
-        <xacro:default_inertial/>      
+        <xacro:default_inertial/>
       </link>
     </xacro:unless>
 
@@ -95,7 +95,7 @@
         <parent link="${parent}" />
         <child link="${name}_link" />
       </joint>
-                                                          
+
       <link name="${name}_link">
         <xacro:default_inertial/>
         <visual>
@@ -104,11 +104,11 @@
             <mesh filename="package://schunk_description/meshes/pw70/pw70_round_holder.stl" />
           </geometry>
         </visual>
-<!--        <collision>
+        <collision>
           <geometry>
             <mesh filename="package://schunk_description/meshes/pw70/pw70_round_holder.stl" />
           </geometry>
-        </collision>-->
+        </collision>
       </link>
 
       <joint name="${name}_pan_joint" type="revolute" >
@@ -127,12 +127,12 @@
           <geometry>
             <mesh filename="package://schunk_description/meshes/pw70/pw70_body.stl" />
           </geometry>
-        </visual>       
-<!--        <collision>
+        </visual>
+        <collision>
           <geometry>
             <mesh filename="package://schunk_description/meshes/pw70/pw70_body.stl"/>
           </geometry>
-        </collision>   -->   
+        </collision>
       </link>
 
       <joint name="${name}_tilt_joint" type="revolute" >
@@ -151,12 +151,12 @@
           <geometry>
             <mesh filename="package://schunk_description/meshes/pw70/pw70_square_holder.stl" />
           </geometry>
-        </visual>      
-        <!--<collision>
+        </visual>
+        <collision>
           <geometry>
             <mesh filename="package://schunk_description/meshes/pw70/pw70_square_holder.stl" />
           </geometry>
-        </collision>    -->
+        </collision>
       </link>
 
       <joint name="${name}_tool_joint" type="fixed" >
