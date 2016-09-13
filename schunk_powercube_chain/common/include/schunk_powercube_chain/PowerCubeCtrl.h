@@ -245,6 +245,16 @@ public:
    * \brief Gets the current accelerations
    */
   std::vector<double> getAccelerations();
+  
+  /*!
+   * @brief get the current joint angles
+   */
+  bool getJointAngles(std::vector<double>& result);
+
+  /*!
+   * @brief get the current joint velocities (Rad/s)
+   */
+  bool getJointVelocities(std::vector<double>& result);
 
   /*!
    * \brief Waits until all Modules are homed.
