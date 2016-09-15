@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+  <xacro:include filename="$(find schunk_description)/urdf/common.xacro" />
   <xacro:include filename="$(find schunk_description)/urdf/lwa/lwa.gazebo.xacro" />
   <xacro:include filename="$(find schunk_description)/urdf/lwa/lwa.transmission.xacro" />
 
