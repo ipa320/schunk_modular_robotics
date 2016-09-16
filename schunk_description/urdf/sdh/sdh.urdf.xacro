@@ -26,7 +26,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/sdh/palm.stl"/>
+          <mesh filename="package://schunk_description/meshes/sdh/palm_collision.stl"/>
         </geometry>
       </collision>
     </link>
@@ -100,7 +100,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-        <mesh filename="package://schunk_description/meshes/sdh/knuckle.stl"/>
+        <mesh filename="package://schunk_description/meshes/sdh/knuckle_collision.stl"/>
         </geometry>
       </collision>
     </link>
@@ -184,7 +184,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/sdh/knuckle.stl"/>
+          <mesh filename="package://schunk_description/meshes/sdh/knuckle_collision.stl"/>
         </geometry>
       </collision>
     </link>
@@ -263,7 +263,7 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/sdh/knuckle.stl"/>
+          <mesh filename="package://schunk_description/meshes/sdh/knuckle_collision.stl"/>
         </geometry>
       </collision>
     </link>
