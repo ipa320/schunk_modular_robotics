@@ -15,7 +15,11 @@
     </joint>
 
     <link name="${name}_palm_link">
-      <xacro:default_inertial/>
+      <inertial>
+        <mass value="1.0288" /><!-- density 1652.3 kg/m3 adjusted to have final total mass of 1.95 -->
+        <origin xyz="0 0 0.0386" />
+        <inertia ixx="0.0011896" ixy="0.0" ixz="0.0" iyy="0.0011889" iyz="0.0" izz="0.0015636" />
+      </inertial>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -89,7 +93,11 @@
     </joint>
 
     <link name="${name}_finger_11_link">
-      <xacro:default_inertial/>
+      <inertial>
+        <mass value="0.047" /> <!-- density of aluminum -->
+        <origin xyz="0.0 2.2105e-03 1.2155e-02" />
+        <inertia ixx="1.5889e-05" ixy="0.0" ixz="0.0" iyy="6.9350e-06" iyz="-4.7500e-07" izz="1.4915e-05" />
+      </inertial>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -116,7 +124,11 @@
     </joint>
 
     <link name="${name}_finger_12_link">
-      <xacro:default_inertial/>
+      <inertial>
+        <mass value="0.167" /> <!-- density of aluminum -->
+        <origin xyz="0.0007467 -0.0000378 0.0430192" />
+        <inertia ixx="1.5920e-04" ixy="0.0" ixz="-2.3750e-08" iyy="1.5903e-04" iyz="9.3100e-06" izz="1.9142e-05" />
+      </inertial>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -144,7 +156,11 @@
     </joint>
 
     <link name="${name}_finger_13_link">
-      <xacro:default_inertial/>
+      <inertial>
+        <mass value="0.0929" /> <!-- density of aluminum -->
+        <origin xyz="0.0007467 -0.0000378 0.0430192" />
+        <inertia ixx="4.2323e-05" ixy="1.9000e-07" ixz="-5.2250e-07" iyy="3.9734e-05" iyz="5.7950e-06" izz="1.1210e-05" />
+      </inertial>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -173,7 +189,11 @@
     </joint>
 
     <link name="${name}_finger_21_link">
-      <xacro:default_inertial/>
+      <inertial>
+        <mass value="0.047" /> <!-- density of aluminum -->
+        <origin xyz="0.0 2.2105e-03 1.2155e-02" />
+        <inertia ixx="1.5889e-05" ixy="0.0" ixz="0.0" iyy="6.9350e-06" iyz="-4.7500e-07" izz="1.4915e-05" />
+      </inertial>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -200,7 +220,11 @@
     </joint>
 
     <link name="${name}_finger_22_link">
-      <xacro:default_inertial/>
+      <inertial>
+        <mass value="0.167" /> <!-- density of aluminum -->
+        <origin xyz="0.0007467 -0.0000378 0.0430192" />
+        <inertia ixx="1.5920e-04" ixy="0.0" ixz="-2.3750e-08" iyy="1.5903e-04" iyz="9.3100e-06" izz="1.9142e-05" />
+      </inertial>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -227,7 +251,11 @@
     </joint>
 
     <link name="${name}_finger_23_link">
-      <xacro:default_inertial/>
+      <inertial>
+        <mass value="0.0929" /> <!-- density of aluminum -->
+        <origin xyz="0.0007467 -0.0000378 0.0430192" />
+        <inertia ixx="4.2323e-05" ixy="1.9000e-07" ixz="-5.2250e-07" iyy="3.9734e-05" iyz="5.7950e-06" izz="1.1210e-05" />
+      </inertial>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -252,7 +280,11 @@
     </joint>
 
     <link name="${name}_thumb_1_link">
-      <xacro:default_inertial/>
+      <inertial>
+        <mass value="0.047" /> <!-- density of aluminum -->
+        <origin xyz="0.0 2.2105e-03 1.2155e-02" />
+        <inertia ixx="1.5889e-05" ixy="0.0" ixz="0.0" iyy="6.9350e-06" iyz="-4.7500e-07" izz="1.4915e-05" />
+      </inertial>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -279,7 +311,11 @@
     </joint>
 
     <link name="${name}_thumb_2_link">
-      <xacro:default_inertial/>
+      <inertial>
+        <mass value="0.167" /> <!-- density of aluminum -->
+        <origin xyz="0.0007467 -0.0000378 0.0430192" />
+        <inertia ixx="1.5920e-04" ixy="0.0" ixz="-2.3750e-08" iyy="1.5903e-04" iyz="9.3100e-06" izz="1.9142e-05" />
+      </inertial>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -306,7 +342,11 @@
     </joint>
 
     <link name="${name}_thumb_3_link">
-      <xacro:default_inertial/>
+      <inertial>
+        <mass value="0.0929" /> <!-- density of aluminum -->
+        <origin xyz="0.0007467 -0.0000378 0.0430192" />
+        <inertia ixx="4.2323e-05" ixy="1.9000e-07" ixz="-5.2250e-07" iyy="3.9734e-05" iyz="5.7950e-06" izz="1.1210e-05" />
+      </inertial>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
