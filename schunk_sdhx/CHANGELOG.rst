@@ -19,6 +19,22 @@ Changelog for package schunk_sdhx
 * review dependencies
 * Contributors: ipa-fxm
 
+Forthcoming
+-----------
+* 0.6.7
+* update changelog
+* 0.6.6
+* update changelog
+* 0.6.5
+* update changelog
+* 0.6.4
+* update changelog
+* migration to package format 2
+* remove trailing whitespaces
+* sort dependencies
+* review dependencies
+* Contributors: ipa-fxm
+
 0.6.3 (2015-06-17)
 ------------------
 * missing import
