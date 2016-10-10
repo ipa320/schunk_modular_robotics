@@ -19,8 +19,8 @@ Changelog for package schunk_sdhx
 * review dependencies
 * Contributors: ipa-fxm
 
-Forthcoming
------------
+0.6.8 (2016-10-10)
+------------------
 * 0.6.7
 * update changelog
 * 0.6.6

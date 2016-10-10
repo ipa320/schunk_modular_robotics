@@ -31,8 +31,8 @@ Changelog for package schunk_powercube_chain
 * review dependencies
 * Contributors: ipa-fxm
 
-Forthcoming
------------
+0.6.8 (2016-10-10)
+------------------
 * Position control
 * Merge pull request `#163 <https://github.com/ipa320/schunk_modular_robotics/issues/163>`_ from iirob/socketCAN
   SocketCAN

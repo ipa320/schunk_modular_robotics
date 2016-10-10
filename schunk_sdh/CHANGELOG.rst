@@ -33,8 +33,8 @@ Changelog for package schunk_sdh
 * review dependencies
 * Contributors: ipa-fxm
 
-Forthcoming
------------
+0.6.8 (2016-10-10)
+------------------
 * 0.6.7
 * update changelog
 * do not use the autostart flag for the action sever and start it manually

@@ -29,8 +29,8 @@ Changelog for package schunk_description
 * review dependencies
 * Contributors: ipa-fxm
 
-Forthcoming
------------
+0.6.8 (2016-10-10)
+------------------
 * Enabled collison
 * pw70 working
 * 0.6.7

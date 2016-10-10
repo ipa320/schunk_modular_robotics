@@ -24,8 +24,8 @@ Changelog for package schunk_libm5api
 * review dependencies
 * Contributors: ipa-fxm
 
-Forthcoming
------------
+0.6.8 (2016-10-10)
+------------------
 * Set longer timeout for PCan device
 * added USE_SOCKET_CAN and pcToken SocketCAN
 * use pctoken SocketCAN
