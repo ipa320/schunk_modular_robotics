@@ -33,7 +33,7 @@
         izz="${0.0833333 * mass * (x*x + y*y)}" />
     </inertial>
   </xacro:macro>
-  
+
   <xacro:macro name="default_inertial">
     <inertial>
       <mass value="0.01" />

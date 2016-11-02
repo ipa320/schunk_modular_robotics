@@ -11,7 +11,7 @@ MODULES = $(TARGET) $(LIBMODULES)
 LIBS = orocos-rtt-gnulinux
 CFLAGS =-DOROCOS_TARGET=gnulinux -D__LINUX__ #needed for m5apiw32
 LFLAGS =
-INCPATH += common/include/ orocos/include/ 
+INCPATH += common/include/ orocos/include/
 LIBPATH += common/lib/ orocos/lib/
 
 CXXFLAGS =  -D__LINUX__ -Wall -Wno-deprecated $(INCPATH:%=-I%) $(CFLAGS)
@@ -29,7 +29,7 @@ all: $(TARGETLIB)
 # rule for building static library
 $(TARGETLIB): $(LIBOBJS)
 	@echo "LL shared $@"
-	#ar -rcs lib$(TARGETLIB).a $(LIBADD) $^ 
+	#ar -rcs lib$(TARGETLIB).a $(LIBADD) $^
 	g++ -fPIC -shared -o  lib$(TARGETLIB).so  $(LDFLAGS) $^
 	#ln -fs $(CURDIR)/lib$(TARGETLIB).a $(LIBROOT)/lib$(TARGETLIB).a
 	#ln -fs $(CURDIR)/lib$(TARGETLIB).so $(LIBROOT)/lib$(TARGETLIB).so

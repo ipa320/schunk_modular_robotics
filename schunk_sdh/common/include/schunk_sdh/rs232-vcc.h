@@ -60,9 +60,9 @@ NAMESPACE_SDH_START
 class VCC_EXPORT cRS232Exception: public cSerialBaseException
 {
 public:
-    cRS232Exception( cMsg const & _msg )
-    : cSerialBaseException( "cRS232Exception", _msg )
-    {}
+  cRS232Exception(cMsg const & _msg)
+    : cSerialBaseException("cRS232Exception", _msg)
+  {}
 };
 
 /*!
@@ -72,71 +72,76 @@ class VCC_EXPORT cRS232 : public cSerialBase
 {
 private:
 #ifndef RS_232_TEST
-    HANDLE       _hCOM;
+  HANDLE       _hCOM;
 #endif
 #if SDH_RS232_VCC_ASYNC
-    OVERLAPPED   o;
+  OVERLAPPED   o;
 #endif
-    COMMTIMEOUTS comm_timeouts;
-    long         read_timeout_us; // for caching the read timeout in ms
+  COMMTIMEOUTS comm_timeouts;
+  long         read_timeout_us; // for caching the read timeout in ms
 
 protected:
-    //! the RS232 port number to use (port 0 is COM1)
-    int port;
+  //! the RS232 port number to use (port 0 is COM1)
+  int port;
 
-    //! the baudrate in bit/s
-    unsigned long baudrate;
+  //! the baudrate in bit/s
+  unsigned long baudrate;
 
 
 public:
-    /*!
-    * Constructor: constructs an object to communicate with an %SDH via RS232
+  /*!
+  * Constructor: constructs an object to communicate with an %SDH via RS232
 
-    * \param _port     - rs232 device number: 0='COM1'='/dev/ttyS0', 1='COM2'='/dev/ttyS1', ...
-    * \param _baudrate - the baudrate in bit/s
-    * \param _timeout  - the timeout in seconds
-    * \param _device_format_string - ignored for this VCC version
-    */
-    cRS232( int _port, unsigned long _baudrate, double _timeout, char const* _device_format_string = "" );
-    ~cRS232(void);
+  * \param _port     - rs232 device number: 0='COM1'='/dev/ttyS0', 1='COM2'='/dev/ttyS1', ...
+  * \param _baudrate - the baudrate in bit/s
+  * \param _timeout  - the timeout in seconds
+  * \param _device_format_string - ignored for this VCC version
+  */
+  cRS232(int _port, unsigned long _baudrate, double _timeout, char const* _device_format_string = "");
+  ~cRS232(void);
 
-    void Open( void )
-    throw (cRS232Exception*);
-    void Close( void )
-    throw (cRS232Exception*);
+  void Open(void)
+  throw (cRS232Exception*);
+  void Close(void)
+  throw (cRS232Exception*);
 
-    virtual void SetTimeout( double _timeout )
-        throw (cSerialBaseException*);
+  virtual void SetTimeout(double _timeout)
+  throw (cSerialBaseException*);
 
 #ifndef RS_232_TEST
-    bool IsOpen()
-    throw()
-    { return _hCOM != NULL; }
+  bool IsOpen()
+  throw()
+  {
+    return _hCOM != NULL;
+  }
 #else
-    bool IsOpen() { return true; }
+  bool IsOpen()
+  {
+    return true;
+  }
 #endif
-    int write( char const *ptr, int len=0 )
-    throw (cRS232Exception*);
+  int write(char const *ptr, int len = 0)
+  throw (cRS232Exception*);
 
-    /*!
-    * Read data from device. This function waits until \a max_time_us us passed or
-    * the expected number of bytes are received via serial line.
-    * if (\a return_on_less_data is true (default value), the number of bytes
-    * that have been received are returned and the data is stored in \a data
-    * If the \a return_on_less_data is false, data is only read from serial line, if at least
-    * \a size bytes are available.
-    */
-    ssize_t Read( void *data, ssize_t size, long timeout_us, bool return_on_less_data )
-    throw (cRS232Exception*);
+  /*!
+  * Read data from device. This function waits until \a max_time_us us passed or
+  * the expected number of bytes are received via serial line.
+  * if (\a return_on_less_data is true (default value), the number of bytes
+  * that have been received are returned and the data is stored in \a data
+  * If the \a return_on_less_data is false, data is only read from serial line, if at least
+  * \a size bytes are available.
+  */
+  ssize_t Read(void *data, ssize_t size, long timeout_us, bool return_on_less_data)
+  throw (cRS232Exception*);
 
-    char* readline(char* line, int size, char* eol, bool return_on_less_data)
-    throw (cRS232Exception*);
+  char* readline(char* line, int size, char* eol, bool return_on_less_data)
+  throw (cRS232Exception*);
 
-    //! overloaded from cSerialBase::UseCRC16 since we want to use a CRC16 to protect binary RS232 communication
-    virtual bool UseCRC16()
-    {
-        return true;
-    }
+  //! overloaded from cSerialBase::UseCRC16 since we want to use a CRC16 to protect binary RS232 communication
+  virtual bool UseCRC16()
+  {
+    return true;
+  }
 };
 
 NAMESPACE_SDH_END

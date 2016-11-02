@@ -22,27 +22,21 @@
         <geometry>
           <mesh filename="package://schunk_description/meshes/pg70/pg70.dae" />
         </geometry>
-        <material name="blue">
-          <color rgba="0 0 1 1"/>
-        </material>
       </visual>
       <collision>
         <geometry>
-          <mesh filename="package://schunk_description/meshes/pg70/pg70.dae" />
+          <mesh filename="package://schunk_description/meshes/pg70/pg70.stl" />
         </geometry>
-        <material name="blue">
-          <color rgba="0 0 1 1"/>
-        </material>
       </collision>
     </link>
 
 
     <joint name="${name}_finger_left_joint" type="prismatic" >
+      <origin xyz="0 0 0.0789" rpy="0 0 0"/>
       <parent link="${name}_palm_link" />
       <child link="${name}_finger_left_link" />
-      <limit effort="100" lower="-0.001" upper="0.061" velocity="2.0"/>
-      <origin xyz="0 0 0.0789" rpy="0 0 0"/>
       <axis xyz="0 1 0" />
+      <limit effort="10" lower="-0.001" upper="0.061" velocity="2.0"/>
     </joint>
 
     <link name="${name}_finger_left_link">
@@ -71,12 +65,12 @@
 
 
     <joint name="${name}_finger_right_joint" type="prismatic" >
-      <mimic joint="${name}_finger_left_joint" multiplier="1" offset="0"/>
+      <origin xyz="0 0 0.0789" rpy="-0 0 0"/>
       <parent link="${name}_palm_link" />
       <child link="${name}_finger_right_link" />
-      <limit effort="100" lower="-0.001" upper="0.061" velocity="2.0"/>
-      <origin xyz="0 0 0.0789" rpy="-0 0 0"/>
       <axis xyz="0 -1 0" />
+      <mimic joint="${name}_finger_left_joint" multiplier="1" offset="0"/>
+      <limit effort="10" lower="-0.001" upper="0.061" velocity="2.0"/>
     </joint>
 
     <link name="${name}_finger_right_link">

@@ -85,99 +85,99 @@ class VCC_EXPORT cSimpleTime
 {
 protected:
 #if SDH_USE_VCC
-    struct _timeb timebuffer;
+  struct _timeb timebuffer;
 #else
-    struct timeval a_time;
+  struct timeval a_time;
 #endif
 
 public:
-    //! Constructor: store current time ("now") internally.
-    cSimpleTime()
-    {
-        StoreNow();
-    }
-    //----------------------------------------------------------------------
+  //! Constructor: store current time ("now") internally.
+  cSimpleTime()
+  {
+    StoreNow();
+  }
+  //----------------------------------------------------------------------
 
 
-    //! Store current time internally.
-    void StoreNow( void )
-    {
+  //! Store current time internally.
+  void StoreNow(void)
+  {
 #if SDH_USE_VCC
-         _ftime64_s( &timebuffer );
+    _ftime64_s(&timebuffer);
 
 #else
-         gettimeofday( &a_time, NULL );
+    gettimeofday(&a_time, NULL);
 #endif
-    }
-    //----------------------------------------------------------------------
+  }
+  //----------------------------------------------------------------------
 
-    //! Return time in seconds elapsed between the time stored in the object and now.
-    double Elapsed( void ) const
-    {
-        cSimpleTime now;
+  //! Return time in seconds elapsed between the time stored in the object and now.
+  double Elapsed(void) const
+  {
+    cSimpleTime now;
 
-        return Elapsed( now );
-    }
-    //----------------------------------------------------------------------
+    return Elapsed(now);
+  }
+  //----------------------------------------------------------------------
 
 
-    //! Return time in micro seconds elapsed between the time stored in the object and now.
-    long Elapsed_us( void ) const
-    {
-        cSimpleTime now;
+  //! Return time in micro seconds elapsed between the time stored in the object and now.
+  long Elapsed_us(void) const
+  {
+    cSimpleTime now;
 
-        return Elapsed_us( now );
-    }
-    //----------------------------------------------------------------------
+    return Elapsed_us(now);
+  }
+  //----------------------------------------------------------------------
 
 
 #if SDH_USE_VCC
-    //! Return time in seconds elapsed between the time stored in the object and \a other.
-    double Elapsed( cSimpleTime const& other ) const
-    {
-        double seconds = double( other.timebuffer.time - timebuffer.time);
-        double msec = double( other.timebuffer.millitm - timebuffer.millitm );
+  //! Return time in seconds elapsed between the time stored in the object and \a other.
+  double Elapsed(cSimpleTime const& other) const
+  {
+    double seconds = double(other.timebuffer.time - timebuffer.time);
+    double msec = double(other.timebuffer.millitm - timebuffer.millitm);
 
-        return seconds + msec / 1000.0;
-    }
-    //----------------------------------------------------------------------
+    return seconds + msec / 1000.0;
+  }
+  //----------------------------------------------------------------------
 
-    //! Return time in micro seconds elapsed between the time stored in the object and \a other.
-    long Elapsed_us( cSimpleTime const& other ) const
-    {
-        long seconds = long( other.timebuffer.time - timebuffer.time);
-        long msec    = long( other.timebuffer.millitm - timebuffer.millitm );
+  //! Return time in micro seconds elapsed between the time stored in the object and \a other.
+  long Elapsed_us(cSimpleTime const& other) const
+  {
+    long seconds = long(other.timebuffer.time - timebuffer.time);
+    long msec    = long(other.timebuffer.millitm - timebuffer.millitm);
 
-        return seconds * 1000000 + msec * 1000;
-    }
-    //----------------------------------------------------------------------
+    return seconds * 1000000 + msec * 1000;
+  }
+  //----------------------------------------------------------------------
 #else
-    //! Return time in seconds elapsed between the time stored in the object and \a other.
-    double Elapsed( cSimpleTime const& other ) const
-    {
-        double seconds = double( other.a_time.tv_sec - a_time.tv_sec );
-        double usec = double( other.a_time.tv_usec - a_time.tv_usec );
+  //! Return time in seconds elapsed between the time stored in the object and \a other.
+  double Elapsed(cSimpleTime const& other) const
+  {
+    double seconds = double(other.a_time.tv_sec - a_time.tv_sec);
+    double usec = double(other.a_time.tv_usec - a_time.tv_usec);
 
-        return seconds + usec / 1000000.0;
-    }
-    //----------------------------------------------------------------------
+    return seconds + usec / 1000000.0;
+  }
+  //----------------------------------------------------------------------
 
-    //! Return time in micro seconds elapsed between the time stored in the object and \a other.
-    long Elapsed_us( cSimpleTime const& other ) const
-    {
-        long seconds = other.a_time.tv_sec - a_time.tv_sec;
-        long usec    = other.a_time.tv_usec - a_time.tv_usec;
+  //! Return time in micro seconds elapsed between the time stored in the object and \a other.
+  long Elapsed_us(cSimpleTime const& other) const
+  {
+    long seconds = other.a_time.tv_sec - a_time.tv_sec;
+    long usec    = other.a_time.tv_usec - a_time.tv_usec;
 
-        return seconds * 1000000 + usec;
-    }
-    //----------------------------------------------------------------------
+    return seconds * 1000000 + usec;
+  }
+  //----------------------------------------------------------------------
 
 
-    //! Return the time stored as C struct timeval
-    timeval Timeval( void )
-    {
-        return a_time;
-    }
+  //! Return the time stored as C struct timeval
+  timeval Timeval(void)
+  {
+    return a_time;
+  }
 #endif
 };
 

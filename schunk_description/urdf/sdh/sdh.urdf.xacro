@@ -29,7 +29,7 @@
         </geometry>
       </collision>
     </link>
-    
+
     <!-- grasp link -->
     <joint name="${name}_grasp_joint" type="fixed" >
       <origin xyz="0 0 0.15" rpy="0 0 0"/>
@@ -133,7 +133,7 @@
 
     <!-- joint between sdh_finger_12_link and sdh_finger_13_link -->
     <joint name="${name}_finger_13_joint" type="revolute">
-       
+
       <origin xyz="0 0 0.0865" rpy="0 0 0" />
       <parent link="${name}_finger_12_link"/>
       <child link="${name}_finger_13_link"/>
@@ -320,7 +320,7 @@
         </geometry>
       </collision>
     </link>
-  
+
     <!-- extensions -->
     <xacro:schunk_sdh_gazebo name="${name}" />
     <xacro:schunk_sdh_transmission name="${name}" />

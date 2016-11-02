@@ -58,7 +58,7 @@ typedef unsigned __int32 UInt32;      //!< unsigned integer, size 4 Byte (32 Bit
 // using the typenames from stdint.h should work even on 64-Bit systems...
 #include <stdint.h>
 typedef int8_t           Int8;        //!< signed integer, size 1 Byte (8 Bit)
-typedef uint8_t          UInt8;	      //!< unsigned integer, size 1 Byte (8 Bit)
+typedef uint8_t          UInt8;       //!< unsigned integer, size 1 Byte (8 Bit)
 typedef int16_t          Int16;       //!< signed integer, size 2 Byte (16 Bit)
 typedef uint16_t         UInt16;      //!< unsigned integer, size 2 Byte (16 Bit)
 typedef int32_t          Int32;       //!< signed integer, size 4 Byte (32 Bit)

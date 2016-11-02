@@ -2,6 +2,25 @@
 Changelog for package schunk_modular_robotics
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.7 (2016-04-01)
+------------------
+
+0.6.6 (2015-09-01)
+------------------
+
+0.6.5 (2015-08-31)
+------------------
+
+0.6.4 (2015-08-25)
+------------------
+* migration to package format 2
+* remove trailing whitespaces
+* review dependencies
+* Contributors: ipa-fxm
+
+0.6.3 (2015-06-17)
+------------------
+
 0.6.2 (2014-12-15)
 ------------------
 * Merge branch 'indigo_dev' into indigo_release_candidate

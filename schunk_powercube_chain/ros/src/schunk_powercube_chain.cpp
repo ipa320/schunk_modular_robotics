@@ -92,7 +92,6 @@
  */
 class PowerCubeChainNode
 {
-
 public:
   /// create a handle for this node, initialize node
   ros::NodeHandle n_;
@@ -115,10 +114,10 @@ public:
   ros::ServiceServer srvServer_Recover_;
 
   /// handle for powercube_chain
-  PowerCubeCtrl* pc_ctrl_;
+  PowerCubeCtrl *pc_ctrl_;
 
   /// handle for powercube_chain parameters
-  PowerCubeCtrlParams* pc_params_;
+  PowerCubeCtrlParams *pc_params_;
 
   /// member variables
   bool initialized_;
@@ -127,7 +126,7 @@ public:
   std::string error_msg_;
   ros::Time last_publish_time_;
 
-  ///Constructor
+  /// Constructor
   PowerCubeChainNode()
   {
     n_private_ = ros::NodeHandle("~");
@@ -136,8 +135,8 @@ public:
     pc_ctrl_ = new PowerCubeCtrl(pc_params_);
 
     /// implementation of topics to publish
-    topicPub_JointState_ = n_.advertise<sensor_msgs::JointState> ("joint_states", 1);
-    topicPub_ControllerState_ = n_.advertise<control_msgs::JointTrajectoryControllerState> ("joint_trajectory_controller/state", 1);
+    topicPub_JointState_ = n_.advertise<sensor_msgs::JointState>("joint_states", 1);
+    topicPub_ControllerState_ =  n_.advertise<control_msgs::JointTrajectoryControllerState>("joint_trajectory_controller/state", 1);
     topicPub_Diagnostic_ = n_.advertise<diagnostic_msgs::DiagnosticArray>("diagnostics", 1);
 
     /// implementation of topics to subscribe
@@ -149,7 +148,7 @@ public:
     srvServer_Stop_ = n_.advertiseService("driver/stop", &PowerCubeChainNode::srvCallback_Stop, this);
     srvServer_Recover_ = n_.advertiseService("driver/recover", &PowerCubeChainNode::srvCallback_Recover, this);
     srvServer_SetOperationMode_ = n_.advertiseService("driver/set_operation_mode", &PowerCubeChainNode::srvCallback_SetOperationMode, this);
-    topicPub_OperationMode_ = n_.advertise<std_msgs::String> ("driver/current_operationmode", 1);
+    topicPub_OperationMode_ = n_.advertise<std_msgs::String>("driver/current_operationmode", 1);
 
     initialized_ = false;
     stopped_ = true;
@@ -374,7 +373,10 @@ public:
     std::vector<double> Offsets(DOF);
     for (unsigned int i = 0; i < DOF; i++)
     {
-      Offsets[i] = model.getJoint(JointNames[i].c_str())->calibration->rising.get()[0];
+      if(model.getJoint(JointNames[i].c_str())->calibration == NULL)
+        Offsets[i] = 0.0;
+      else
+        Offsets[i] = model.getJoint(JointNames[i].c_str())->calibration->rising.get()[0];
     }
 
     /// Set parameters
@@ -392,7 +394,43 @@ public:
    */
   void topicCallback_CommandPos(const std_msgs::Float64MultiArray::ConstPtr& msg)
   {
-    ROS_WARN("Received new position command. Skipping command: Position commands currently not implemented");
+    ROS_DEBUG("Received new position command");
+    if (!initialized_)
+    {
+      ROS_WARN("Skipping command: powercubes not initialized");
+      publishState();
+      return;
+    }
+
+    if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK)
+    {
+      publishState();
+      return;
+    }
+
+    PowerCubeCtrl::PC_CTRL_STATUS status;
+    std::vector<std::string> errorMessages;
+    pc_ctrl_->getStatus(status, errorMessages);
+
+    /// check dimensions
+    if (msg->data.size() != pc_params_->GetDOF())
+    {
+      ROS_ERROR("Skipping command: Commanded positionss and DOF are not same dimension.");
+      return;
+    }
+
+    /// command positions to powercubes
+    if (!pc_ctrl_->MoveJointSpaceSync(msg->data))
+    {
+      error_ = true;
+      error_msg_ = pc_ctrl_->getErrorMessage();
+      ROS_ERROR("Skipping command: %s", pc_ctrl_->getErrorMessage().c_str());
+      return;
+    }
+
+    ROS_DEBUG("Executed position command");
+
+    publishState();
   }
 
   /*!
@@ -401,23 +439,22 @@ public:
    * Set the current velocity target.
    * \param msg Float64MultiArray
    */
-  void topicCallback_CommandVel(const std_msgs::Float64MultiArray::ConstPtr& msg)
+  void topicCallback_CommandVel(const std_msgs::Float64MultiArray::ConstPtr &msg)
   {
     ROS_DEBUG("Received new velocity command");
     if (!initialized_)
-    {  
+    {
       ROS_WARN("Skipping command: powercubes not initialized");
       publishState(false);
-      return; 
+      return;
     }
-    
+
     if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK)
     {
       publishState(false);
-      return; 
+      return;
     }
 
- 
     PowerCubeCtrl::PC_CTRL_STATUS status;
     std::vector<std::string> errorMessages;
     pc_ctrl_->getStatus(status, errorMessages);
@@ -430,18 +467,18 @@ public:
       ROS_ERROR("Skipping command: Commanded velocities and DOF are not same dimension.");
       return;
     }
-    
+
     /// command velocities to powercubes
     if (!pc_ctrl_->MoveVel(msg->data))
     {
-       error_ = true;
+      error_ = true;
       error_msg_ = pc_ctrl_->getErrorMessage();
-      ROS_ERROR("Skipping command: %s",pc_ctrl_->getErrorMessage().c_str());
+      ROS_ERROR("Skipping command: %s", pc_ctrl_->getErrorMessage().c_str());
       return;
     }
 
     ROS_DEBUG("Executed velocity command");
-   
+
     publishState(false);
   }
 
@@ -480,7 +517,7 @@ public:
     {
       res.success = true;
       res.message = "powercubes already initialized";
-      ROS_WARN("...initializing powercubes not successful. error: %s",res.message.c_str());
+      ROS_WARN("...initializing powercubes not successful. error: %s", res.message.c_str());
     }
 
     return true;
@@ -546,31 +583,31 @@ public:
     {
       res.success = false;
       res.message = "powercubes not initialized";
-      ROS_ERROR("...recovering powercubes not successful. error: %s",res.message.c_str());
+      ROS_ERROR("...recovering powercubes not successful. error: %s", res.message.c_str());
     }
 
     return true;
   }
 
-   /*!
-   * \brief Executes the service callback for SetOperationMode.
-   *
-   * Sets the driver to different operation modes. Currently only operation_mode=velocity is supported.
-   * \param req Service request
-   * \param res Service response
-   */
+  /*!
+  * \brief Executes the service callback for SetOperationMode.
+  *
+  * Sets the driver to different operation modes. Currently only operation_mode=velocity is supported.
+  * \param req Service request
+  * \param res Service response
+  */
   bool srvCallback_SetOperationMode(cob_srvs::SetString::Request &req, cob_srvs::SetString::Response &res)
   {
-  if(req.data != "velocity")
-  {
-    ROS_WARN("Powercube chain currently only supports velocity commands");
-    res.success = false;
-  }
-  else
-  {
-    res.success = true;
-  }
-  return true;
+    if (req.data != "velocity")
+    {
+      ROS_WARN("Powercube chain currently only supports velocity commands");
+      res.success = false;
+    }
+    else
+    {
+      res.success = true;
+    }
+    return true;
   }
 
   /*!
@@ -579,14 +616,16 @@ public:
    * Published to "/joint_states" as "sensor_msgs/JointState"
    * Published to "state" as "control_msgs/JointTrajectoryControllerState"
    */
-  void publishState(bool update=true)
+  void publishState(bool update = true)
   {
     if (initialized_)
     {
       ROS_DEBUG("publish state");
 
-      if(update)
-      {pc_ctrl_->updateStates();}
+      if (update)
+      {
+        pc_ctrl_->updateStates();
+      }
 
       sensor_msgs::JointState joint_state_msg;
       joint_state_msg.header.stamp = ros::Time::now();
@@ -611,59 +650,61 @@ public:
       topicPub_OperationMode_.publish(opmode_msg);
 
       last_publish_time_ = joint_state_msg.header.stamp;
-
     }
 
     // check status of PowerCube chain
-    if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK) { error_ = true; }
-  
-    // check status of PowerCube chain 
-    if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK) 
-    {   
+    if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK)
+    {
       error_ = true;
-    } 
-    else 
+    }
+
+    // check status of PowerCube chain
+    if (pc_ctrl_->getPC_Status() != PowerCubeCtrl::PC_CTRL_OK)
+    {
+      error_ = true;
+    }
+    else
     {
       error_ = false;
-    } 
+    }
 
     // publishing diagnotic messages
     diagnostic_msgs::DiagnosticArray diagnostics;
     diagnostics.status.resize(1);
 
     // set data to diagnostics
-    if(error_)
+    if (error_)
     {
       diagnostics.status[0].level = 2;
-      diagnostics.status[0].name = n_.getNamespace();;
-      diagnostics.status[0].message =  pc_ctrl_->getErrorMessage();
+      diagnostics.status[0].name = n_.getNamespace();
+      diagnostics.status[0].message = pc_ctrl_->getErrorMessage();
     }
     else
     {
       if (initialized_)
       {
         diagnostics.status[0].level = 0;
-        diagnostics.status[0].name = n_.getNamespace(); //"schunk_powercube_chain";
+        diagnostics.status[0].name = n_.getNamespace();  //"schunk_powercube_chain";
         diagnostics.status[0].message = "powercubechain initialized and running";
       }
       else
       {
         diagnostics.status[0].level = 1;
-        diagnostics.status[0].name = n_.getNamespace(); //"schunk_powercube_chain";
+        diagnostics.status[0].name = n_.getNamespace();  //"schunk_powercube_chain";
         diagnostics.status[0].message = "powercubechain not initialized";
       }
     }
     // publish diagnostic message
     topicPub_Diagnostic_.publish(diagnostics);
   }
-}; //PowerCubeChainNode
+};  // PowerCubeChainNode
 
 /*!
  * \brief Main loop of ROS node.
  *
  * Running with a specific frequency defined by loop_rate.
  */
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   /// initialize ROS, specify name of node
   ros::init(argc, argv, "powercube_chain");
@@ -678,12 +719,12 @@ int main(int argc, char** argv)
   if (pc_node.n_private_.hasParam("frequency"))
   {
     pc_node.n_private_.getParam("frequency", frequency);
-    //frequency of driver has to be much higher then controller frequency
+    // frequency of driver has to be much higher then controller frequency
   }
   else
   {
-    //frequency of driver has to be much higher then controller frequency
-    frequency = 10; //Hz
+    // frequency of driver has to be much higher then controller frequency
+    frequency = 10;  // Hz
     ROS_WARN("Parameter 'frequency' not available, setting to default value: %f Hz", frequency);
   }
 
@@ -700,14 +741,14 @@ int main(int argc, char** argv)
     return 0;
   }
 
-  if((1.0/min_publish_duration.toSec()) > frequency)
+  if ((1.0 / min_publish_duration.toSec()) > frequency)
   {
     ROS_ERROR("min_publish_duration has to be longer then delta_t of controller frequency!");
     return 0;
   }
 
   /// main loop
-  ros::Rate loop_rate(frequency); // Hz
+  ros::Rate loop_rate(frequency);  // Hz
   while (pc_node.n_.ok())
   {
     if ((ros::Time::now() - pc_node.last_publish_time_) >= min_publish_duration)
@@ -722,3 +763,5 @@ int main(int argc, char** argv)
 
   return 0;
 }
+
+

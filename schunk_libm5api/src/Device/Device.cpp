@@ -45,7 +45,6 @@
  * 
  ******************************************************************************/
 
-
 #include "Device.h"
 #include "RS232Device.h"
 #ifdef USE_ESD
@@ -53,6 +52,9 @@
 #endif
 #ifdef USE_PCAN
 #include "PCanDevice.h"
+#endif
+#ifdef USE_SOCKET_CAN
+#include "SocketCANDevice.h"
 #endif
 #if defined (_WIN32)
 	#include "CP5X11Device.h"
@@ -4797,7 +4799,6 @@ CDevice* newDevice(const char* acInitString)
 {
 	char* pcToken;
 	char acString[128];
-
 	strncpy(acString,acInitString,128);
 	pcToken = strtok( acString, ":" );
 	if( !pcToken )
@@ -4805,21 +4806,26 @@ CDevice* newDevice(const char* acInitString)
                 printf("CDevice* newDevice(const char* acInitString): wrong format, no ':' found!\n");
 		return NULL;
         }
-
 	if( strcmp( pcToken, "RS232" ) == 0 )
 	{
 		return new CRS232Device();
 	}
+#ifdef USE_ESD
+	if( strcmp( pcToken, "ESD" ) == 0 )
+	{
+		return new CESDDevice();
+	}
+#endif
 #ifdef USE_PCAN
 	if( strcmp( pcToken, "PCAN" ) == 0 )
 	{
 		return new CPCanDevice();
 	}
 #endif
-#ifdef USE_ESD
-	if( strcmp( pcToken, "ESD" ) == 0 )
+#ifdef USE_SOCKET_CAN
+        if( strcmp( pcToken, "SOCKETCAN" ) == 0 )
 	{
-		return new CESDDevice();
+		return new SocketCANDevice();
 	}
 #endif
 #if defined(_WIN32)	

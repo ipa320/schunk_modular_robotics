@@ -7,19 +7,19 @@
 
 		<!-- The number of patches on the tactile sensor along the direction of the finger -->
 		<param name="cells_y" value="14" />
-		
+
 		<!-- The change of output in one patch per Newton -->
 		<param name="sensitivity" value="350" />
-		
+
 		<!-- The maximum output value of one patch -->
 		<param name="output_range" value="3500.0" />
-		
+
 		<!-- Length of the moving average filter which smoothes simulation output -->
 		<param name="filter_length" value="10" />
-		
+
 		<!-- Remap the output topic -->
 		<remap from="tactile_data" to="/dsa_controller/tactile_data" />
-		
+
 		<!-- Remap the bumper subscriptions to the simulation -->
 		<remap from="finger_12/state" to="/sdh_finger_12_bumper" />
 		<remap from="finger_13/state" to="/sdh_finger_13_bumper" />

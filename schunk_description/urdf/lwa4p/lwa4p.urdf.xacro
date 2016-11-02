@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
   <property name="safety_offset" value="0.02"/>
-  
+
   <xacro:include filename="$(find schunk_description)/urdf/lwa4p/lwa4p.gazebo.xacro" />
   <xacro:include filename="$(find schunk_description)/urdf/lwa4p/lwa4p.transmission.xacro" />
 
   <xacro:macro name="schunk_lwa4p" params="parent name *origin has_podest">
-   
+
     <xacro:if value="${has_podest}">
       <!-- joint between base_link and lwa4p_extended_connector_link -->
       <joint name="${name}_podest_joint" type="fixed">
@@ -22,7 +22,7 @@
           <mesh filename="package://schunk_description/meshes/lwa4p/arm_base_link.stl" />
           </geometry>
         </visual>
-        
+
         <collision>
           <origin xyz="0 0 0" rpy="0 ${M_PI} 0" />
           <geometry>
@@ -30,14 +30,14 @@
           </geometry>
         </collision>
       </link>
-      
+
       <joint name="${name}_base_joint" type="fixed">
         <origin xyz="0 0 0.10" rpy="0 0 0" />
         <parent link="${name}_podest_link"/>
         <child link="${name}_base_link"/>
       </joint>
     </xacro:if>
-    
+
     <xacro:unless value="${has_podest}">
       <!-- joint between base_link and lwa4p_extended_connector_link -->
       <joint name="${name}_base_joint" type="fixed">
@@ -46,18 +46,18 @@
         <child link="${name}_base_link"/>
       </joint>
     </xacro:unless>
-    
+
     <link name="${name}_base_link">
       <xacro:default_inertial/>
     </link>
-    
+
     <!-- joint between arm_0_link and arm_1_link -->
     <joint name="${name}_1_joint" type="revolute">
       <origin xyz="0 0 0" rpy="0 0 0" />
       <parent link="${name}_base_link"/>
       <child link="${name}_1_link"/>
       <axis xyz="0 0 1"/>
-      <limit effort="370" velocity="2.0" lower="${-6.28 + safety_offset}" upper="${6.28 - safety_offset}"/>
+      <limit effort="370" velocity="1.26" lower="${-2.967 + safety_offset}" upper="${2.967 - safety_offset}"/>
       <!--safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-6.28 + 0.01}" soft_upper_limit="${6.28 - 0.01}" /-->
     </joint>
 
@@ -70,7 +70,7 @@
         <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
       </inertial>
 -->
-      
+
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -78,7 +78,7 @@
         </geometry>
         <material name="Schunk/Blue" />
       </visual>
-      
+
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -87,13 +87,13 @@
       </collision>
     </link>
 
-    <!-- joint between arm_1_link and arm_2_link -->  
+    <!-- joint between arm_1_link and arm_2_link -->
     <joint name="${name}_2_joint" type="revolute">
       <origin xyz="0 0 0" rpy="1.5708 0 0"/>
       <parent link="${name}_1_link"/>
       <child link="${name}_2_link"/>
       <axis xyz="0 0 1"/>
-      <limit effort="370" velocity="2.0" lower="${-2.09 + safety_offset}" upper="${2.09 - safety_offset}"/>
+      <limit effort="370" velocity="1.26" lower="${-2.967 + safety_offset}" upper="${2.967 - safety_offset}"/>
       <!--safety_controller k_position="20" k_velocity="50" soft_lower_limit="${-2.09 + 0.01}" soft_upper_limit="${2.09 - 0.01}" /-->
     </joint>
 
@@ -106,7 +106,7 @@
         <inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.03" />
       </inertial>
 -->
-      
+
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -114,7 +114,7 @@
         </geometry>
         <material name="Schunk/LightGrey" />
       </visual>
-      
+
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -123,13 +123,13 @@
       </collision>
     </link>
 
-    <!-- joint between arm_2_link and arm_3_link -->  
+    <!-- joint between arm_2_link and arm_3_link -->
     <joint name="${name}_3_joint" type="revolute">
       <origin xyz="0 0.350 0" rpy="0 3.14159 0"/>
       <parent link="${name}_2_link"/>
       <child link="${name}_3_link"/>
       <axis xyz="0 0 1"/>
-      <limit effort="176" velocity="2.0" lower="${-6.28 + safety_offset}" upper="${6.28 - safety_offset}"/>
+      <limit effort="176" velocity="1.26" lower="${-2.714 + safety_offset}" upper="${2.714 - safety_offset}"/>
       <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-6.28 + 0.01}" soft_upper_limit="${6.28 - 0.01}" /-->
     </joint>
 
@@ -142,7 +142,7 @@
         <inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.03" />
       </inertial>
 -->
-      
+
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -150,14 +150,14 @@
         </geometry>
         <material name="Schunk/Blue" />
       </visual>
-      
+
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
           <mesh filename="package://schunk_description/meshes/lwa4p/arm_3_link.stl" />
         </geometry>
       </collision>
-    </link>  
+    </link>
 
     <!-- joint between arm_3_link and arm_4_link -->
     <joint name="${name}_4_joint" type="revolute">
@@ -165,7 +165,7 @@
       <parent link="${name}_3_link"/>
       <child link="${name}_4_link"/>
       <axis xyz="0 0 1" />
-      <limit effort="176" velocity="2.0" lower="${-2.09 + safety_offset}" upper="${2.09 - safety_offset}"/>
+      <limit effort="176" velocity="1.26" lower="${-2.967 + safety_offset}" upper="${2.967 - safety_offset}"/>
       <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.09 + 0.01}" soft_upper_limit="${2.09 - 0.01}" /-->
     </joint>
 
@@ -178,7 +178,7 @@
         <inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.03" />
       </inertial>
 -->
-      
+
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -186,7 +186,7 @@
         </geometry>
         <material name="Schunk/LightGrey" />
       </visual>
-      
+
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -201,7 +201,7 @@
       <parent link="${name}_4_link"/>
       <child link="${name}_5_link"/>
       <axis xyz="0 0 1" />
-      <limit effort="41.6" velocity="2.0" lower="${-6.28 + safety_offset}" upper="${6.28 - safety_offset}" />
+      <limit effort="41.6" velocity="1.26" lower="${-2.967 + safety_offset}" upper="${2.967 - safety_offset}" />
       <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-6.28 + 0.01}" soft_upper_limit="${6.28 - 0.01}" /-->
     </joint>
 
@@ -214,7 +214,7 @@
         <inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.03" />
       </inertial>
 -->
-      
+
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -222,7 +222,7 @@
         </geometry>
         <material name="Schunk/Blue" />
       </visual>
-      
+
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -237,7 +237,7 @@
       <parent link="${name}_5_link"/>
       <child link="${name}_6_link"/>
       <axis xyz="0 0 1" />
-      <limit effort="20.1" velocity="2.0" lower="${-2.09 + safety_offset}" upper="${2.09 - safety_offset}" />
+      <limit effort="20.1" velocity="1.26" lower="${-2.967 + safety_offset}" upper="${2.967 - safety_offset}" />
       <!--safety_controller k_position="20" k_velocity="25" soft_lower_limit="${-2.09 + 0.01}" soft_upper_limit="${2.09 - 0.01}" /-->
     </joint>
 
@@ -250,7 +250,7 @@
         <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
       </inertial>
 -->
-      
+
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -258,7 +258,7 @@
         </geometry>
         <material name="Schunk/LightGrey" />
       </visual>
-      
+
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>

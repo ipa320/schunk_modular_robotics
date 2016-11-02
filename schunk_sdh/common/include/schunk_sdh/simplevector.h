@@ -74,8 +74,8 @@ NAMESPACE_SDH_START
 class VCC_EXPORT cSimpleVectorException: public cSDHLibraryException
 {
 public:
-  cSimpleVectorException( cMsg const & _msg )
-    : cSDHLibraryException( "cSimpleVectorException", _msg )
+  cSimpleVectorException(cMsg const & _msg)
+    : cSDHLibraryException("cSimpleVectorException", _msg)
   {}
 };
 //======================================================================
@@ -91,60 +91,60 @@ public:
 class VCC_EXPORT cSimpleVector
 {
 public:
-    //! anonymous enum (instead of define like macros)
-    enum
-    {
-      eNUMBER_OF_ELEMENTS = 7 //!< number of elements in vector
-    };
+  //! anonymous enum (instead of define like macros)
+  enum
+  {
+    eNUMBER_OF_ELEMENTS = 7 //!< number of elements in vector
+  };
 
-    //! Default constructor: init members to zero
-    cSimpleVector()
-        throw (cSimpleVectorException*);
-
-
-    //! Constructor: init members from \a nb_values comma separated values in the give string \a str
-    cSimpleVector( int nb_values, char const* str )
-        throw (cSimpleVectorException*);
+  //! Default constructor: init members to zero
+  cSimpleVector()
+  throw (cSimpleVectorException*);
 
 
-    //! Constructor: init members from \a nb_values comma separated values in the give string \a str
-    cSimpleVector( int nb_values, int start_index, char const* str )
-        throw (cSimpleVectorException*);
-
-    //! Constructor: init members beginning with \a start_index from \a nb_values in arrray \a values
-    cSimpleVector( int nb_values, int start_index, float* values )
-        throw (cSimpleVectorException*);
+  //! Constructor: init members from \a nb_values comma separated values in the give string \a str
+  cSimpleVector(int nb_values, char const* str)
+  throw (cSimpleVectorException*);
 
 
-    //! init \a nb_values starting from index \a start_index from comma separated values in \a str
-    void FromString( int nb_values, int start_index, char const* str )
-        throw (cSimpleVectorException*);
+  //! Constructor: init members from \a nb_values comma separated values in the give string \a str
+  cSimpleVector(int nb_values, int start_index, char const* str)
+  throw (cSimpleVectorException*);
+
+  //! Constructor: init members beginning with \a start_index from \a nb_values in arrray \a values
+  cSimpleVector(int nb_values, int start_index, float* values)
+  throw (cSimpleVectorException*);
 
 
-    //! index operator, return a reference to the \a index-th element of this
-    double& operator[]( unsigned int index );
+  //! init \a nb_values starting from index \a start_index from comma separated values in \a str
+  void FromString(int nb_values, int start_index, char const* str)
+  throw (cSimpleVectorException*);
 
 
-    //! Interpret object as x/y/z vector: return x = the first element, if that is valid.
-    double& x(void);
+  //! index operator, return a reference to the \a index-th element of this
+  double& operator[](unsigned int index);
 
 
-    //! Interpret object as x/y/z vector: return x = the first element, if that is valid.
-    double& y(void);
+  //! Interpret object as x/y/z vector: return x = the first element, if that is valid.
+  double& x(void);
 
 
-    //! Interpret object as x/y/z vector: return x = the first element, if that is valid.
-    double& z(void);
+  //! Interpret object as x/y/z vector: return x = the first element, if that is valid.
+  double& y(void);
 
-    //! Return true if vector element \a index is valid (has been accessed at least once)
-    bool Valid( unsigned int index ) const;
+
+  //! Interpret object as x/y/z vector: return x = the first element, if that is valid.
+  double& z(void);
+
+  //! Return true if vector element \a index is valid (has been accessed at least once)
+  bool Valid(unsigned int index) const;
 
 protected:
 
-    double value[ eNUMBER_OF_ELEMENTS ];
+  double value[ eNUMBER_OF_ELEMENTS ];
 
-    //! bit mask which values in #value are valid
-    int valid;
+  //! bit mask which values in #value are valid
+  int valid;
 
 }; // cSimpleVector
 //-----------------------------------------------------------------
