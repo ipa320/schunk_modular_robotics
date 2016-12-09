@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+  <xacro:include filename="$(find schunk_description)/urdf/common.xacro" />
   <xacro:include filename="$(find schunk_description)/urdf/lwa/lwa.gazebo.xacro" />
   <xacro:include filename="$(find schunk_description)/urdf/lwa/lwa.transmission.xacro" />
 
@@ -8,7 +9,7 @@
 
     <!-- joint between base_link and arm_0_link -->
     <joint name="${name}_base_joint" type="fixed" >
-      <insert_block name="origin" />
+      <xacro:insert_block name="origin" />
       <parent link="${parent}" />
       <child link="${name}_base_link" />
     </joint>
