@@ -175,7 +175,6 @@
     <xacro:schunk_pw70_gazebo name="${name}" />
     <xacro:schunk_pw70_transmission name="${name}" />
 
-
   </xacro:macro>
 </robot>
 
