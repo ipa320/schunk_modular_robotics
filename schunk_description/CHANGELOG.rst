@@ -2,6 +2,12 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.8 (2016-10-10)
+------------------
+* Enabled collison
+* pw70 working
+* Contributors: Andreea Tulbure, Denis Štogl
+
 0.6.7 (2016-04-01)
 ------------------
 * Update lwa4p.urdf.xacro with joint speed limits.

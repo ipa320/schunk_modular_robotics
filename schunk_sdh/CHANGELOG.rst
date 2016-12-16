@@ -2,6 +2,9 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.8 (2016-10-10)
+------------------
+
 0.6.7 (2016-04-01)
 ------------------
 * do not use the autostart flag for the action sever and start it manually

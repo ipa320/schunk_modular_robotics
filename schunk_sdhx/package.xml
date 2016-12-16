@@ -1,6 +1,6 @@
 <package format="2">
   <name>schunk_sdhx</name>
-  <version>0.6.7</version>
+  <version>0.6.8</version>
   <description>The schunk_sdhx package</description>
 
   <maintainer email="tdf@ipa.fhg.de">Thiago de Freitas</maintainer>
