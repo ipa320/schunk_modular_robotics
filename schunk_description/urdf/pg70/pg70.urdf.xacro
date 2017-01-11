@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+  <xacro:include filename="$(find schunk_description)/urdf/common.xacro" />
   <xacro:include filename="$(find schunk_description)/urdf/pg70/pg70.gazebo.xacro" />
   <xacro:include filename="$(find schunk_description)/urdf/pg70/pg70.transmission.xacro" />
 
@@ -8,7 +9,7 @@
 
     <xacro:if value="${has_podest}">
       <joint name="${name}_podest_joint" type="fixed">
-        <insert_block name="origin" />
+        <xacro:insert_block name="origin" />
         <parent link="${parent}"/>
         <child link="${name}_podest_link"/>
       </joint>
@@ -38,7 +39,7 @@
 
     <xacro:unless value="${has_podest}">
       <joint name="${name}_palm_joint" type="fixed">
-        <insert_block name="origin" />
+        <xacro:insert_block name="origin" />
         <parent link="${parent}"/>
         <child link="${name}_palm_link" />
       </joint>

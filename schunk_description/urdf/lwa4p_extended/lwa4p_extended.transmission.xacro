@@ -1,28 +1,17 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:macro name="schunk_lwa4p_extended_SimpleTransmission" params="jname number">
-    <transmission name="${jname}_${number}_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${jname}_${number}_joint">
-        <hardwareInterface>PositionJointInterface</hardwareInterface>
-        <hardwareInterface>VelocityJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="${jname}_${number}_motor">
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-  </xacro:macro>
+  <xacro:include filename="$(find schunk_description)/urdf/common.xacro" />
 
   <xacro:macro name="schunk_lwa4p_extended_transmission" params="name">
 
-    <xacro:schunk_lwa4p_extended_SimpleTransmission jname="${name}" number="1"></xacro:schunk_lwa4p_extended_SimpleTransmission>
-    <xacro:schunk_lwa4p_extended_SimpleTransmission jname="${name}" number="2"></xacro:schunk_lwa4p_extended_SimpleTransmission>
-    <xacro:schunk_lwa4p_extended_SimpleTransmission jname="${name}" number="3"></xacro:schunk_lwa4p_extended_SimpleTransmission>
-    <xacro:schunk_lwa4p_extended_SimpleTransmission jname="${name}" number="4"></xacro:schunk_lwa4p_extended_SimpleTransmission>
-    <xacro:schunk_lwa4p_extended_SimpleTransmission jname="${name}" number="5"></xacro:schunk_lwa4p_extended_SimpleTransmission>
-    <xacro:schunk_lwa4p_extended_SimpleTransmission jname="${name}" number="6"></xacro:schunk_lwa4p_extended_SimpleTransmission>
-    <xacro:schunk_lwa4p_extended_SimpleTransmission jname="${name}" number="7"></xacro:schunk_lwa4p_extended_SimpleTransmission>
+    <xacro:default_transmission jname="${name}_1"/>
+    <xacro:default_transmission jname="${name}_2"/>
+    <xacro:default_transmission jname="${name}_3"/>
+    <xacro:default_transmission jname="${name}_4"/>
+    <xacro:default_transmission jname="${name}_5"/>
+    <xacro:default_transmission jname="${name}_6"/>
+    <xacro:default_transmission jname="${name}_7"/>
 
   </xacro:macro>
 
