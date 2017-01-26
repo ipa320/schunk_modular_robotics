@@ -273,6 +273,14 @@
     <xacro:schunk_lwa4p_gazebo name="${name}" />
     <xacro:schunk_lwa4p_transmission name="${name}" />
 
+    <!-- ros_control plugin -->
+    <gazebo>
+      <plugin name="ros_control" filename="libhwi_switch_gazebo_ros_control.so">
+        <robotNamespace>${name}</robotNamespace>
+        <filterJointsParam>joint_names</filterJointsParam>
+      </plugin>
+    </gazebo>
+
   </xacro:macro>
 
 </robot>

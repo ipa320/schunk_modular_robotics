@@ -130,10 +130,17 @@
       </collision>
     </link>
 
-  <!-- extensions -->
-  <xacro:schunk_pg70_gazebo name="${name}" />
-  <xacro:schunk_pg70_transmission name="${name}" />
+    <!-- extensions -->
+    <xacro:schunk_pg70_gazebo name="${name}" />
+    <xacro:schunk_pg70_transmission name="${name}" />
 
+    <!-- ros_control plugin -->
+    <gazebo>
+      <plugin name="ros_control" filename="libhwi_switch_gazebo_ros_control.so">
+        <robotNamespace>${name}</robotNamespace>
+        <filterJointsParam>joint_names</filterJointsParam>
+      </plugin>
+    </gazebo>
 
   </xacro:macro>
 </robot>
