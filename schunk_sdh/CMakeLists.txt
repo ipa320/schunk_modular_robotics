@@ -33,32 +33,24 @@ if(CMAKE_DPKG)
   endif()
 endif()
 
-add_custom_target(
-    copy_SDHLIB ALL
-    COMMAND /bin/ln -sf ${PROJECT_SOURCE_DIR}/common/lib/${MYARCH}/libSDHLibrary-CPP.so ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so
-    DEPENDS ${PROJECT_SOURCE_DIR}/common/lib/${MYARCH}/libSDHLibrary-CPP.so
-)
+link_directories(${PROJECT_SOURCE_DIR}/common/lib/${MYARCH})
 
 include_directories(common/include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
-
-add_library(SDHLibrary SHARED IMPORTED)
-add_dependencies(SDHLibrary copy_SDHLIB)
-set_property(TARGET SDHLibrary PROPERTY IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/common/lib/libSDHLibrary-CPP.so)
 
 add_executable(${PROJECT_NAME} ros/src/sdh.cpp)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX -DWITH_ESD_CAN")
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(${PROJECT_NAME} SDHLibrary ${catkin_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} SDHLibrary-CPP ${catkin_LIBRARIES})
 
 add_executable(sdh_only ros/src/sdh_only.cpp)
 set_target_properties(sdh_only PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX -DWITH_ESD_CAN")
 add_dependencies(sdh_only ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(sdh_only SDHLibrary ${catkin_LIBRARIES})
+target_link_libraries(sdh_only SDHLibrary-CPP ${catkin_LIBRARIES})
 
 add_executable(dsa_only ros/src/dsa_only.cpp)
 set_target_properties(dsa_only PROPERTIES COMPILE_FLAGS "-DOSNAME_LINUX")
 add_dependencies(dsa_only ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(dsa_only SDHLibrary ${catkin_LIBRARIES})
+target_link_libraries(dsa_only SDHLibrary-CPP ${catkin_LIBRARIES})
 
 ### INSTALL ###
 install(TARGETS ${PROJECT_NAME} sdh_only dsa_only
@@ -66,6 +58,8 @@ install(TARGETS ${PROJECT_NAME} sdh_only dsa_only
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+
+install(FILES ${PROJECT_SOURCE_DIR}/common/lib/${MYARCH}/libSDHLibrary-CPP.so DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
 
 ### LINT ###
 roslint_cpp(ros/src/sdh.cpp ros/src/dsa_only.cpp ros/src/sdh_only.cpp)
