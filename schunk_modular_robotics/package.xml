@@ -18,7 +18,6 @@
   <exec_depend>schunk_libm5api</exec_depend>
   <exec_depend>schunk_powercube_chain</exec_depend>
   <exec_depend>schunk_sdh</exec_depend>
-  <exec_depend>schunk_sdhx</exec_depend>
   <exec_depend>schunk_simulated_tactile_sensors</exec_depend>
 
   <export>
