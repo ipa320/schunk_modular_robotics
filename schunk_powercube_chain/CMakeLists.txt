@@ -8,6 +8,8 @@ catkin_package()
 ### BUILD ###
 include_directories(common/include ${catkin_INCLUDE_DIRS})
 
+add_definitions(-std=c++11)
+
 add_executable(${PROJECT_NAME} common/src/PowerCubeCtrl.cpp common/src/TimeStamp.cpp common/src/moveCommand.cpp ros/src/schunk_powercube_chain.cpp)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-D__LINUX__ -DUSE_ESD")
 add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
