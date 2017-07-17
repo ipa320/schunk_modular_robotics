@@ -2,8 +2,8 @@
 Changelog for package schunk_powercube_chain
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.9 (2017-07-17)
+------------------
 * add c++11 definitions
 * manually fix changelog
 * Merge branch 'indigo_dev' of https://github.com/ipa320/schunk_modular_robotics into indigo_dev

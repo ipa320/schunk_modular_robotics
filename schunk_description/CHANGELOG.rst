@@ -2,8 +2,8 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.9 (2017-07-17)
+------------------
 * Revert "python True/False"
   This reverts commit 28ee3a0bca4514baef065d4e2744b73ca7bd35f9.
 * python True/False

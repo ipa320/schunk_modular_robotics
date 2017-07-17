@@ -2,8 +2,8 @@
 Changelog for package schunk_simulated_tactile_sensors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.9 (2017-07-17)
+------------------
 * manually fix changelog
 * Contributors: ipa-fxm
 
