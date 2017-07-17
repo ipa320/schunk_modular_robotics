@@ -2,6 +2,12 @@
 Changelog for package schunk_modular_robotics
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove package schunk_sdhx
+* manually fix changelog
+* Contributors: ipa-fxm
+
 0.6.8 (2016-10-10)
 ------------------
 

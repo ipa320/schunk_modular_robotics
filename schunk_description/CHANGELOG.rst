@@ -2,6 +2,27 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Revert "python True/False"
+  This reverts commit 28ee3a0bca4514baef065d4e2744b73ca7bd35f9.
+* python True/False
+* move gazebo_ros_control plugin
+* Merge pull request `#173 <https://github.com/ipa320/schunk_modular_robotics/issues/173>`_ from ubi-agni/non_penetrating_collision
+  Non-penetrating and simplified collision objects
+* Added reduced collision meshes for knuckles and palm, with no interpenetration
+* Added better inertia estimation for sdh (meshlab + aluminum density + adjusted to total mass)
+* manually fix changelog
+* use default_transmission macro
+* introduce default_transmission macro
+* cleanup
+* newer xacro macros and missing include
+* new package schunk_pg70
+* Arm of cob3-6 configuration for twist controller
+* Added missing include of common.xacro to access default_inertial macro
+* Fix xacro warnings
+* Contributors: Bruno Brito, Felix Messmer, Guillaume Walck, ipa-fxm, ipa-nhg
+
 0.6.8 (2016-10-10)
 ------------------
 * Enabled collison
