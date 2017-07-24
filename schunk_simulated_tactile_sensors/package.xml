@@ -45,7 +45,7 @@
      sensor is attached to. This is achieved by setting the "frameName" property
      in the gazebo_ros_bumper controller.</description>
 
-  <license>LGPL</license>
+  <license>Apache 2.0</license>
 
   <url type="website">http://ros.org/wiki/schunk_simulated_tactile_sensors</url>
   <!-- <url type="bugtracker"></url> -->

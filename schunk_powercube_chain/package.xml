@@ -7,7 +7,7 @@
   with this package but with the corresponding launch files
   in other packages, e.g. schunk_bringup, cob_bringup, ...</description>
 
-  <license>LGPL</license>
+  <license>Apache 2.0</license>
 
   <url type="website">http://ros.org/wiki/schunk_powercube_chain</url>
   <!-- <url type="bugtracker"></url> -->
