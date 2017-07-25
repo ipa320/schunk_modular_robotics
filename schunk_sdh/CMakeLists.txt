@@ -12,6 +12,7 @@ add_message_files(
   DIRECTORY msg FILES
     TactileMatrix.msg
     TactileSensor.msg
+    TemperatureArray.msg
 )
 
 generate_messages(

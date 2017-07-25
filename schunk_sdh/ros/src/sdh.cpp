@@ -78,6 +78,7 @@
 #include <control_msgs/JointTrajectoryControllerState.h>
 #include <schunk_sdh/TactileSensor.h>
 #include <schunk_sdh/TactileMatrix.h>
+#include <schunk_sdh/TemperatureArray.h>
 
 // ROS service includes
 #include <std_srvs/Trigger.h>
@@ -106,6 +107,7 @@ private:
   ros::Publisher topicPub_ControllerState_;
   ros::Publisher topicPub_TactileSensor_;
   ros::Publisher topicPub_Diagnostics_;
+  ros::Publisher topicPub_Temperature_;
 
   // topic subscribers
   ros::Subscriber subSetVelocitiesRaw_;
@@ -151,6 +153,8 @@ private:
   bool hasNewGoal_;
   std::string operationMode_;
 
+  static const std::vector<std::string> temperature_names_;
+
 public:
   /*!
    * \brief Constructor for SdhNode class
@@ -195,6 +199,7 @@ public:
     topicPub_ControllerState_ = nh_.advertise<control_msgs::JointTrajectoryControllerState>(
         "joint_trajectory_controller/state", 1);
     topicPub_TactileSensor_ = nh_.advertise<schunk_sdh::TactileSensor>("tactile_data", 1);
+    topicPub_Temperature_ = nh_.advertise<schunk_sdh::TemperatureArray>("temperature", 1);
 
     // pointer to sdh
     sdh_ = new SDH::cSDH(false, false, 0);  // (_use_radians=false, bool _use_fahrenheit=false, int _debug_level=0)
@@ -611,6 +616,7 @@ public:
    */
   void updateSdh()
   {
+    const ros::Time time = ros::Time::now();
     ROS_DEBUG("updateJointState");
     if (isInitialized_ == true)
     {
@@ -695,8 +701,6 @@ public:
 
       ROS_DEBUG("received %d angles from sdh", static_cast<int>(actualAngles.size()));
 
-      ros::Time time = ros::Time::now();
-
       // create joint_state message
       sensor_msgs::JointState msg;
       msg.header.stamp = time;
@@ -778,6 +782,19 @@ public:
 
       // read sdh status
       state_ = sdh_->GetAxisActualState(axes_);
+
+      // publish temperature
+      schunk_sdh::TemperatureArray temp_array;
+      temp_array.header.stamp = time;
+      const std::vector<double> temp_value = sdh_->GetTemperature(sdh_->all_temperature_sensors);
+      if(temp_value.size()==temperature_names_.size()) {
+          temp_array.name = temperature_names_;
+          temp_array.temperature = temp_value;
+      }
+      else {
+          ROS_ERROR("amount of temperatures mismatch with stored names");
+      }
+      topicPub_Temperature_.publish(temp_array);
     }
     else
     {
@@ -865,6 +882,14 @@ public:
     }
   }
 };
+
+const std::vector<std::string> SdhNode::temperature_names_ = {
+    "root",
+    "proximal_finger_1", "distal_finger_1",
+    "proximal_finger_2", "distal_finger_2",
+    "proximal_finger_3", "distal_finger_3",
+    "controller", "pcb"
+};
 // SdhNode
 
 /*!
@@ -912,4 +937,3 @@ int main(int argc, char** argv)
 
   return 0;
 }
-
