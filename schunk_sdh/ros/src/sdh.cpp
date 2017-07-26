@@ -622,6 +622,7 @@ public:
    */
   bool srvCallback_EmergencyStop(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res) {
       try {
+        isInitialized_ = false;
         sdh_->EmergencyStop();
         sdh_->SetAxisEnable(sdh_->All, 0.0);
         sdh_->SetAxisMotorCurrent(sdh_->All, 0.0);
@@ -647,6 +648,7 @@ public:
    */
   bool srvCallback_Disconnect(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res) {
       try {
+        isInitialized_ = false;
         sdh_->Close();
       }
       catch(const SDH::cSDHErrorCommunication* e) {
