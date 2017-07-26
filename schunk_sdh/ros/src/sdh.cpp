@@ -642,23 +642,29 @@ public:
   /*!
    * \brief Executes the service callback for disconnect.
    *
-   * Disconnect from SDH and disable motors to prevent overheating.
+   * Disconnect from SDH and DSA and disable motors to prevent overheating.
    * \param req Service request
    * \param res Service response
    */
   bool srvCallback_Disconnect(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res) {
       try {
         isInitialized_ = false;
+        isDSAInitialized_ = false;
+
+        sdh_->SetAxisEnable(sdh_->All, 0.0);
+        sdh_->SetAxisMotorCurrent(sdh_->All, 0.0);
+
         sdh_->Close();
+        dsa_->Close();
       }
-      catch(const SDH::cSDHErrorCommunication* e) {
+      catch(const SDH::cSDHLibraryException* e) {
           ROS_ERROR("An exception was caught: %s", e->what());
           res.success = false;
           res.message = e->what();
           return false;
       }
 
-      ROS_INFO("Disconnected from sdh");
+      ROS_INFO("Disconnected");
       res.success = true;
       return true;
   }
