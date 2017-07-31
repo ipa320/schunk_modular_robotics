@@ -213,7 +213,7 @@ public:
     srvServer_SetOperationMode_ = nh_.advertiseService("set_operation_mode", &SdhNode::srvCallback_SetOperationMode,
                                                        this);
     srvServer_EmergencyStop_ = nh_.advertiseService("emergency_stop", &SdhNode::srvCallback_EmergencyStop, this);
-    srvServer_Disconnect_ = nh_.advertiseService("disconnect", &SdhNode::srvCallback_Disconnect, this);
+    srvServer_Disconnect_ = nh_.advertiseService("shutdown", &SdhNode::srvCallback_Disconnect, this);
 
     subSetVelocitiesRaw_ = nh_.subscribe("joint_group_velocity_controller/command", 1,
                                          &SdhNode::topicCallback_setVelocitiesRaw, this);
