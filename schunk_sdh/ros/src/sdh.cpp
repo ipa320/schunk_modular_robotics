@@ -561,21 +561,6 @@ public:
   }
 
   /*!
-   * \brief Executes the service callback for recover.
-   *
-   * Recovers the hardware after an emergency stop.
-   * \param req Service request
-   * \param res Service response
-   */
-  bool srvCallback_Recover(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
-  {
-    ROS_WARN("Service recover not implemented yet");
-    res.success = true;
-    res.message = "Service recover not implemented yet";
-    return true;
-  }
-
-  /*!
    * \brief Executes the service callback for set_operation_mode.
    *
    * Changes the operation mode.
