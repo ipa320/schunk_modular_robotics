@@ -631,7 +631,7 @@ public:
           ROS_ERROR("An exception was caught: %s", e->what());
           res.success = false;
           res.message = e->what();
-          return false;
+          return true;
       }
 
       res.success = true;
@@ -661,7 +661,7 @@ public:
           ROS_ERROR("An exception was caught: %s", e->what());
           res.success = false;
           res.message = e->what();
-          return false;
+          return true;
       }
 
       ROS_INFO("Disconnected");
