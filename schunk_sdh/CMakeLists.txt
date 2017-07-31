@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(schunk_sdh)
 
+add_compile_options(-std=c++11)
+
 find_package(catkin REQUIRED COMPONENTS actionlib cob_srvs control_msgs diagnostic_msgs libntcan libpcan message_generation roscpp roslint sensor_msgs std_msgs std_srvs trajectory_msgs urdf)
 
 find_package(Boost REQUIRED)
@@ -10,6 +12,7 @@ add_message_files(
   DIRECTORY msg FILES
     TactileMatrix.msg
     TactileSensor.msg
+    TemperatureArray.msg
 )
 
 generate_messages(
