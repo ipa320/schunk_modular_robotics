@@ -8,7 +8,7 @@
   <url type="website">http://ros.org/wiki/schunk_sdh</url>
   <!-- <url type="bugtracker"></url> -->
 
-  <maintainer email="mdl@ipa.fhg.de">Mathias Luedtke</maintainer>
+  <maintainer email="fmw@ipa.fhg.de">Florian Weisshardt</maintainer>
   <author email="mdl@ipa.fhg.de">Mathias Luedtke</author>
   <author email="fmw@ipa.fhg.de">Florian Weisshardt</author>
 
