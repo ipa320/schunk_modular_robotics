@@ -535,6 +535,7 @@ public:
     }
 
     res.success = true;
+    res.message = "SDH initialised";
     return true;
   }
 
@@ -562,6 +563,7 @@ public:
 
     ROS_INFO("Stopping sdh succesfull");
     res.success = true;
+    res.message = "stopped SDH";
     return true;
   }
 
@@ -579,6 +581,7 @@ public:
     ROS_INFO("Set operation mode to [%s]", req.data.c_str());
     operationMode_ = req.data;
     res.success = true;
+    res.message = "Set operation mode to "+req.data;
     if (operationMode_ == "position")
     {
       sdh_->SetController(SDH::cSDH::eCT_POSE);
@@ -656,6 +659,7 @@ public:
 
       ROS_INFO("Disconnected");
       res.success = true;
+      res.message = "disconnected from SDH";
       return true;
   }
 
