@@ -119,6 +119,8 @@ private:
   ros::ServiceServer srvServer_SetOperationMode_;
   ros::ServiceServer srvServer_EmergencyStop_;
   ros::ServiceServer srvServer_Disconnect_;
+  ros::ServiceServer srvServer_MotorOn_;
+  ros::ServiceServer srvServer_MotorOff_;
 
   // actionlib server
   actionlib::SimpleActionServer<control_msgs::FollowJointTrajectoryAction> as_;
@@ -214,6 +216,9 @@ public:
                                                        this);
     srvServer_EmergencyStop_ = nh_.advertiseService("emergency_stop", &SdhNode::srvCallback_EmergencyStop, this);
     srvServer_Disconnect_ = nh_.advertiseService("shutdown", &SdhNode::srvCallback_Disconnect, this);
+
+    srvServer_MotorOn_ = nh_.advertiseService("motor_on", &SdhNode::srvCallback_MotorPowerOn, this);
+    srvServer_MotorOff_ = nh_.advertiseService("motor_off", &SdhNode::srvCallback_MotorPowerOff, this);
 
     subSetVelocitiesRaw_ = nh_.subscribe("joint_group_velocity_controller/command", 1,
                                          &SdhNode::topicCallback_setVelocitiesRaw, this);
@@ -652,6 +657,50 @@ public:
       ROS_INFO("Disconnected");
       res.success = true;
       return true;
+  }
+
+  /*!
+   * \brief Enable motor power
+   * \param req Service request
+   * \param res Service response
+   */
+  bool srvCallback_MotorPowerOn(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res) {
+    try {
+      sdh_->SetAxisEnable(sdh_->All, 1.0);
+      sdh_->SetAxisMotorCurrent(sdh_->All, 0.5);
+    }
+    catch (const SDH::cSDHLibraryException* e) {
+      ROS_ERROR("An exception was caught: %s", e->what());
+      res.success = false;
+      res.message = e->what();
+      return true;
+    }
+    ROS_INFO("Motor power ON");
+    res.success = true;
+    res.message = "Motor ON";
+    return true;
+  }
+
+  /*!
+   * \brief Disable motor power
+   * \param req Service request
+   * \param res Service response
+   */
+  bool srvCallback_MotorPowerOff(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res) {
+    try {
+      sdh_->SetAxisEnable(sdh_->All, 0.0);
+      sdh_->SetAxisMotorCurrent(sdh_->All, 0.0);
+    }
+    catch (const SDH::cSDHLibraryException* e) {
+      ROS_ERROR("An exception was caught: %s", e->what());
+      res.success = false;
+      res.message = e->what();
+      return true;
+    }
+    ROS_INFO("Motor power OFF");
+    res.success = true;
+    res.message = "Motor OFF";
+    return true;
   }
 
   /*!
