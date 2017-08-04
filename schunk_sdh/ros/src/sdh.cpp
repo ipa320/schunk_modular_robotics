@@ -298,10 +298,9 @@ public:
       }
       sdh_->SetAxisEnable(sdh_->All, 1.0);  // TODO: check if necessary
     }
-    catch (SDH::cSDHLibraryException* e)
+    catch (const SDH::cSDHLibraryException &e)
     {
-      ROS_ERROR("An exception was caught: %s", e->what());
-      delete e;
+      ROS_ERROR("An exception was caught: %s", e.what());
       return false;
     }
 
@@ -487,12 +486,11 @@ public:
           isInitialized_ = true;
         }
       }
-      catch (SDH::cSDHLibraryException* e)
+      catch (const SDH::cSDHLibraryException &e)
       {
-        ROS_ERROR("An exception was caught: %s", e->what());
+        ROS_ERROR("An exception was caught: %s", e.what());
         res.success = false;
-        res.message = e->what();
-        delete e;
+        res.message = e.what();
         return true;
       }
 
@@ -510,13 +508,12 @@ public:
           //  dsa_->SetMatrixSensitivity(i, 1.0);
           isDSAInitialized_ = true;
         }
-        catch (SDH::cSDHLibraryException* e)
+        catch (const SDH::cSDHLibraryException &e)
         {
           isDSAInitialized_ = false;
-          ROS_ERROR("An exception was caught: %s", e->what());
+          ROS_ERROR("An exception was caught: %s", e.what());
           res.success = false;
-          res.message = e->what();
-          delete e;
+          res.message = e.what();
           return true;
         }
       }
@@ -555,10 +552,9 @@ public:
     {
       sdh_->Stop();
     }
-    catch (SDH::cSDHLibraryException* e)
+    catch (const SDH::cSDHLibraryException &e)
     {
-      ROS_ERROR("An exception was caught: %s", e->what());
-      delete e;
+      ROS_ERROR("An exception was caught: %s", e.what());
     }
 
     ROS_INFO("Stopping sdh succesfull");
@@ -593,10 +589,9 @@ public:
         sdh_->SetController(SDH::cSDH::eCT_VELOCITY);
         sdh_->SetAxisEnable(sdh_->All, 1.0);
       }
-      catch (SDH::cSDHLibraryException* e)
+      catch (const SDH::cSDHLibraryException &e)
       {
-        ROS_ERROR("An exception was caught: %s", e->what());
-        delete e;
+        ROS_ERROR("An exception was caught: %s", e.what());
       }
     }
     else
@@ -620,10 +615,10 @@ public:
         sdh_->SetAxisEnable(sdh_->All, 0.0);
         sdh_->SetAxisMotorCurrent(sdh_->All, 0.0);
       }
-      catch(const SDH::cSDHLibraryException* e) {
-          ROS_ERROR("An exception was caught: %s", e->what());
+      catch(const SDH::cSDHLibraryException &e) {
+          ROS_ERROR("An exception was caught: %s", e.what());
           res.success = false;
-          res.message = e->what();
+          res.message = e.what();
           return true;
       }
 
@@ -650,10 +645,10 @@ public:
         sdh_->Close();
         dsa_->Close();
       }
-      catch(const SDH::cSDHLibraryException* e) {
-          ROS_ERROR("An exception was caught: %s", e->what());
+      catch(const SDH::cSDHLibraryException &e) {
+          ROS_ERROR("An exception was caught: %s", e.what());
           res.success = false;
-          res.message = e->what();
+          res.message = e.what();
           return true;
       }
 
@@ -673,10 +668,10 @@ public:
       sdh_->SetAxisEnable(sdh_->All, 1.0);
       sdh_->SetAxisMotorCurrent(sdh_->All, 0.5);
     }
-    catch (const SDH::cSDHLibraryException* e) {
-      ROS_ERROR("An exception was caught: %s", e->what());
+    catch (const SDH::cSDHLibraryException &e) {
+      ROS_ERROR("An exception was caught: %s", e.what());
       res.success = false;
-      res.message = e->what();
+      res.message = e.what();
       return true;
     }
     ROS_INFO("Motor power ON");
@@ -695,10 +690,10 @@ public:
       sdh_->SetAxisEnable(sdh_->All, 0.0);
       sdh_->SetAxisMotorCurrent(sdh_->All, 0.0);
     }
-    catch (const SDH::cSDHLibraryException* e) {
-      ROS_ERROR("An exception was caught: %s", e->what());
+    catch (const SDH::cSDHLibraryException &e) {
+      ROS_ERROR("An exception was caught: %s", e.what());
       res.success = false;
-      res.message = e->what();
+      res.message = e.what();
       return true;
     }
     ROS_INFO("Motor power OFF");
@@ -725,10 +720,9 @@ public:
         {
           sdh_->Stop();
         }
-        catch (SDH::cSDHLibraryException* e)
+        catch (const SDH::cSDHLibraryException &e)
         {
-          ROS_ERROR("An exception was caught: %s", e->what());
-          delete e;
+          ROS_ERROR("An exception was caught: %s", e.what());
         }
 
         if (operationMode_ == "position")
@@ -740,10 +734,9 @@ public:
             sdh_->SetAxisTargetAngle(axes_, targetAngles_);
             sdh_->MoveHand(false);
           }
-          catch (SDH::cSDHLibraryException* e)
+          catch (const SDH::cSDHLibraryException &e)
           {
-            ROS_ERROR("An exception was caught: %s", e->what());
-            delete e;
+            ROS_ERROR("An exception was caught: %s", e.what());
           }
         }
         else if (operationMode_ == "velocity")
@@ -754,10 +747,9 @@ public:
             sdh_->SetAxisTargetVelocity(axes_, velocities_);
             // ROS_DEBUG_STREAM("velocities: " << velocities_[0] << " "<< velocities_[1] << " "<< velocities_[2] << " "<< velocities_[3] << " "<< velocities_[4] << " "<< velocities_[5] << " "<< velocities_[6]);
           }
-          catch (SDH::cSDHLibraryException* e)
+          catch (const SDH::cSDHLibraryException &e)
           {
-            ROS_ERROR("An exception was caught: %s", e->what());
-            delete e;
+            ROS_ERROR("An exception was caught: %s", e.what());
           }
         }
         else if (operationMode_ == "effort")
@@ -781,20 +773,18 @@ public:
       {
         actualAngles = sdh_->GetAxisActualAngle(axes_);
       }
-      catch (SDH::cSDHLibraryException* e)
+      catch (const SDH::cSDHLibraryException &e)
       {
-        ROS_ERROR("An exception was caught: %s", e->what());
-        delete e;
+        ROS_ERROR("An exception was caught: %s", e.what());
       }
       std::vector<double> actualVelocities;
       try
       {
         actualVelocities = sdh_->GetAxisActualVelocity(axes_);
       }
-      catch (SDH::cSDHLibraryException* e)
+      catch (const SDH::cSDHLibraryException &e)
       {
-        ROS_ERROR("An exception was caught: %s", e->what());
-        delete e;
+        ROS_ERROR("An exception was caught: %s", e.what());
       }
 
       ROS_DEBUG("received %d angles from sdh", static_cast<int>(actualAngles.size()));
@@ -950,10 +940,9 @@ public:
           // dsa_->SetFramerate( 0, true, true );
           dsa_->UpdateFrame();
         }
-        catch (SDH::cSDHLibraryException* e)
+        catch (const SDH::cSDHLibraryException &e)
         {
-          ROS_ERROR("An exception was caught: %s", e->what());
-          delete e;
+          ROS_ERROR("An exception was caught: %s", e.what());
         }
       }
 
