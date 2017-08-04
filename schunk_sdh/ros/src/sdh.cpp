@@ -455,14 +455,14 @@ public:
           ROS_INFO("Initialized RS232 for SDH");
           isInitialized_ = true;
         }
-        if (sdhdevicetype_.compare("PCAN") == 0)
+        else if (sdhdevicetype_.compare("PCAN") == 0)
         {
           ROS_INFO("Starting initializing PEAKCAN");
           sdh_->OpenCAN_PEAK(baudrate_, timeout_, id_read_, id_write_, sdhdevicestring_.c_str());
           ROS_INFO("Initialized PEAK CAN for SDH");
           isInitialized_ = true;
         }
-        if (sdhdevicetype_.compare("ESD") == 0)
+        else if (sdhdevicetype_.compare("ESD") == 0)
         {
           ROS_INFO("Starting initializing ESD");
           if (strcmp(sdhdevicestring_.c_str(), "/dev/can0") == 0)
@@ -484,6 +484,12 @@ public:
           }
           ROS_INFO("Initialized ESDCAN for SDH");
           isInitialized_ = true;
+        }
+        else
+        {
+            ROS_ERROR("Unknown SDH device type: %s", sdhdevicetype_.c_str());
+            res.success = false;
+            res.message = "Unknown SDH device type: " + sdhdevicetype_;
         }
       }
       catch (const SDH::cSDHLibraryException &e)
