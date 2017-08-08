@@ -3,12 +3,12 @@
   <version>0.6.8</version>
   <description>This package provides an interface for operating the schunk dexterous hand (SDH), including the tactile sensors.</description>
 
-  <license>LGPL</license>
+  <license>Apache 2.0</license>
 
   <url type="website">http://ros.org/wiki/schunk_sdh</url>
   <!-- <url type="bugtracker"></url> -->
 
-  <maintainer email="mdl@ipa.fhg.de">Mathias Luedtke</maintainer>
+  <maintainer email="fmw@ipa.fhg.de">Florian Weisshardt</maintainer>
   <author email="mdl@ipa.fhg.de">Mathias Luedtke</author>
   <author email="fmw@ipa.fhg.de">Florian Weisshardt</author>
 
