@@ -11,7 +11,9 @@
   <url type="website">http://ros.org/wiki/schunk_description</url>
   <!-- <url type="bugtracker"></url> -->
 
-  <maintainer email="nhg@ipa.fhg.de">Nadia Hammoudeh Garcia</maintainer>
+  <maintainer email="bfb@ipa.fhg.de">Bruno Brito</maintainer>
+  <author email="fxm@ipa.fhg.de">Felix Messmer</author>
+  <author email="nhg@ipa.fhg.de">Nadia Hammoudeh Garcia</author>
   <author email="fmw@ipa.fhg.de">Florian Weisshardt</author>
 
   <buildtool_depend>catkin</buildtool_depend>

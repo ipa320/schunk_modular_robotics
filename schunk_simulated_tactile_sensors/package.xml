@@ -51,7 +51,7 @@
   <!-- <url type="bugtracker"></url> -->
 
   <author>Sven Schneider</author>
-  <maintainer email="fmw@ipa.fhg.de">Florian Weisshardt</maintainer>
+  <maintainer email="bfb@ipa.fhg.de">Bruno Brito</maintainer>
 
   <buildtool_depend>catkin</buildtool_depend>
 
