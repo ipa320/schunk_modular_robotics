@@ -2,6 +2,14 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.9 (2017-07-17)
+------------------
+* properly link and install SDHLibrary
+* manually fix changelog
+* Merge branch 'indigo_dev' of https://github.com/ipa320/schunk_modular_robotics into indigo_dev
+* renamed diagnostics topic
+* Contributors: Mathias Lüdtke, ipa-fxm, ipa-nhg
+
 0.6.8 (2016-10-10)
 ------------------
 

@@ -2,6 +2,14 @@
 Changelog for package schunk_powercube_chain
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.9 (2017-07-17)
+------------------
+* add c++11 definitions
+* manually fix changelog
+* Merge branch 'indigo_dev' of https://github.com/ipa320/schunk_modular_robotics into indigo_dev
+* /diagnostics as global topic
+* Contributors: Nadia Hammoudeh García, ipa-fxm, ipa-nhg
+
 0.6.8 (2016-10-10)
 ------------------
 * Position control
