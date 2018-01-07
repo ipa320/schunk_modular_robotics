@@ -2,6 +2,34 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.10 (2018-01-07)
+-------------------
+* Merge pull request `#198 <https://github.com/ipa320/schunk_modular_robotics/issues/198>`_ from ipa320/indigo_release_candidate
+  Indigo release candidate
+* Merge pull request `#195 <https://github.com/ipa320/schunk_modular_robotics/issues/195>`_ from christian-rauch/motor_power_switch
+  Motor power switch
+* Merge pull request `#191 <https://github.com/ipa320/schunk_modular_robotics/issues/191>`_ from ipa-fxm/APACHE_license
+  use license apache 2.0
+* skip check of alternative SDH device types
+* catch exceptions by const reference
+* provide messages for successfull service calls
+* disable / enable motor power
+* change maintainer
+* Merge pull request `#192 <https://github.com/ipa320/schunk_modular_robotics/issues/192>`_ from christian-rauch/disable_motors
+  Services for disabling motors
+* rename 'disconnect' service to 'shutdown'
+* remove unused 'srvCallback_Recover'
+* 'disconnect' and 'emergency_stop' services return true when finished
+* close connection to DSA
+* deinitialise at stop and disconnect
+* services for stopping motors
+* Merge pull request `#193 <https://github.com/ipa320/schunk_modular_robotics/issues/193>`_ from christian-rauch/pub_temperature
+  Publish temperatures for monitoring overheating
+* publish temperatures
+* enable C++11
+* use license apache 2.0
+* Contributors: Christian Rauch, Felix Messmer, ipa-fxm
+
 0.6.9 (2017-07-17)
 ------------------
 * properly link and install SDHLibrary

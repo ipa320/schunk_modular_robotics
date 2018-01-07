@@ -1,61 +1,19 @@
-/*!
- *****************************************************************
- * \file
+/*
+ * Copyright 2017 Fraunhofer Institute for Manufacturing Engineering and Automation (IPA)
  *
- * \note
- *   Copyright (c) 2010 \n
- *   Fraunhofer Institute for Manufacturing Engineering
- *   and Automation (IPA) \n\n
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *****************************************************************
- *
- * \note
- *   Project name: schunk_modular_robotics
- * \note
- *   ROS stack name: schunk_modular_robotics
- * \note
- *   ROS package name: schunk_sdh
- *
- * \author
- *   Author: Florian Weisshardt, email:florian.weisshardt@ipa.fhg.de
- * \author
- *   Supervised by: Florian Weisshardt, email:florian.weisshardt@ipa.fhg.de
- *
- * \date Date of creation: Jan 2010
- *
- * \brief
- *   Implementation of ROS node for sdh.
- *
- *****************************************************************
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- *     - Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer. \n
- *     - Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution. \n
- *     - Neither the name of the Fraunhofer Institute for Manufacturing
- *       Engineering and Automation (IPA) nor the names of its
- *       contributors may be used to endorse or promote products derived from
- *       this software without specific prior written permission. \n
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License LGPL as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License LGPL for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License LGPL along with this program.
- * If not, see <http://www.gnu.org/licenses/>.
- *
- ****************************************************************/
+ *   http://www.apache.org/licenses/LICENSE-2.0
+
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 
 // ##################
 // #### includes ####
@@ -78,6 +36,7 @@
 #include <control_msgs/JointTrajectoryControllerState.h>
 #include <schunk_sdh/TactileSensor.h>
 #include <schunk_sdh/TactileMatrix.h>
+#include <schunk_sdh/TemperatureArray.h>
 
 // ROS service includes
 #include <std_srvs/Trigger.h>
@@ -106,6 +65,7 @@ private:
   ros::Publisher topicPub_ControllerState_;
   ros::Publisher topicPub_TactileSensor_;
   ros::Publisher topicPub_Diagnostics_;
+  ros::Publisher topicPub_Temperature_;
 
   // topic subscribers
   ros::Subscriber subSetVelocitiesRaw_;
@@ -115,6 +75,10 @@ private:
   ros::ServiceServer srvServer_Stop_;
   ros::ServiceServer srvServer_Recover_;
   ros::ServiceServer srvServer_SetOperationMode_;
+  ros::ServiceServer srvServer_EmergencyStop_;
+  ros::ServiceServer srvServer_Disconnect_;
+  ros::ServiceServer srvServer_MotorOn_;
+  ros::ServiceServer srvServer_MotorOff_;
 
   // actionlib server
   actionlib::SimpleActionServer<control_msgs::FollowJointTrajectoryAction> as_;
@@ -150,6 +114,8 @@ private:
   std::vector<double> velocities_;  // in rad/s
   bool hasNewGoal_;
   std::string operationMode_;
+
+  static const std::vector<std::string> temperature_names_;
 
 public:
   /*!
@@ -195,6 +161,7 @@ public:
     topicPub_ControllerState_ = nh_.advertise<control_msgs::JointTrajectoryControllerState>(
         "joint_trajectory_controller/state", 1);
     topicPub_TactileSensor_ = nh_.advertise<schunk_sdh::TactileSensor>("tactile_data", 1);
+    topicPub_Temperature_ = nh_.advertise<schunk_sdh::TemperatureArray>("temperature", 1);
 
     // pointer to sdh
     sdh_ = new SDH::cSDH(false, false, 0);  // (_use_radians=false, bool _use_fahrenheit=false, int _debug_level=0)
@@ -205,6 +172,11 @@ public:
     srvServer_Recover_ = nh_.advertiseService("recover", &SdhNode::srvCallback_Init, this);  // HACK: There is no recover implemented yet, so we execute a init
     srvServer_SetOperationMode_ = nh_.advertiseService("set_operation_mode", &SdhNode::srvCallback_SetOperationMode,
                                                        this);
+    srvServer_EmergencyStop_ = nh_.advertiseService("emergency_stop", &SdhNode::srvCallback_EmergencyStop, this);
+    srvServer_Disconnect_ = nh_.advertiseService("shutdown", &SdhNode::srvCallback_Disconnect, this);
+
+    srvServer_MotorOn_ = nh_.advertiseService("motor_on", &SdhNode::srvCallback_MotorPowerOn, this);
+    srvServer_MotorOff_ = nh_.advertiseService("motor_off", &SdhNode::srvCallback_MotorPowerOff, this);
 
     subSetVelocitiesRaw_ = nh_.subscribe("joint_group_velocity_controller/command", 1,
                                          &SdhNode::topicCallback_setVelocitiesRaw, this);
@@ -284,10 +256,9 @@ public:
       }
       sdh_->SetAxisEnable(sdh_->All, 1.0);  // TODO: check if necessary
     }
-    catch (SDH::cSDHLibraryException* e)
+    catch (const SDH::cSDHLibraryException &e)
     {
-      ROS_ERROR("An exception was caught: %s", e->what());
-      delete e;
+      ROS_ERROR("An exception was caught: %s", e.what());
       return false;
     }
 
@@ -442,14 +413,14 @@ public:
           ROS_INFO("Initialized RS232 for SDH");
           isInitialized_ = true;
         }
-        if (sdhdevicetype_.compare("PCAN") == 0)
+        else if (sdhdevicetype_.compare("PCAN") == 0)
         {
           ROS_INFO("Starting initializing PEAKCAN");
           sdh_->OpenCAN_PEAK(baudrate_, timeout_, id_read_, id_write_, sdhdevicestring_.c_str());
           ROS_INFO("Initialized PEAK CAN for SDH");
           isInitialized_ = true;
         }
-        if (sdhdevicetype_.compare("ESD") == 0)
+        else if (sdhdevicetype_.compare("ESD") == 0)
         {
           ROS_INFO("Starting initializing ESD");
           if (strcmp(sdhdevicestring_.c_str(), "/dev/can0") == 0)
@@ -472,13 +443,18 @@ public:
           ROS_INFO("Initialized ESDCAN for SDH");
           isInitialized_ = true;
         }
+        else
+        {
+            ROS_ERROR("Unknown SDH device type: %s", sdhdevicetype_.c_str());
+            res.success = false;
+            res.message = "Unknown SDH device type: " + sdhdevicetype_;
+        }
       }
-      catch (SDH::cSDHLibraryException* e)
+      catch (const SDH::cSDHLibraryException &e)
       {
-        ROS_ERROR("An exception was caught: %s", e->what());
+        ROS_ERROR("An exception was caught: %s", e.what());
         res.success = false;
-        res.message = e->what();
-        delete e;
+        res.message = e.what();
         return true;
       }
 
@@ -496,13 +472,12 @@ public:
           //  dsa_->SetMatrixSensitivity(i, 1.0);
           isDSAInitialized_ = true;
         }
-        catch (SDH::cSDHLibraryException* e)
+        catch (const SDH::cSDHLibraryException &e)
         {
           isDSAInitialized_ = false;
-          ROS_ERROR("An exception was caught: %s", e->what());
+          ROS_ERROR("An exception was caught: %s", e.what());
           res.success = false;
-          res.message = e->what();
-          delete e;
+          res.message = e.what();
           return true;
         }
       }
@@ -521,6 +496,7 @@ public:
     }
 
     res.success = true;
+    res.message = "SDH initialised";
     return true;
   }
 
@@ -540,29 +516,14 @@ public:
     {
       sdh_->Stop();
     }
-    catch (SDH::cSDHLibraryException* e)
+    catch (const SDH::cSDHLibraryException &e)
     {
-      ROS_ERROR("An exception was caught: %s", e->what());
-      delete e;
+      ROS_ERROR("An exception was caught: %s", e.what());
     }
 
     ROS_INFO("Stopping sdh succesfull");
     res.success = true;
-    return true;
-  }
-
-  /*!
-   * \brief Executes the service callback for recover.
-   *
-   * Recovers the hardware after an emergency stop.
-   * \param req Service request
-   * \param res Service response
-   */
-  bool srvCallback_Recover(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
-  {
-    ROS_WARN("Service recover not implemented yet");
-    res.success = true;
-    res.message = "Service recover not implemented yet";
+    res.message = "stopped SDH";
     return true;
   }
 
@@ -580,6 +541,7 @@ public:
     ROS_INFO("Set operation mode to [%s]", req.data.c_str());
     operationMode_ = req.data;
     res.success = true;
+    res.message = "Set operation mode to "+req.data;
     if (operationMode_ == "position")
     {
       sdh_->SetController(SDH::cSDH::eCT_POSE);
@@ -591,10 +553,9 @@ public:
         sdh_->SetController(SDH::cSDH::eCT_VELOCITY);
         sdh_->SetAxisEnable(sdh_->All, 1.0);
       }
-      catch (SDH::cSDHLibraryException* e)
+      catch (const SDH::cSDHLibraryException &e)
       {
-        ROS_ERROR("An exception was caught: %s", e->what());
-        delete e;
+        ROS_ERROR("An exception was caught: %s", e.what());
       }
     }
     else
@@ -605,12 +566,114 @@ public:
   }
 
   /*!
+   * \brief Executes the service callback for emergency_stop.
+   *
+   * Performs an emergency stop.
+   * \param req Service request
+   * \param res Service response
+   */
+  bool srvCallback_EmergencyStop(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res) {
+      try {
+        isInitialized_ = false;
+        sdh_->EmergencyStop();
+        sdh_->SetAxisEnable(sdh_->All, 0.0);
+        sdh_->SetAxisMotorCurrent(sdh_->All, 0.0);
+      }
+      catch(const SDH::cSDHLibraryException &e) {
+          ROS_ERROR("An exception was caught: %s", e.what());
+          res.success = false;
+          res.message = e.what();
+          return true;
+      }
+
+      res.success = true;
+      res.message = "EMERGENCY stop";
+      return true;
+  }
+
+  /*!
+   * \brief Executes the service callback for disconnect.
+   *
+   * Disconnect from SDH and DSA and disable motors to prevent overheating.
+   * \param req Service request
+   * \param res Service response
+   */
+  bool srvCallback_Disconnect(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res) {
+      try {
+        isInitialized_ = false;
+        isDSAInitialized_ = false;
+
+        sdh_->SetAxisEnable(sdh_->All, 0.0);
+        sdh_->SetAxisMotorCurrent(sdh_->All, 0.0);
+
+        sdh_->Close();
+        dsa_->Close();
+      }
+      catch(const SDH::cSDHLibraryException &e) {
+          ROS_ERROR("An exception was caught: %s", e.what());
+          res.success = false;
+          res.message = e.what();
+          return true;
+      }
+
+      ROS_INFO("Disconnected");
+      res.success = true;
+      res.message = "disconnected from SDH";
+      return true;
+  }
+
+  /*!
+   * \brief Enable motor power
+   * \param req Service request
+   * \param res Service response
+   */
+  bool srvCallback_MotorPowerOn(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res) {
+    try {
+      sdh_->SetAxisEnable(sdh_->All, 1.0);
+      sdh_->SetAxisMotorCurrent(sdh_->All, 0.5);
+    }
+    catch (const SDH::cSDHLibraryException &e) {
+      ROS_ERROR("An exception was caught: %s", e.what());
+      res.success = false;
+      res.message = e.what();
+      return true;
+    }
+    ROS_INFO("Motor power ON");
+    res.success = true;
+    res.message = "Motor ON";
+    return true;
+  }
+
+  /*!
+   * \brief Disable motor power
+   * \param req Service request
+   * \param res Service response
+   */
+  bool srvCallback_MotorPowerOff(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res) {
+    try {
+      sdh_->SetAxisEnable(sdh_->All, 0.0);
+      sdh_->SetAxisMotorCurrent(sdh_->All, 0.0);
+    }
+    catch (const SDH::cSDHLibraryException &e) {
+      ROS_ERROR("An exception was caught: %s", e.what());
+      res.success = false;
+      res.message = e.what();
+      return true;
+    }
+    ROS_INFO("Motor power OFF");
+    res.success = true;
+    res.message = "Motor OFF";
+    return true;
+  }
+
+  /*!
    * \brief Main routine to update sdh.
    *
    * Sends target to hardware and reads out current configuration.
    */
   void updateSdh()
   {
+    const ros::Time time = ros::Time::now();
     ROS_DEBUG("updateJointState");
     if (isInitialized_ == true)
     {
@@ -621,10 +684,9 @@ public:
         {
           sdh_->Stop();
         }
-        catch (SDH::cSDHLibraryException* e)
+        catch (const SDH::cSDHLibraryException &e)
         {
-          ROS_ERROR("An exception was caught: %s", e->what());
-          delete e;
+          ROS_ERROR("An exception was caught: %s", e.what());
         }
 
         if (operationMode_ == "position")
@@ -636,10 +698,9 @@ public:
             sdh_->SetAxisTargetAngle(axes_, targetAngles_);
             sdh_->MoveHand(false);
           }
-          catch (SDH::cSDHLibraryException* e)
+          catch (const SDH::cSDHLibraryException &e)
           {
-            ROS_ERROR("An exception was caught: %s", e->what());
-            delete e;
+            ROS_ERROR("An exception was caught: %s", e.what());
           }
         }
         else if (operationMode_ == "velocity")
@@ -650,10 +711,9 @@ public:
             sdh_->SetAxisTargetVelocity(axes_, velocities_);
             // ROS_DEBUG_STREAM("velocities: " << velocities_[0] << " "<< velocities_[1] << " "<< velocities_[2] << " "<< velocities_[3] << " "<< velocities_[4] << " "<< velocities_[5] << " "<< velocities_[6]);
           }
-          catch (SDH::cSDHLibraryException* e)
+          catch (const SDH::cSDHLibraryException &e)
           {
-            ROS_ERROR("An exception was caught: %s", e->what());
-            delete e;
+            ROS_ERROR("An exception was caught: %s", e.what());
           }
         }
         else if (operationMode_ == "effort")
@@ -677,25 +737,21 @@ public:
       {
         actualAngles = sdh_->GetAxisActualAngle(axes_);
       }
-      catch (SDH::cSDHLibraryException* e)
+      catch (const SDH::cSDHLibraryException &e)
       {
-        ROS_ERROR("An exception was caught: %s", e->what());
-        delete e;
+        ROS_ERROR("An exception was caught: %s", e.what());
       }
       std::vector<double> actualVelocities;
       try
       {
         actualVelocities = sdh_->GetAxisActualVelocity(axes_);
       }
-      catch (SDH::cSDHLibraryException* e)
+      catch (const SDH::cSDHLibraryException &e)
       {
-        ROS_ERROR("An exception was caught: %s", e->what());
-        delete e;
+        ROS_ERROR("An exception was caught: %s", e.what());
       }
 
       ROS_DEBUG("received %d angles from sdh", static_cast<int>(actualAngles.size()));
-
-      ros::Time time = ros::Time::now();
 
       // create joint_state message
       sensor_msgs::JointState msg;
@@ -778,6 +834,19 @@ public:
 
       // read sdh status
       state_ = sdh_->GetAxisActualState(axes_);
+
+      // publish temperature
+      schunk_sdh::TemperatureArray temp_array;
+      temp_array.header.stamp = time;
+      const std::vector<double> temp_value = sdh_->GetTemperature(sdh_->all_temperature_sensors);
+      if(temp_value.size()==temperature_names_.size()) {
+          temp_array.name = temperature_names_;
+          temp_array.temperature = temp_value;
+      }
+      else {
+          ROS_ERROR("amount of temperatures mismatch with stored names");
+      }
+      topicPub_Temperature_.publish(temp_array);
     }
     else
     {
@@ -835,10 +904,9 @@ public:
           // dsa_->SetFramerate( 0, true, true );
           dsa_->UpdateFrame();
         }
-        catch (SDH::cSDHLibraryException* e)
+        catch (const SDH::cSDHLibraryException &e)
         {
-          ROS_ERROR("An exception was caught: %s", e->what());
-          delete e;
+          ROS_ERROR("An exception was caught: %s", e.what());
         }
       }
 
@@ -864,6 +932,14 @@ public:
       topicPub_TactileSensor_.publish(msg);
     }
   }
+};
+
+const std::vector<std::string> SdhNode::temperature_names_ = {
+    "root",
+    "proximal_finger_1", "distal_finger_1",
+    "proximal_finger_2", "distal_finger_2",
+    "proximal_finger_3", "distal_finger_3",
+    "controller", "pcb"
 };
 // SdhNode
 
@@ -912,4 +988,3 @@ int main(int argc, char** argv)
 
   return 0;
 }
-

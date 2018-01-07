@@ -1,17 +1,19 @@
 <package format="2">
   <name>schunk_description</name>
-  <version>0.6.9</version>
+  <version>0.6.10</version>
   <description>This package contains the description (mechanical, kinematic, visual,
   etc.) of different schunk components. The files in this package are parsed and used by
   a variety of other components. Most users will not interact directly
   with this package.</description>
 
-  <license>LGPL</license>
+  <license>Apache 2.0</license>
 
   <url type="website">http://ros.org/wiki/schunk_description</url>
   <!-- <url type="bugtracker"></url> -->
 
-  <maintainer email="nhg@ipa.fhg.de">Nadia Hammoudeh Garcia</maintainer>
+  <maintainer email="bfb@ipa.fhg.de">Bruno Brito</maintainer>
+  <author email="fxm@ipa.fhg.de">Felix Messmer</author>
+  <author email="nhg@ipa.fhg.de">Nadia Hammoudeh Garcia</author>
   <author email="fmw@ipa.fhg.de">Florian Weisshardt</author>
 
   <buildtool_depend>catkin</buildtool_depend>
