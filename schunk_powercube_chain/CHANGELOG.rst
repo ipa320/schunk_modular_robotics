@@ -2,6 +2,15 @@
 Changelog for package schunk_powercube_chain
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.10 (2018-01-07)
+-------------------
+* Merge pull request `#198 <https://github.com/ipa320/schunk_modular_robotics/issues/198>`_ from ipa320/indigo_release_candidate
+  Indigo release candidate
+* Merge pull request `#191 <https://github.com/ipa320/schunk_modular_robotics/issues/191>`_ from ipa-fxm/APACHE_license
+  use license apache 2.0
+* use license apache 2.0
+* Contributors: Felix Messmer, ipa-fxm
+
 0.6.9 (2017-07-17)
 ------------------
 * add c++11 definitions
