@@ -13,6 +13,8 @@ add_message_files(
     TactileMatrix.msg
     TactileSensor.msg
     TemperatureArray.msg
+    PressureArray.msg
+    PressureArrayList.msg
 )
 
 generate_messages(
