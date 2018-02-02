@@ -96,6 +96,8 @@ private:
   std::string sdhdevicestring_;
   int sdhdevicenum_;
   std::string dsadevicestring_;
+  int dsa_dbg_level_;
+  double dsa_sensitivity_;
   int dsadevicenum_;
   int baudrate_, id_read_, id_write_;
   double timeout_;
@@ -188,6 +190,8 @@ public:
 
     nh_.param("dsadevicestring", dsadevicestring_, std::string(""));
     nh_.param("dsadevicenum", dsadevicenum_, 0);
+    nh_.param("dsa_dbg_level", dsa_dbg_level_, 0);
+    nh_.param("dsa_sensitivity", dsa_sensitivity_, 0.5);
 
     nh_.param("baudrate", baudrate_, 1000000);
     nh_.param("timeout", timeout_, static_cast<double>(0.04));
@@ -465,13 +469,13 @@ public:
       {
         try
         {
-          dsa_ = new SDH::cDSA(0, dsadevicenum_, dsadevicestring_.c_str());
+          dsa_ = new SDH::cDSA(dsa_dbg_level_, dsadevicenum_, dsadevicestring_.c_str());
           // dsa_->SetFramerate( 0, true, false );
           dsa_->SetFramerate(1, true);
           ROS_INFO("Initialized RS232 for DSA Tactile Sensors on device %s", dsadevicestring_.c_str());
-          // ROS_INFO("Set sensitivity to 1.0");
-          // for(int i=0; i<6; i++)
-          //  dsa_->SetMatrixSensitivity(i, 1.0);
+          for(int imat=0; imat<dsa_->GetSensorInfo().nb_matrices; imat++) {
+            dsa_->SetMatrixSensitivity(imat, dsa_sensitivity_);
+          }
           isDSAInitialized_ = true;
         }
         catch (SDH::cSDHLibraryException* e)
