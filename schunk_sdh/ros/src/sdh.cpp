@@ -972,8 +972,9 @@ public:
 
           for (uint y(0); y < matrix_info.cells_y; y++) {
             for (uint x(0); x < matrix_info.cells_x; x++) {
-              // convert voltage to pressure (N/(mm^2) = 1e6 Pa)
-              msg_pressure_list.pressure_list[mid].pressure[matrix_info.cells_x * y + x] = dsa_->GetTexel(mid, x, y) * dsa_calib_pressure_ / dsa_calib_voltage_;
+              // convert voltage to pressure in Pascal
+              msg_pressure_list.pressure_list[mid].pressure[matrix_info.cells_x * y + x] =
+                      dsa_->GetTexel(mid, x, y) * dsa_calib_pressure_ / dsa_calib_voltage_ * 1e6;
             }
           }
         } // part
