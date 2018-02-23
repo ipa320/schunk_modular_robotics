@@ -37,6 +37,7 @@
 #include <schunk_sdh/TactileSensor.h>
 #include <schunk_sdh/TactileMatrix.h>
 #include <schunk_sdh/TemperatureArray.h>
+#include <schunk_sdh/PressureArrayList.h>
 
 // ROS service includes
 #include <std_srvs/Trigger.h>
@@ -66,6 +67,7 @@ private:
   ros::Publisher topicPub_TactileSensor_;
   ros::Publisher topicPub_Diagnostics_;
   ros::Publisher topicPub_Temperature_;
+  ros::Publisher topicPub_Pressure_;
 
   // topic subscribers
   ros::Subscriber subSetVelocitiesRaw_;
@@ -96,6 +98,10 @@ private:
   std::string sdhdevicestring_;
   int sdhdevicenum_;
   std::string dsadevicestring_;
+  int dsa_dbg_level_;
+  double dsa_sensitivity_;
+  double dsa_calib_pressure_;
+  double dsa_calib_voltage_;
   int dsadevicenum_;
   int baudrate_, id_read_, id_write_;
   double timeout_;
@@ -116,6 +122,7 @@ private:
   std::string operationMode_;
 
   static const std::vector<std::string> temperature_names_;
+  static const std::vector<std::string> finger_names_;
 
 public:
   /*!
@@ -162,6 +169,7 @@ public:
         "joint_trajectory_controller/state", 1);
     topicPub_TactileSensor_ = nh_.advertise<schunk_sdh::TactileSensor>("tactile_data", 1);
     topicPub_Temperature_ = nh_.advertise<schunk_sdh::TemperatureArray>("temperature", 1);
+    topicPub_Pressure_ = nh_.advertise<schunk_sdh::PressureArrayList>("pressure", 1);
 
     // pointer to sdh
     sdh_ = new SDH::cSDH(false, false, 0);  // (_use_radians=false, bool _use_fahrenheit=false, int _debug_level=0)
@@ -188,6 +196,10 @@ public:
 
     nh_.param("dsadevicestring", dsadevicestring_, std::string(""));
     nh_.param("dsadevicenum", dsadevicenum_, 0);
+    nh_.param("dsa_dbg_level", dsa_dbg_level_, 0);
+    nh_.param("dsa_sensitivity", dsa_sensitivity_, 0.5);
+    nh_.param("dsa_calib_pressure", dsa_calib_pressure_, 0.000473); // unit: N/(mm*mm)
+    nh_.param("dsa_calib_voltage", dsa_calib_voltage_, 592.1);      // unit: mV
 
     nh_.param("baudrate", baudrate_, 1000000);
     nh_.param("timeout", timeout_, static_cast<double>(0.04));
@@ -465,13 +477,13 @@ public:
       {
         try
         {
-          dsa_ = new SDH::cDSA(0, dsadevicenum_, dsadevicestring_.c_str());
+          dsa_ = new SDH::cDSA(dsa_dbg_level_, dsadevicenum_, dsadevicestring_.c_str());
           // dsa_->SetFramerate( 0, true, false );
           dsa_->SetFramerate(1, true);
           ROS_INFO("Initialized RS232 for DSA Tactile Sensors on device %s", dsadevicestring_.c_str());
-          // ROS_INFO("Set sensitivity to 1.0");
-          // for(int i=0; i<6; i++)
-          //  dsa_->SetMatrixSensitivity(i, 1.0);
+          for(int imat=0; imat<dsa_->GetSensorInfo().nb_matrices; imat++) {
+            dsa_->SetMatrixSensitivity(imat, dsa_sensitivity_);
+          }
           isDSAInitialized_ = true;
         }
         catch (SDH::cSDHLibraryException* e)
@@ -923,24 +935,51 @@ public:
 
       schunk_sdh::TactileSensor msg;
       msg.header.stamp = ros::Time::now();
-      int m, x, y;
       msg.tactile_matrix.resize(dsa_->GetSensorInfo().nb_matrices);
       for (int i = 0; i < dsa_->GetSensorInfo().nb_matrices; i++)
       {
-        m = dsa_reorder[i];
+        const int m = dsa_reorder[i];
         schunk_sdh::TactileMatrix &tm = msg.tactile_matrix[i];
         tm.matrix_id = i;
         tm.cells_x = dsa_->GetMatrixInfo(m).cells_x;
         tm.cells_y = dsa_->GetMatrixInfo(m).cells_y;
         tm.tactile_array.resize(tm.cells_x * tm.cells_y);
-        for (y = 0; y < tm.cells_y; y++)
+        for (uint y = 0; y < tm.cells_y; y++)
         {
-          for (x = 0; x < tm.cells_x; x++)
+          for (uint x = 0; x < tm.cells_x; x++)
             tm.tactile_array[tm.cells_x * y + x] = dsa_->GetTexel(m, x, y);
         }
       }
       // publish matrix
       topicPub_TactileSensor_.publish(msg);
+
+      // read tactile matrices and convert to pressure units
+      schunk_sdh::PressureArrayList msg_pressure_list;
+      msg_pressure_list.header.stamp = ros::Time::now();
+      const SDH::cDSA::sSensorInfo &sensor_info = dsa_->GetSensorInfo();
+      msg_pressure_list.pressure_list.resize(sensor_info.nb_matrices);
+      for(const uint &fi : {0,1,2}) {
+        for(const uint &part : {0,1}) {
+          // get internal ID and name for each finger tactile matrix
+          const int mid = dsa_->GetMatrixIndex(fi, part);
+          msg_pressure_list.pressure_list[mid].sensor_name = "sdh_"+finger_names_[fi]+std::to_string(part+2)+"_link";
+
+          // read texel values and convert to pressure
+          const SDH::cDSA::sMatrixInfo &matrix_info = dsa_->GetMatrixInfo(mid);
+          msg_pressure_list.pressure_list[mid].cells_x = matrix_info.cells_x;
+          msg_pressure_list.pressure_list[mid].cells_y = matrix_info.cells_y;
+          msg_pressure_list.pressure_list[mid].pressure.resize(matrix_info.cells_x * matrix_info.cells_y);
+
+          for (uint y(0); y < matrix_info.cells_y; y++) {
+            for (uint x(0); x < matrix_info.cells_x; x++) {
+              // convert voltage to pressure in Pascal
+              msg_pressure_list.pressure_list[mid].pressure[matrix_info.cells_x * y + x] =
+                      dsa_->GetTexel(mid, x, y) * dsa_calib_pressure_ / dsa_calib_voltage_ * 1e6;
+            }
+          }
+        } // part
+      } // finger
+      topicPub_Pressure_.publish(msg_pressure_list);
     }
   }
 };
@@ -951,6 +990,10 @@ const std::vector<std::string> SdhNode::temperature_names_ = {
     "proximal_finger_2", "distal_finger_2",
     "proximal_finger_3", "distal_finger_3",
     "controller", "pcb"
+};
+
+const std::vector<std::string> SdhNode::finger_names_ = {
+  "finger_2", "thumb_", "finger_1"
 };
 // SdhNode
 
