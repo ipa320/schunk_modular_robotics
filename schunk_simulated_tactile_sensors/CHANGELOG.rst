@@ -2,6 +2,9 @@
 Changelog for package schunk_simulated_tactile_sensors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.6.10 (2018-01-07)
 -------------------
 * Merge pull request `#198 <https://github.com/ipa320/schunk_modular_robotics/issues/198>`_ from ipa320/indigo_release_candidate
