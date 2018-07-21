@@ -2,6 +2,19 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.11 (2018-07-21)
+-------------------
+* Merge pull request `#204 <https://github.com/ipa320/schunk_modular_robotics/issues/204>`_ from christian-rauch/pressure
+  Publish tactile data as pressure
+* report pressure in Pascal (Pa)
+* publish tactile matrix in pressure units
+* configure DSA debug level and tactile sensitivity through ROS parameters
+* Merge pull request `#202 <https://github.com/ipa320/schunk_modular_robotics/issues/202>`_ from christian-rauch/fix_exceptions
+  Revert "catch exceptions by const reference"
+* Revert "catch exceptions by const reference"
+  This reverts commit 0da887264e5ccfbbf5b552f5c50e45d80fe0a01a.
+* Contributors: Christian Rauch, Felix Messmer
+
 0.6.10 (2018-01-07)
 -------------------
 * Merge pull request `#198 <https://github.com/ipa320/schunk_modular_robotics/issues/198>`_ from ipa320/indigo_release_candidate
