@@ -2,8 +2,8 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.11 (2018-07-21)
+-------------------
 * Merge pull request `#204 <https://github.com/ipa320/schunk_modular_robotics/issues/204>`_ from christian-rauch/pressure
   Publish tactile data as pressure
 * report pressure in Pascal (Pa)
