@@ -57,8 +57,9 @@
         </geometry>
       </visual>
       <collision>
+        <origin xyz="0 0 ${0.040-0.5*0.0171}" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://schunk_description/meshes/pg70/pg70.stl" />
+          <box size="0.082 0.114 0.080" />
         </geometry>
       </collision>
     </link>
@@ -69,7 +70,7 @@
       <parent link="${name}_palm_link" />
       <child link="${name}_finger_left_link" />
       <axis xyz="0 1 0" />
-      <limit effort="10" lower="-0.001" upper="0.061" velocity="2.0"/>
+      <limit effort="10" lower="-0.001" upper="0.0301" velocity="0.041"/>
     </joint>
 
     <link name="${name}_finger_left_link">
@@ -103,7 +104,7 @@
       <child link="${name}_finger_right_link" />
       <axis xyz="0 -1 0" />
       <mimic joint="${name}_finger_left_joint" multiplier="1" offset="0"/>
-      <limit effort="10" lower="-0.001" upper="0.061" velocity="2.0"/>
+      <limit effort="10" lower="-0.001" upper="0.0301" velocity="0.041"/>
     </joint>
 
     <link name="${name}_finger_right_link">
