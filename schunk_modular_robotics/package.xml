@@ -1,6 +1,6 @@
 <package format="2">
   <name>schunk_modular_robotics</name>
-  <version>0.6.11</version>
+  <version>0.6.12</version>
   <description>This stack includes packages that provide access to the Schunk hardware through ROS messages, services and actions.</description>
 
   <license>Apache 2.0</license>

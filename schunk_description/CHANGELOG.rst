@@ -2,8 +2,8 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.12 (2018-08-16)
+-------------------
 * Merge pull request `#200 <https://github.com/ipa320/schunk_modular_robotics/issues/200>`_ from PilzDE/fix-pg70-urdf-limits
   fix PG+70 limits and simplify collision model
 * fix limits and simplify collision model
