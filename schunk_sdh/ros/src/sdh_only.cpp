@@ -56,7 +56,6 @@ class SdhNode
 public:
   /// create a handle for this node, initialize node
   ros::NodeHandle nh_;
-  ros::NodeHandle nh_private_;
 
 private:
   // declaration of topics to publish
@@ -117,11 +116,10 @@ public:
    *
    * \param name Name for the actionlib server
    */
-  SdhNode() :
-      as_(nh_, "joint_trajectory_controller/follow_joint_trajectory", boost::bind(&SdhNode::executeCB, this, _1), false), action_name_(
-          "follow_joint_trajectory")
+  SdhNode(std::string name) :
+      as_(nh_, name, boost::bind(&SdhNode::executeCB, this, _1), false), action_name_(name)
   {
-    nh_private_ = ros::NodeHandle("~");
+    nh_ = ros::NodeHandle("~");
     pi_ = 3.1415926;
     isError_ = false;
 
@@ -151,7 +149,7 @@ public:
     topicPub_JointState_ = nh_.advertise<sensor_msgs::JointState>("joint_states", 1);
     topicPub_ControllerState_ = nh_.advertise<control_msgs::JointTrajectoryControllerState>(
         "joint_trajectory_controller/state", 1);
-    topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("diagnostics", 1);
+    topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
     topicPub_Temperature_ = nh_.advertise<schunk_sdh::TemperatureArray>("temperature", 1);
 
     // pointer to sdh
@@ -174,21 +172,21 @@ public:
                                          &SdhNode::topicCallback_setVelocitiesRaw, this);
 
     // getting hardware parameters from parameter server
-    nh_private_.param("sdhdevicetype", sdhdevicetype_, std::string("PCAN"));
-    nh_private_.param("sdhdevicestring", sdhdevicestring_, std::string("/dev/pcan0"));
-    nh_private_.param("sdhdevicenum", sdhdevicenum_, 0);
+    nh_.param("sdhdevicetype", sdhdevicetype_, std::string("PCAN"));
+    nh_.param("sdhdevicestring", sdhdevicestring_, std::string("/dev/pcan0"));
+    nh_.param("sdhdevicenum", sdhdevicenum_, 0);
 
-    nh_private_.param("baudrate", baudrate_, 1000000);
-    nh_private_.param("timeout", timeout_, static_cast<double>(0.04));
-    nh_private_.param("id_read", id_read_, 43);
-    nh_private_.param("id_write", id_write_, 42);
+    nh_.param("baudrate", baudrate_, 1000000);
+    nh_.param("timeout", timeout_, static_cast<double>(0.04));
+    nh_.param("id_read", id_read_, 43);
+    nh_.param("id_write", id_write_, 42);
 
     // get joint_names from parameter server
     ROS_INFO("getting joint_names from parameter server");
     XmlRpc::XmlRpcValue joint_names_param;
-    if (nh_private_.hasParam("joint_names"))
+    if (nh_.hasParam("joint_names"))
     {
-      nh_private_.getParam("joint_names", joint_names_param);
+      nh_.getParam("joint_names", joint_names_param);
     }
     else
     {
@@ -215,7 +213,7 @@ public:
 
     state_.resize(axes_.size());
 
-    nh_private_.param("OperationMode", operationMode_, std::string("position"));
+    nh_.param("OperationMode", operationMode_, std::string("position"));
     return true;
   }
   /*!
@@ -873,16 +871,16 @@ int main(int argc, char** argv)
   // initialize ROS, spezify name of node
   ros::init(argc, argv, "schunk_sdh");
 
-  SdhNode sdh_node;
+  SdhNode sdh_node(ros::this_node::getName() + "/follow_joint_trajectory");
   if (!sdh_node.init())
     return 0;
 
   ROS_INFO("...sdh node running...");
 
   double frequency;
-  if (sdh_node.nh_private_.hasParam("frequency"))
+  if (sdh_node.nh_.hasParam("frequency"))
   {
-    sdh_node.nh_private_.getParam("frequency", frequency);
+    sdh_node.nh_.getParam("frequency", frequency);
   }
   else
   {
