@@ -33,5 +33,6 @@
   <depend>std_srvs</depend>
   <depend>trajectory_msgs</depend>
   <depend>urdf</depend>
+  <depend>sdhlibrary_cpp</depend>
 
 </package>
