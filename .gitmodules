@@ -1,0 +1,4 @@
+[submodule "SDHLibrary-CPP"]
+	path = SDHLibrary-CPP
+	url = https://github.com/ipab-slmc/SDHLibrary-CPP.git
+	branch = master
