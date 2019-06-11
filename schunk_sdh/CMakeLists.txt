@@ -7,6 +7,8 @@ find_package(catkin REQUIRED COMPONENTS actionlib cob_srvs control_msgs diagnost
 
 find_package(Boost REQUIRED)
 
+find_package(sdhlibrary_cpp REQUIRED)
+
 ### Message Generation ###
 add_message_files(
   DIRECTORY msg FILES
@@ -26,19 +28,6 @@ catkin_package(
 )
 
 ### BUILD ###
-find_program(CMAKE_DPKG dpkg /bin /usr/bin /usr/local/bin )
-if(CMAKE_DPKG)
-  exec_program(dpkg ARGS --print-architecture OUTPUT_VARIABLE CMAKE_DPKG_ARCH)
-  if(CMAKE_DPKG_ARCH MATCHES "amd64")
-    message(STATUS "++++++++++++++++++++++++++ DETECTED 64 bit +++++++++++++++++++++++++++++++++++")
-    set(MYARCH "x86_64")
-  else()
-    message(STATUS "++++++++++++++++++++++++++ DETECTED 32 bit +++++++++++++++++++++++++++++++++++")
-    set(MYARCH "i686")
-  endif()
-endif()
-
-link_directories(${PROJECT_SOURCE_DIR}/common/lib/${MYARCH})
 
 include_directories(common/include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
@@ -63,8 +52,6 @@ install(TARGETS ${PROJECT_NAME} sdh_only dsa_only
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
-
-install(FILES ${PROJECT_SOURCE_DIR}/common/lib/${MYARCH}/libSDHLibrary-CPP.so DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
 
 ### LINT ###
 roslint_cpp(ros/src/sdh.cpp ros/src/dsa_only.cpp ros/src/sdh_only.cpp)
