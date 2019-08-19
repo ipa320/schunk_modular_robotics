@@ -7,7 +7,7 @@ notifications:
     on_failure: always
 env:
   global:
-    - ROS_REPO=ros
+    - ROS_REPO=ros-testing
   matrix:
     - ROS_DISTRO=indigo UPSTREAM_WORKSPACE=file
     - ROS_DISTRO=indigo UPSTREAM_WORKSPACE=debian
