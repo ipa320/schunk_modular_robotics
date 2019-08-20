@@ -2,6 +2,13 @@
 Changelog for package schunk_libm5api
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.13 (2019-08-20)
+-------------------
+* Merge pull request `#207 <https://github.com/ipa320/schunk_modular_robotics/issues/207>`_ from christian-rauch/no_abs
+  Deactivate definition of 'abs' function
+* do not use self defined 'abs' function
+* Contributors: Christian Rauch
+
 0.6.12 (2018-08-16)
 -------------------
 
