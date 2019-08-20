@@ -2,6 +2,28 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.13 (2019-08-20)
+-------------------
+* Merge pull request `#213 <https://github.com/ipa320/schunk_modular_robotics/issues/213>`_ from PilzDE/remove-gazebo-depend
+  drop gazebo_ros dependency
+* drop gazebo_ros dependency
+  Fixes `#209 <https://github.com/ipa320/schunk_modular_robotics/issues/209>`_
+* Merge pull request `#208 <https://github.com/ipa320/schunk_modular_robotics/issues/208>`_ from christian-rauch/rm_visual_tip
+  remove visual representation of virtual SDH grasp and tip links
+* remove visual representation of virtual SDH grasp and tip links
+* Contributors: Christian Rauch, Joachim Schleicher
+
+0.6.12 (2018-08-16)
+-------------------
+* Merge pull request `#200 <https://github.com/ipa320/schunk_modular_robotics/issues/200>`_ from PilzDE/fix-pg70-urdf-limits
+  fix PG+70 limits and simplify collision model
+* fix limits and simplify collision model
+  The gripper fingers both can move 30mm according to the datasheet
+  to give a distance of 60mm between the fingers.
+  The _finger_palm_link can be easily simplified as a box geometry
+  for faster collision checking.
+* Contributors: Joachim Schleicher, Nadia Hammoudeh García
+
 0.6.11 (2018-07-21)
 -------------------
 

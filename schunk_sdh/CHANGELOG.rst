@@ -2,6 +2,22 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.13 (2019-08-20)
+-------------------
+* Merge pull request `#212 <https://github.com/ipa320/schunk_modular_robotics/issues/212>`_ from christian-rauch/sdhlib_source
+  Replace binary sdh library with source SDHLibrary-CPP
+* add source dependency on 'sdhlibrary_cpp'
+* remove binary distribution of SDHLibrary-CPP
+* Merge pull request `#210 <https://github.com/ipa320/schunk_modular_robotics/issues/210>`_ from christian-rauch/sdh_only_services
+  backport services to SDH only node
+* use private namespace for sdh_only node
+* backport temperature publisching to sdh_only node
+* backport services to sdh_only node
+* Contributors: Christian Rauch
+
+0.6.12 (2018-08-16)
+-------------------
+
 0.6.11 (2018-07-21)
 -------------------
 * Merge pull request `#204 <https://github.com/ipa320/schunk_modular_robotics/issues/204>`_ from christian-rauch/pressure

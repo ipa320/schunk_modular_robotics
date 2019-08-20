@@ -42,21 +42,7 @@
       <child link="${name}_grasp_link" />
     </joint>
 
-    <link name="${name}_grasp_link">
-      <xacro:default_inertial/>
-      <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
-        <geometry>
-          <box size="0.001 0.001 0.001" />
-        </geometry>
-      </visual>
-      <collision>
-        <origin xyz="0 0 0" rpy="0 0 0" />
-        <geometry>
-          <box size="0.001 0.001 0.001" />
-        </geometry>
-      </collision>
-    </link>
+    <link name="${name}_grasp_link" />
 
     <!-- tip link -->
     <joint name="${name}_tip_joint" type="fixed" >
@@ -65,21 +51,7 @@
       <child link="${name}_tip_link" />
     </joint>
 
-    <link name="${name}_tip_link">
-      <xacro:default_inertial/>
-      <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
-        <geometry>
-          <box size="0.001 0.001 0.001" />
-        </geometry>
-      </visual>
-      <collision>
-        <origin xyz="0 0 0" rpy="0 0 0" />
-        <geometry>
-          <box size="0.001 0.001 0.001" />
-        </geometry>
-      </collision>
-    </link>
+    <link name="${name}_tip_link" />
 
     <!-- finger1 -->
     <!-- joint between sdh_palm_link and sdh_finger_11_link -->

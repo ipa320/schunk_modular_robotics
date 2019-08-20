@@ -34,6 +34,7 @@
 #include <sensor_msgs/JointState.h>
 #include <control_msgs/FollowJointTrajectoryAction.h>
 #include <control_msgs/JointTrajectoryControllerState.h>
+#include <schunk_sdh/TemperatureArray.h>
 
 // ROS service includes
 #include <std_srvs/Trigger.h>
@@ -55,13 +56,13 @@ class SdhNode
 public:
   /// create a handle for this node, initialize node
   ros::NodeHandle nh_;
-  ros::NodeHandle nh_private_;
 
 private:
   // declaration of topics to publish
   ros::Publisher topicPub_JointState_;
   ros::Publisher topicPub_ControllerState_;
   ros::Publisher topicPub_Diagnostics_;
+  ros::Publisher topicPub_Temperature_;
 
   // topic subscribers
   ros::Subscriber subSetVelocitiesRaw_;
@@ -71,6 +72,10 @@ private:
   ros::ServiceServer srvServer_Stop_;
   ros::ServiceServer srvServer_Recover_;
   ros::ServiceServer srvServer_SetOperationMode_;
+  ros::ServiceServer srvServer_EmergencyStop_;
+  ros::ServiceServer srvServer_Disconnect_;
+  ros::ServiceServer srvServer_MotorOn_;
+  ros::ServiceServer srvServer_MotorOff_;
 
   // actionlib server
   actionlib::SimpleActionServer<control_msgs::FollowJointTrajectoryAction> as_;
@@ -103,17 +108,18 @@ private:
   bool hasNewGoal_;
   std::string operationMode_;
 
+  static const std::vector<std::string> temperature_names_;
+
 public:
   /*!
    * \brief Constructor for SdhNode class
    *
    * \param name Name for the actionlib server
    */
-  SdhNode() :
-      as_(nh_, "joint_trajectory_controller/follow_joint_trajectory", boost::bind(&SdhNode::executeCB, this, _1), false), action_name_(
-          "follow_joint_trajectory")
+  SdhNode(std::string name) :
+      as_(nh_, name, boost::bind(&SdhNode::executeCB, this, _1), false), action_name_(name)
   {
-    nh_private_ = ros::NodeHandle("~");
+    nh_ = ros::NodeHandle("~");
     pi_ = 3.1415926;
     isError_ = false;
 
@@ -143,37 +149,44 @@ public:
     topicPub_JointState_ = nh_.advertise<sensor_msgs::JointState>("joint_states", 1);
     topicPub_ControllerState_ = nh_.advertise<control_msgs::JointTrajectoryControllerState>(
         "joint_trajectory_controller/state", 1);
-    topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("diagnostics", 1);
+    topicPub_Diagnostics_ = nh_.advertise<diagnostic_msgs::DiagnosticArray>("/diagnostics", 1);
+    topicPub_Temperature_ = nh_.advertise<schunk_sdh::TemperatureArray>("temperature", 1);
 
     // pointer to sdh
     sdh_ = new SDH::cSDH(false, false, 0);  // (_use_radians=false, bool _use_fahrenheit=false, int _debug_level=0)
 
     // implementation of service servers
-    srvServer_Init_ = nh_.advertiseService("driver/init", &SdhNode::srvCallback_Init, this);
-    srvServer_Stop_ = nh_.advertiseService("driver/stop", &SdhNode::srvCallback_Stop, this);
-    srvServer_Recover_ = nh_.advertiseService("driver/recover", &SdhNode::srvCallback_Init, this);  // HACK: There is no recover implemented yet, so we execute a init
-    srvServer_SetOperationMode_ = nh_.advertiseService("driver/set_operation_mode",
+    srvServer_Init_ = nh_.advertiseService("init", &SdhNode::srvCallback_Init, this);
+    srvServer_Stop_ = nh_.advertiseService("stop", &SdhNode::srvCallback_Stop, this);
+    srvServer_Recover_ = nh_.advertiseService("recover", &SdhNode::srvCallback_Init, this);  // HACK: There is no recover implemented yet, so we execute a init
+    srvServer_SetOperationMode_ = nh_.advertiseService("set_operation_mode",
                                                        &SdhNode::srvCallback_SetOperationMode, this);
+
+    srvServer_EmergencyStop_ = nh_.advertiseService("emergency_stop", &SdhNode::srvCallback_EmergencyStop, this);
+    srvServer_Disconnect_ = nh_.advertiseService("shutdown", &SdhNode::srvCallback_Disconnect, this);
+
+    srvServer_MotorOn_ = nh_.advertiseService("motor_on", &SdhNode::srvCallback_MotorPowerOn, this);
+    srvServer_MotorOff_ = nh_.advertiseService("motor_off", &SdhNode::srvCallback_MotorPowerOff, this);
 
     subSetVelocitiesRaw_ = nh_.subscribe("joint_group_velocity_controller/command", 1,
                                          &SdhNode::topicCallback_setVelocitiesRaw, this);
 
     // getting hardware parameters from parameter server
-    nh_private_.param("sdhdevicetype", sdhdevicetype_, std::string("PCAN"));
-    nh_private_.param("sdhdevicestring", sdhdevicestring_, std::string("/dev/pcan0"));
-    nh_private_.param("sdhdevicenum", sdhdevicenum_, 0);
+    nh_.param("sdhdevicetype", sdhdevicetype_, std::string("PCAN"));
+    nh_.param("sdhdevicestring", sdhdevicestring_, std::string("/dev/pcan0"));
+    nh_.param("sdhdevicenum", sdhdevicenum_, 0);
 
-    nh_private_.param("baudrate", baudrate_, 1000000);
-    nh_private_.param("timeout", timeout_, static_cast<double>(0.04));
-    nh_private_.param("id_read", id_read_, 43);
-    nh_private_.param("id_write", id_write_, 42);
+    nh_.param("baudrate", baudrate_, 1000000);
+    nh_.param("timeout", timeout_, static_cast<double>(0.04));
+    nh_.param("id_read", id_read_, 43);
+    nh_.param("id_write", id_write_, 42);
 
     // get joint_names from parameter server
     ROS_INFO("getting joint_names from parameter server");
     XmlRpc::XmlRpcValue joint_names_param;
-    if (nh_private_.hasParam("joint_names"))
+    if (nh_.hasParam("joint_names"))
     {
-      nh_private_.getParam("joint_names", joint_names_param);
+      nh_.getParam("joint_names", joint_names_param);
     }
     else
     {
@@ -200,7 +213,7 @@ public:
 
     state_.resize(axes_.size());
 
-    nh_private_.param("OperationMode", operationMode_, std::string("position"));
+    nh_.param("OperationMode", operationMode_, std::string("position"));
     return true;
   }
   /*!
@@ -519,6 +532,105 @@ public:
   }
 
   /*!
+   * \brief Executes the service callback for emergency_stop.
+   *
+   * Performs an emergency stop.
+   * \param req Service request
+   * \param res Service response
+   */
+  bool srvCallback_EmergencyStop(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res) {
+      try {
+        isInitialized_ = false;
+        sdh_->EmergencyStop();
+        sdh_->SetAxisEnable(sdh_->All, 0.0);
+        sdh_->SetAxisMotorCurrent(sdh_->All, 0.0);
+      }
+      catch(const SDH::cSDHLibraryException* e) {
+          ROS_ERROR("An exception was caught: %s", e->what());
+          res.success = false;
+          res.message = e->what();
+          return true;
+      }
+
+      res.success = true;
+      res.message = "EMERGENCY stop";
+      return true;
+  }
+
+  /*!
+   * \brief Executes the service callback for disconnect.
+   *
+   * Disconnect from SDH and disable motors to prevent overheating.
+   * \param req Service request
+   * \param res Service response
+   */
+  bool srvCallback_Disconnect(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res) {
+      try {
+        isInitialized_ = false;
+
+        sdh_->SetAxisEnable(sdh_->All, 0.0);
+        sdh_->SetAxisMotorCurrent(sdh_->All, 0.0);
+
+        sdh_->Close();
+      }
+      catch(const SDH::cSDHLibraryException* e) {
+          ROS_ERROR("An exception was caught: %s", e->what());
+          res.success = false;
+          res.message = e->what();
+          return true;
+      }
+
+      ROS_INFO("Disconnected");
+      res.success = true;
+      res.message = "disconnected from SDH";
+      return true;
+  }
+
+  /*!
+   * \brief Enable motor power
+   * \param req Service request
+   * \param res Service response
+   */
+  bool srvCallback_MotorPowerOn(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res) {
+    try {
+      sdh_->SetAxisEnable(sdh_->All, 1.0);
+      sdh_->SetAxisMotorCurrent(sdh_->All, 0.5);
+    }
+    catch (const SDH::cSDHLibraryException* e) {
+      ROS_ERROR("An exception was caught: %s", e->what());
+      res.success = false;
+      res.message = e->what();
+      return true;
+    }
+    ROS_INFO("Motor power ON");
+    res.success = true;
+    res.message = "Motor ON";
+    return true;
+  }
+
+  /*!
+   * \brief Disable motor power
+   * \param req Service request
+   * \param res Service response
+   */
+  bool srvCallback_MotorPowerOff(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res) {
+    try {
+      sdh_->SetAxisEnable(sdh_->All, 0.0);
+      sdh_->SetAxisMotorCurrent(sdh_->All, 0.0);
+    }
+    catch (const SDH::cSDHLibraryException* e) {
+      ROS_ERROR("An exception was caught: %s", e->what());
+      res.success = false;
+      res.message = e->what();
+      return true;
+    }
+    ROS_INFO("Motor power OFF");
+    res.success = true;
+    res.message = "Motor OFF";
+    return true;
+  }
+
+  /*!
    * \brief Main routine to update sdh.
    *
    * Sends target to hardware and reads out current configuration.
@@ -692,6 +804,19 @@ public:
 
       // read sdh status
       state_ = sdh_->GetAxisActualState(axes_);
+
+      // publish temperature
+      schunk_sdh::TemperatureArray temp_array;
+      temp_array.header.stamp = time;
+      const std::vector<double> temp_value = sdh_->GetTemperature(sdh_->all_temperature_sensors);
+      if(temp_value.size()==temperature_names_.size()) {
+          temp_array.name = temperature_names_;
+          temp_array.temperature = temp_value;
+      }
+      else {
+          ROS_ERROR("amount of temperatures mismatch with stored names");
+      }
+      topicPub_Temperature_.publish(temp_array);
     }
     else
     {
@@ -726,6 +851,14 @@ public:
     topicPub_Diagnostics_.publish(diagnostics);
   }
 };
+
+const std::vector<std::string> SdhNode::temperature_names_ = {
+    "root",
+    "proximal_finger_1", "distal_finger_1",
+    "proximal_finger_2", "distal_finger_2",
+    "proximal_finger_3", "distal_finger_3",
+    "controller", "pcb"
+};
 // SdhNode
 
 /*!
@@ -738,16 +871,16 @@ int main(int argc, char** argv)
   // initialize ROS, spezify name of node
   ros::init(argc, argv, "schunk_sdh");
 
-  SdhNode sdh_node;
+  SdhNode sdh_node(ros::this_node::getName() + "/follow_joint_trajectory");
   if (!sdh_node.init())
     return 0;
 
   ROS_INFO("...sdh node running...");
 
   double frequency;
-  if (sdh_node.nh_private_.hasParam("frequency"))
+  if (sdh_node.nh_.hasParam("frequency"))
   {
-    sdh_node.nh_private_.getParam("frequency", frequency);
+    sdh_node.nh_.getParam("frequency", frequency);
   }
   else
   {

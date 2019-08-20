@@ -1,6 +1,6 @@
 <package format="2">
   <name>schunk_description</name>
-  <version>0.6.11</version>
+  <version>0.6.13</version>
   <description>This package contains the description (mechanical, kinematic, visual,
   etc.) of different schunk components. The files in this package are parsed and used by
   a variety of other components. Most users will not interact directly
@@ -18,7 +18,6 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <exec_depend>gazebo_ros</exec_depend>
   <exec_depend>xacro</exec_depend>
 
   <test_depend>gtest</test_depend>
