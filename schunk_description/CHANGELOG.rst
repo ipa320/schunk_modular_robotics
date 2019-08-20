@@ -2,8 +2,8 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.13 (2019-08-20)
+-------------------
 * Merge pull request `#213 <https://github.com/ipa320/schunk_modular_robotics/issues/213>`_ from PilzDE/remove-gazebo-depend
   drop gazebo_ros dependency
 * drop gazebo_ros dependency

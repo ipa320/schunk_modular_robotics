@@ -2,8 +2,8 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.13 (2019-08-20)
+-------------------
 * Merge pull request `#212 <https://github.com/ipa320/schunk_modular_robotics/issues/212>`_ from christian-rauch/sdhlib_source
   Replace binary sdh library with source SDHLibrary-CPP
 * add source dependency on 'sdhlibrary_cpp'
