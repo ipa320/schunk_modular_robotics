@@ -61,3 +61,16 @@ material Schunk/Blue
 		}
 	}
 }
+
+material Schunk/DarkBlue
+{
+    receive_shadows on
+    technique
+    {
+        pass
+        {
+            ambient 0.05 0.0 0.4 1.0
+            diffuse 0.1 0.1 0.1 1
+        }
+    }
+}
