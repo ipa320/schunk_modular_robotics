@@ -22,7 +22,6 @@
   <depend>diagnostic_msgs</depend>
   <depend>libntcan</depend>
   <depend>libpcan</depend>
-  <depend>linux-headers-generic</depend>
   <depend>roscpp</depend>
   <depend>schunk_libm5api</depend>
   <depend>sensor_msgs</depend>
