@@ -2,6 +2,22 @@
 Changelog for package schunk_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.14 (2019-11-20)
+-------------------
+* Merge pull request `#217 <https://github.com/ipa320/schunk_modular_robotics/issues/217>`_ from crthilakraj/indigo_dev
+  Changed the origin of the left and right finger joints to avoid collision
+* changed the origin of the left and right finger joints to avoid collision
+* Merge pull request `#216 <https://github.com/ipa320/schunk_modular_robotics/issues/216>`_ from tobigs/indigo_dev
+  Gazebo segfault fix
+* Prepended PositionJointInterface and VelocityJointInterface with hardware_interface/ to prevent gazebo segfaults
+* Merge pull request `#215 <https://github.com/ipa320/schunk_modular_robotics/issues/215>`_ from ipa320/indigo_release_candidate
+  Indigo release candidate
+* Merge branch 'indigo_dev' into indigo_release_candidate
+* Merge branch 'indigo_dev' of github.com:ipa320/schunk_modular_robotics into indigo_release_candidate
+* Merge pull request `#199 <https://github.com/ipa320/schunk_modular_robotics/issues/199>`_ from ipa320/indigo_dev
+  Indigo dev
+* Contributors: Christian Rauch, Felix Messmer, Tobias Seidel, chikmagalore.thilak, fmessmer
+
 0.6.13 (2019-08-20)
 -------------------
 * Merge pull request `#213 <https://github.com/ipa320/schunk_modular_robotics/issues/213>`_ from PilzDE/remove-gazebo-depend
