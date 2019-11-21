@@ -2,6 +2,16 @@
 Changelog for package schunk_sdh
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.6.14 (2019-11-20)
+-------------------
+* Merge pull request `#215 <https://github.com/ipa320/schunk_modular_robotics/issues/215>`_ from ipa320/indigo_release_candidate
+  Indigo release candidate
+* Merge branch 'indigo_dev' into indigo_release_candidate
+* Merge branch 'indigo_dev' of github.com:ipa320/schunk_modular_robotics into indigo_release_candidate
+* Merge pull request `#199 <https://github.com/ipa320/schunk_modular_robotics/issues/199>`_ from ipa320/indigo_dev
+  Indigo dev
+* Contributors: Christian Rauch, Felix Messmer, fmessmer
+
 0.6.13 (2019-08-20)
 -------------------
 * Merge pull request `#212 <https://github.com/ipa320/schunk_modular_robotics/issues/212>`_ from christian-rauch/sdhlib_source
